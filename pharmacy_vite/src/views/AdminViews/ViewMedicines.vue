@@ -19,12 +19,13 @@
     const length = ref(-1);
     const editingRows = ref([]);
 
-    if (store.getters.isRegistered === true) {
+    console.log(store.getters.isRegistered)
+
+    if (store.state.isRegistered === "true") {
         axios.get(`/${usertype}/viewMedicines/`)
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
-            console.log(data.value)
         })
         .catch( (error) => {
             message.value = "Log in using an admin account to access this page."
@@ -94,7 +95,7 @@
             <div class="sub-container" v-if="data.length != 0">
                 <div class="card">
                     <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-                        tableStyle="min-width: 50rem" class="p-datatable-sm"
+                    resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
                         :pt="{
                             table: { style: 'min-width: 50rem' },
                             column: {
@@ -103,6 +104,7 @@
                                 })
                             }
                         }"
+                        
                     >
                         <Column selectionMode="multiple" style="width: 5rem"></Column>
 

@@ -14,13 +14,13 @@
     const store = useStore();
     store.dispatch('initializeStore');
 
-    if (store.getters.isRegistered === true) {
+
+    if (store.state.isRegistered === "true") {
         axios.get('/administrator/viewEmployees/')
         .then( (response) => {
             data.value = response.data
         })
         .catch( (error) => {
-            console.log(error)
             message.value = "Log in using an admin account to access this page."
         })
     }
@@ -69,7 +69,7 @@
 
             <div class="sub-container" style="margin-left:7rem;" v-if="data.length != 0">
                 <div class="card">
-                    <DataTable :value="data" v-model:selection="selected" datakey="id" removableSort paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
+                    <DataTable :value="data" v-model:selection="selected" datakey="id" removableSort paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" resizableColumns columnResizeMode="fit">
                         <Column selectionMode="multiple" style="width: 3rem"></Column>
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 10%" sortable></Column>

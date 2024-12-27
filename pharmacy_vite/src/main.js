@@ -27,6 +27,7 @@ import Drawer from 'primevue/drawer';
 import Textarea from 'primevue/textarea';
 import AutoComplete from 'primevue/autocomplete';
 import Carousel from 'primevue/carousel';
+import ProgressSpinner from 'primevue/progressspinner';
 
 // Importing Custom components
 import CustomPassword from './components/CustomPassword.vue';
@@ -47,6 +48,10 @@ app.use(PrimeVue, {
     }
 });
 
+app.use(store);
+app.use(router);
+app.use(ToastService);
+
 app.component('InputText', InputText);
 app.component('DatePicker', DatePicker);
 app.component('Button', Button);
@@ -66,11 +71,8 @@ app.component('Drawer', Drawer);
 app.component('Textarea', Textarea);
 app.component('AutoComplete', AutoComplete);
 app.component('Carousel', Carousel);
+app.component('ProgressSpinner', ProgressSpinner);
 
 app.component('CustomPassword', CustomPassword);
-
-app.use(store);
-app.use(router);
-app.use(ToastService);
 
 app.mount('#app');

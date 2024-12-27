@@ -6,29 +6,32 @@
 
     const message = ref('');
 
-    onMounted (() => {
-        const store = useStore()
-        if (store.getters.isRegistered === true){ 
-            const usertype = store.getters.getUserDetails['usertype']
-            const url = '/' + usertype + '/logout/'
+    const store = useStore()
+    store.dispatch('initializeStore')
+    
+    console.log(store.state.isRegistered)
 
-            axios.post(url, 
-            { 
-                "logout" : true,
-            }, 
-            {
-                withCredentials: true
-            })
-            .then( (response) => {
-                store.dispatch('logout')
-                message.value = "Logout successful!"
-            })
-            .catch( (error) => {
-                message.value = "Logout unsuccessful!"
-                console.log(error);
-            })
-        }
-    })
+    if (store.state.isRegistered === "true") {  
+        const usertype = store.getters.getUserDetails['usertype']
+        const url = '/' + usertype + '/logout/'
+
+        axios.post(url, 
+        { 
+            "logout" : true,
+        }, 
+        {
+            withCredentials: true
+        })
+        .then( (response) => {
+            store.dispatch('logout')
+            message.value = "Logout successful!"
+        })
+        .catch( (error) => {
+            message.value = "Logout unsuccessful!"
+        })
+    } else {
+        message.value = "Logout unsuccesful! Log in first to log out."
+    }
 </script>
 
 <template>

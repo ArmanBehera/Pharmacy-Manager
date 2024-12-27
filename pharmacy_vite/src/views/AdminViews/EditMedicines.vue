@@ -25,10 +25,9 @@
 
     const id = route.query.id;
 
-    if (store.getters.isRegistered === true) {
+    if (store.state.isRegistered === "true") {
         axios.get(`/administrator/editMedicines/?id=${id}`)
         .then( (response) => {
-            console.log(response)
             data.value = response.data
             length.value = data.value.length
             
@@ -36,7 +35,6 @@
             stock.value = response.data.stock
         })
         .catch( (error) => {
-            console.log(error)
             message.value = "Log in using an admin or pharmacist account to access this page."
         })
     }

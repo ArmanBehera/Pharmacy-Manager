@@ -17,6 +17,7 @@ import ViewMedicines from '../views/AdminViews/ViewMedicines.vue'
 import AddMedicines from '../views/AdminViews/AddMedicines.vue'
 import EditMedicines from '../views/AdminViews/EditMedicines.vue'
 
+/*
 import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
 import FrontDeskLogin from '../views/FrontDeskViews/Login.vue'
@@ -24,7 +25,7 @@ import FrontDeskLogin from '../views/FrontDeskViews/Login.vue'
 import Pharmacy from '../views/PharmacyViews/Index.vue'
 import PharmacySignin from '../views/PharmacyViews/Signin.vue'
 import PharmacyLogin from '../views/PharmacyViews/Login.vue'
-
+*/
 
 const routes = [
   {
@@ -99,6 +100,7 @@ const routes = [
       }
     ]
   },
+  /*
   {
     path: '/frontdesk',
     component: FrontDesk,
@@ -131,6 +133,7 @@ const routes = [
       }
     ]
   }
+    */
 ]
 
 const router = createRouter({

@@ -17,6 +17,8 @@
 
     store.dispatch('initializeStore');
 
+    const emit = defineEmits(['logged-in'])
+
     const visibility = ref(true);
 
     const updateVisibility = () => {
@@ -84,8 +86,6 @@
                 "password": data.password
             })
             .then( (response) => {
-                // Figured out that jwt was not being sent due to SameSite being set to Lax, and should be sent to None. But now the cookie is not being stored. To fix this and check the website.
-
                 store.dispatch('setLoginDetails', {
                     'usertype': 'administrator',
                     'isRegistered': true,
@@ -95,12 +95,13 @@
                     'lastName': data.last_name
                 });
 
+                emit('logged-in');
+
                 router.push({ name: 'AdminHomePage' })
             })
             .catch( (error) => {
                 // If an error is raised, not working now
                 axios.defaults.headers.common['Authorization'] = ""
-                console.log(error)
                 warn("Unauthorized credentials!", "Invalid username/password or unauthorized by the admin. Contact admin for further details.");
             })
         }

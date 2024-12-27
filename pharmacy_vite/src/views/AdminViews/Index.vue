@@ -52,7 +52,9 @@
         }
     ]);
 
-    const loggedIn = computed(() => store.state.isRegistered);
+    const loggedIn = computed(() => store.state.isRegistered === 'true');
+
+    
 
     const toggleDropdownEmployees = () => {
         dropdownOpenEmployees.value = !dropdownOpenEmployees.value;
@@ -95,7 +97,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                         @click="redirect('ViewEmployees')"
+                                        @click="redirect('ViewEmployees')"
                                     >
                                         
                                         <i class="pi pi-eye mr-4"></i>

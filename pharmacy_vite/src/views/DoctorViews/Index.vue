@@ -8,6 +8,8 @@
     
     const store = useStore();
     const drawerVisible = ref(false);
+    const dropdownOpenEmployees = ref(false);
+    const dropdownOpenMedicines = ref(false);
 
     store.dispatch('initializeStore');
 
@@ -27,7 +29,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                router.push({ name: ' DoctorHomePage' })
+                router.push({ name: 'DoctorHomePage' })
             }
         },
         {
@@ -36,7 +38,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: ' DoctorSignin' })
+                router.push({ name: 'DoctorSignin' })
             }
         },
         {
@@ -45,7 +47,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: ' DoctorLogin' })
+                router.push({ name: 'DoctorLogin' })
             }
         },
         {
@@ -59,7 +61,12 @@
         }
     ]);
 
-    const loggedIn = computed(() => store.state.isRegistered);
+    const loggedIn = computed(() => store.state.isRegistered === 'true');
+
+    const redirect = (urlName) => {
+        router.push({ name: urlName})
+        drawerVisible.value = false
+    }
 </script>
 
 <template>
@@ -79,7 +86,7 @@
 
     <Menubar :model="items">
         <template #item="{ item, props }">
-            <a v-if="item.loggedIn == loggedIn && item.loggedOut == !loggedIn" :target="item.target" v-bind="props.action">
+            <a v-if="item.loggedIn == loggedIn || item.loggedOut == !loggedIn" :target="item.target" v-bind="props.action">
                 <span :class="item.icon" />
                 <span class="ml-2">{{ item.label }}</span>
             </a>

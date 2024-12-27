@@ -23,10 +23,8 @@
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
-            console.log(length.value)
         })
         .catch( (error) => {
-            console.log(error)
             message.value = "Log in using an admin account to access this page."
         })
     }
@@ -64,7 +62,6 @@
             }
         })
         .catch( (error) => {
-            console.log(error)
             if (code == 0){
                 toast.add({severity:'warn', summary: 'Unsuccesful in verifying users.', message: 'Please try again.', life:3000});
             } else {
@@ -89,7 +86,7 @@
             </div>
             <div class="sub-container" style="margin-left:7rem;" v-if="length != 0">
                 <div class="card">
-                    <DataTable :value="data" v-model:selection="selected" datakey="id" removableSort paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
+                    <DataTable :value="data" v-model:selection="selected" datakey="id" removableSort paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" resizableColumns columnResizeMode="fit" >
                         
                         <Column selectionMode="multiple" style="width: 3rem"></Column>
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>

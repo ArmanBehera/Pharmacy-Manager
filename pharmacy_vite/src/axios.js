@@ -53,8 +53,6 @@ instance.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config
 
-        console.log(`Response Error: ${error}`)
-
         if (error.response.status === 403) {
             const newAccessToken = await refreshAccessToken(); // Gets a new access token as the previous token is expired
             if (newAccessToken) {
@@ -66,14 +64,14 @@ instance.interceptors.response.use(
         else if (error.response.status === 401) {
             const usertype = localStorage.getItem('usertype');
 
-            if (!usertype) {
+            // If there isn't a usertype and the user is in the login page then the user won't be redirected
+            if (!usertype && !window.location.href.includes('login')) {
                 router.push('/');
             }
-            else {
+            else if (usertype) {
                 router.push(`/${usertype}/login/`);
-            }
+            }  
         }
-        console.log(error.response.status)
         
         // This statement is executed for all others errors, such as permission denied (403). They are to be handled individually by the respective pages.
         return Promise.reject(error);
