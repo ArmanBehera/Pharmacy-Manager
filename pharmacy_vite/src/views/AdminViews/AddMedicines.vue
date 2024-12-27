@@ -122,12 +122,12 @@
             "price": price.value,
             "description": description.value ? description.value : '',
             "manufacturer": manufacturer.value,
-            "sideEffects" : selectedSideEffects.value.map(sideEffect => ({ name: sideEffect })),
-            "allergens" : selectedAllergens.value.map(allergy => ({ name: allergy })),
+            "sideEffects" : selectedSideEffects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
+            "allergens" : selectedAllergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
         }
         
         if (selectedIngredients.value.length != 0) {
-            medicineToSend.ingredients = selectedIngredients.value.map(ingredient => ({ name: ingredient }));
+            medicineToSend.ingredients = selectedIngredients.value.map(ingredient => ({ name: ingredient.name ? ingredient.name : ingredient }));
         }
 
         if (selectedCategories.value.length != 0){
@@ -135,7 +135,7 @@
 
             for (let i = 0; i < categoriesCount.value; i++) {
                 categoriesArray[i] = {
-                    "name": selectedCategories.value[i],
+                    "name": selectedCategories.value[i].name ? selectedCategories.value[i].name : selectedCategories.value[i],
                     "usage_priority": (i + 1)
                 };
             }

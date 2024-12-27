@@ -55,8 +55,7 @@ instance.interceptors.response.use(
 
         console.log(`Response Error: ${error}`)
 
-        if (error.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true; // A variable that holds if the request made is the 1st time or 2nd time
+        if (error.response.status === 403) {
             const newAccessToken = await refreshAccessToken(); // Gets a new access token as the previous token is expired
             if (newAccessToken) {
                 originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`; // Changes the access token in the header of the original request's to reflect the changes
@@ -64,11 +63,18 @@ instance.interceptors.response.use(
             }
         }
         // Indicates that the refresh token is expired and user needs to be logged in again. 
-        else if (error.response.status === 401 && originalRequest._retry) {
-            const usertype = localStorage.getItem('userType');
-            router.push(`/${usertype}/login/`)
+        else if (error.response.status === 401) {
+            const usertype = localStorage.getItem('usertype');
+
+            if (!usertype) {
+                router.push('/');
+            }
+            else {
+                router.push(`/${usertype}/login/`);
+            }
         }
         console.log(error.response.status)
+        
         // This statement is executed for all others errors, such as permission denied (403). They are to be handled individually by the respective pages.
         return Promise.reject(error);
     }

@@ -17,6 +17,15 @@ import ViewMedicines from '../views/AdminViews/ViewMedicines.vue'
 import AddMedicines from '../views/AdminViews/AddMedicines.vue'
 import EditMedicines from '../views/AdminViews/EditMedicines.vue'
 
+import FrontDesk from '../views/FrontDeskViews/Index.vue'
+import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
+import FrontDeskLogin from '../views/FrontDeskViews/Login.vue'
+
+import Pharmacy from '../views/PharmacyViews/Index.vue'
+import PharmacySignin from '../views/PharmacyViews/Signin.vue'
+import PharmacyLogin from '../views/PharmacyViews/Login.vue'
+
+
 const routes = [
   {
     path: '/',
@@ -92,43 +101,33 @@ const routes = [
   },
   {
     path: '/frontdesk',
-    component: Admin,
+    component: FrontDesk,
     children: [
-      {
-        path: '',
-        name: 'FrontDeskHomePage',
-        component: AdminHomePage
-      },
       {
         path: 'login',
         name: 'FrontDeskLogin',
-        component: AdminLogin
+        component: FrontDeskLogin
       },
       {
         path: 'signin',
         name: 'FrontDeskSignin',
-        component: DoctorSignin
+        component: FrontDeskSignin
       }
     ]
   },
   {
     path: '/pharmacy',
-    component: Admin,
+    component: Pharmacy,
     children: [
-      {
-        path: '',
-        name: 'PharmacyHomePage',
-        component: AdminHomePage
-      },
       {
         path: 'login',
         name: 'PharmacyLogin',
-        component: AdminLogin
+        component: PharmacyLogin
       },
       {
         path: 'signin',
         name: 'PharmacySignin',
-        component: DoctorSignin
+        component: PharmacySignin
       }
     ]
   }
