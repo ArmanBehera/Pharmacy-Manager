@@ -25,12 +25,23 @@ class DoctorUser(models.Model):
     # availability = // To think of a way to represent availability
 
     def __str__(self):
-        return f"Username: {self.user.username}\nRegistration Number: {self.registration_number}"
+        return f"Name: {self.user.first_name} {self.user.last_name}. Specialization: {self.specialization}"
 
 
 class PatientUser(models.Model):
     
-    user = models.OneToOneField(User, verbose_name="Patient User Details", on_delete=models.PROTECT, related_name="patient")
+    first_name = models.CharField(max_length=100, blank=False, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)], blank=False, null=True)
+    genderChoices = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other')
+    )
+    gender = models.CharField(choices=genderChoices, max_length=6, blank=False, null=True)
+    
+    primary_phone_number = models.CharField(max_length=15, blank=False, null=True)
+    secondary_phone_number = models.CharField(max_length=15, blank=True, null=True)
     medical_history = models.TextField(blank=True)
 
     def __str__(self):
@@ -45,12 +56,11 @@ class Appointment(models.Model):
         ('Cancelled', 'Cancelled'),
         ('No Show', 'No Show'),
     ]
-
+    
     doctor = models.ForeignKey(DoctorUser, verbose_name="Doctor", on_delete=models.PROTECT, related_name='appointments')
     patient = models.ForeignKey(PatientUser, verbose_name="Patient", on_delete=models.CASCADE, related_name='appointments')
     date = models.DateField(default=timezone.now, verbose_name="Appointment Date")
-    time_assigned = models.TimeField(verbose_name="Time Assigned")
-    reason_for_visit = models.TextField(verbose_name="Reason for Visit", blank=True, null=True)
+    token_assigned = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=True, verbose_name="Token Assigned")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled', verbose_name="Status")
     
     def __str__(self):
@@ -58,6 +68,7 @@ class Appointment(models.Model):
 
 
 class PrescribedMedicine(models.Model):
+
     TIMING_CHOICES = [
         ('before_food', 'before_food'),
         ('after_food', 'after_food'),

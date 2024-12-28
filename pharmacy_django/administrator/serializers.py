@@ -24,22 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         
         return user
     
-
-    def validate(self, attrs):
-        
-        if attrs['role'] in ['Admin', 'Doctor', 'Employee']:
-            try:
-                email = attrs['email']
-                password = attrs['password']
-            except KeyError:
-                raise exceptions.ValidationError(detail="Email or Password not provided for non-Patient roles.")
-            
-        return attrs
-
          
     def validate_role(self, value):
-        if value not in ['Admin', 'Doctor', 'Employee', 'Patient']:
-            raise exceptions.ValidationError(detail="Role of the user can only have four values: 'Admin', 'Doctor', 'Employee' and 'Patient'")
+        if value not in ['Admin', 'Doctor', 'FrontDesk', 'Pharmacy']:
+            raise exceptions.ValidationError(detail="Please enter a valid value for role.")
         return value
         
     

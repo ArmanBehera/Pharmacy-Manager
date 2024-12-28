@@ -27,7 +27,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                router.push({ name: 'DoctorHomePage' })
+                router.push({ name: 'PharmacyHomePage' })
             }
         },
         {
@@ -36,7 +36,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: 'DoctorSignin' })
+                router.push({ name: 'PharmacySignin' })
             }
         },
         {
@@ -45,7 +45,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: 'DoctorLogin' })
+                router.push({ name: 'PharmacyLogin' })
             }
         },
         {

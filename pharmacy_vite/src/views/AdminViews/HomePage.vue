@@ -28,7 +28,7 @@
             isLoaded.value[0] = true;
         })
         .catch( (error) => {
-            warn("Error getting unverified users data.", "Please check the status of the server.")
+            warn("Error getting unverified users data.", "Please check the status of the server or try reloading.")
         })
 
         axios.get('administrator/viewEmployees/')
@@ -37,7 +37,7 @@
             isLoaded.value[1] = true;
         })
         .catch( (error) => {
-            warn("Error getting employees data", "Please check the status of the server.")
+            warn("Error getting employees data", "Please check the status of the server or try reloading.")
         })
 
         // To get data for inventory
@@ -47,7 +47,7 @@
             isLoaded.value[2] = true;
         })
         .catch( (error) => {
-            warn("Error getting medicines data", "Please check the status of the server.")
+            warn("Error getting medicines data", "Please check the status of the server or try reloading.")
         })
     }
 </script>

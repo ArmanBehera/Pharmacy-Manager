@@ -4,7 +4,8 @@
     import { ref } from 'vue';
     import '../../styles/styles.css';
     import axios from '../../axios';
-    import { addSeconds, format } from 'date-fns';
+    import { format } from 'date-fns';
+    import { checkDate } from '../../helpers';
 
     const store = useStore();
     const toast = useToast();
@@ -92,19 +93,9 @@
             return;
         }
 
-        if (!expiration_date.value) {
-            warn('warn', 'Date of expiry should be filled.', '');
+        if (!checkDate(expiration_date)) {
+            warn('Error with expiration date.', 'Make sure the date is filled and is today or after today.');
             return;
-        } else {
-            const expirationDate = new Date(expiration_date.value);
-
-            const currentDate = new Date();
-            currentDate.setHours(0, 0, 0, 0);
-
-            if (expirationDate < currentDate) {
-                warn('warn', 'Expiration date is already past.', 'Please set the expiration date on a date after today.')
-                return;
-            }
         }
 
         if (selectedAllergens.value.length == 0) {

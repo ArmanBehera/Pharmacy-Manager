@@ -27,7 +27,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                router.push({ name: 'DoctorHomePage' })
+                router.push({ name: 'FrontDeskHomePage' })
             }
         },
         {
@@ -36,7 +36,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: 'DoctorSignin' })
+                router.push({ name: 'FrontDeskSignin' })
             }
         },
         {
@@ -45,7 +45,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: 'DoctorLogin' })
+                router.push({ name: 'FrontDeskLogin' })
             }
         },
         {

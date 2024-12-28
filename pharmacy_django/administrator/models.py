@@ -36,8 +36,8 @@ class UserManager(BaseUserManager):
         if gender not in ['Male', 'Female', 'Other']:
             raise ValueError('The valid values for gender can only be \'Male\', \'Female\' or \'Other\'')
         
-        if role not in ['Admin', 'Doctor', 'Employee', 'Patient']:
-            raise ValueError('The valid values for role can only be \'Admin\', \'Doctor\', \'Employee\' or \'Patient\'')
+        if role not in ['Admin', 'Doctor', 'FrontDesk', 'Pharmacy']:
+            raise ValueError('The role of the user is not valid.')
         
         user = self.model(
             username = username,
@@ -109,8 +109,7 @@ class User(AbstractUser):
         ('Admin', 'Admin'),
         ('Doctor', 'Doctor'),
         ('Pharmacy', 'Pharmacy'),
-        ('FrontDesk', 'FrontDesk'),
-        ('Patient', 'Patient')
+        ('FrontDesk', 'FrontDesk')
     )
     role = models.CharField(choices=roleChoices, max_length=9, blank=False)
     

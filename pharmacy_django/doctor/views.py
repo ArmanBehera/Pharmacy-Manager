@@ -16,7 +16,7 @@ class SignIn(views.APIView):
     def post(self, request):
         '''
         Only post methods are allowed for this endpoint.
-        The data posted is stored in Doctor model.
+        The data posted is stored in User and DoctorUser model.
         '''
         
         serializer = DoctorSerializer(data=request.data)

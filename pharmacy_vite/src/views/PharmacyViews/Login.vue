@@ -10,7 +10,6 @@
     const last_name = ref('');
     const password = ref('');
     const confirmPassword = ref('');
-    const registration_number = ref('');
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -49,7 +48,6 @@
                 first_name: first_name.value,
                 last_name: last_name.value,
                 password: password.value,
-                registration_number: registration_number.value
             }
         }
         catch (err) {
@@ -83,11 +81,11 @@
         else {
             axios.post("/api/v1/jwt/create/", {
                 
-                "username": `${data.first_name}${data.last_name}${data.registration_number}`,
+                "username": `${data.first_name}${data.last_name}`,
                 "password": data.password
             })
             .then( (response) => {
-                var username = `${data.first_name}${data.last_name}${data.registration_number}`;
+                var username = `${data.first_name}${data.last_name}`;
                 store.dispatch('setLoginDetails', {
                     'usertype': 'doctor',
                     'isRegistered': true,
@@ -96,7 +94,7 @@
                     'firstName': data.first_name,
                     'lastName': data.last_name
                 });
-                router.push({ name: 'DoctorHomePage' })
+                router.push({ name: 'PharmacyHomePage' })
             })
             .catch( (error) => {
                 warn("Unauthorized credentials!", "Invalid username/password or unauthorized by the admin. Contact admin for further details.");
@@ -125,10 +123,6 @@
             
             <div class="sub-container">
                 <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirmPassword"/>
-            </div>
-
-            <div class="sub-container">
-                <InputText class="elements" id="registration" placeholder="Doctor Registration Number" v-model.trim="registration_number"/>
             </div>
 
             <Button label="Submit" @click.prevent="submit"/>

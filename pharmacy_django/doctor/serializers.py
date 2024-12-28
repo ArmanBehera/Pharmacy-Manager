@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
-from .models import DoctorUser, PatientUser, SpecializationAvailable
+from .models import DoctorUser, PatientUser, SpecializationAvailable, Appointment
 from administrator.models import User
 from administrator.serializers import UserSerializer
-
   
 class SpecializationSerializer(serializers.ModelSerializer):
     '''
@@ -29,9 +28,9 @@ class DoctorSerializer(serializers.ModelSerializer):
         user_data = validated_data['user']
         specialization = validated_data['specialization']
         
-        user = User.objects.create_user(**user_data)
-
-        if not user:
+        try: 
+            user = User.objects.create_user(**user_data)
+        except Exception:
             raise serializers.ValidationError("Failed to create user.")
 
         specialization = SpecializationAvailable.objects.get(id=specialization.id)
@@ -65,21 +64,52 @@ class DoctorSerializer(serializers.ModelSerializer):
         
 class PatientSerializer(serializers.ModelSerializer):
     '''
-        There's no way to update a Patient object. Once created cannot be deleted.
+        There's no way to update a Patient object. Once created cannot be deleted or modified
     '''
-    user = UserSerializer(many=False)
     
     class Meta:
         
-        models = PatientUser
+        model = PatientUser
         fields = '__all__'
         
     def create(self, validated_data):
-        user_data = validated_data['user']
-        
-        user = User.objects.create_user(**user_data)
-        validated_data['user'] = user
+
         # If the below line shows an error, it's not
         patient = PatientUser.objects.create(**validated_data)
         
         return patient
+    
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to book an appointment
+    '''
+
+    patient = PatientSerializer(required=True, many=False)
+
+    class Meta: 
+
+        model = Appointment
+        fields = '__all__'
+
+    def create(self, validated_data):
+        
+        patient_data = validated_data['patient']
+        doctor_id = validated_data['doctor']
+
+        try:
+            patient = PatientUser.objects.create(**patient_data)
+        except Exception:
+            raise serializers.ValidationError('Failed to make a new patient.')
+        
+        try:
+            doctor = DoctorUser.objects.get(id=doctor_id)
+        except Exception:
+            raise serializers.ValidationError('Failed to get the doctor user.')
+
+        validated_data['patient'] = patient
+        validated_data['doctor'] = doctor
+
+        appointment = Appointment.objects.create(**validated_data)
+
+        return appointment

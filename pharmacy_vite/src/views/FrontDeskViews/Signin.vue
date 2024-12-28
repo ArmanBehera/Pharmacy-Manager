@@ -22,19 +22,7 @@
         if (window.innerWidth >= 800) {
             visibility.value = true;
         }
-    }   
-
-    const specializationsAvailable = ref([]);
-
-    onBeforeMount(() => {
-        axios.get('administrator/specializations/')
-        .then( (response) => {
-            specializationsAvailable.value = response.data;
-        })
-        .catch( (error) => {
-            warn("Error getting specializations.")
-        })
-    });
+    }
 
     onMounted(() => {
         window.addEventListener('resize', updateVisibility);
@@ -59,10 +47,6 @@
         {gender: 'Female'}, 
         {gender: 'Other'}
     ]);
-    const consultation_fee = ref();
-    const registration_number = ref('');
-    const experience = ref();
-    const specialization = ref();
 
     const submit = () => {
         let data = {
@@ -73,11 +57,7 @@
             password: password.value,
             age: age.value,
             gender: gender.value['gender'],
-            consultation_fee: parseInt(consultation_fee.value),
-            registration_number: registration_number.value,
             secondary_phone_number: secondary_phone_number.value,
-            experience: experience.value,
-            specialization: specialization.value['id']
         };
 
         if (data.password !== confirmPassword.value) {
@@ -85,17 +65,8 @@
             return;
         }
 
-        if (data.experience > data.age) {
-            warn("Experience > Age", "Your experience in the field cannot be greater than your age.");
-            return;
-        }
-
         if (data.secondary_phone_number === ''){
             data.secondary_phone_number = "0"
-        }
-
-        if (data.experience === undefined){
-            data.experience = 0
         }
 
         var filled = true;
@@ -104,7 +75,7 @@
         // Do not have to check for null fields since .trim() function already handles undefined values
         for (const key in data) {
             const value = data[key];
-            if (key !== 'secondary_phone_number' || key !== 'experience'){
+            if (key !== 'secondary_phone_number'){
                 if (typeof value === 'string' && value.trim() === '') {
                     filled = false;
                     break; // Exit the loop early if an empty field is found
@@ -122,34 +93,21 @@
         // No errors - Sending message to the backend to be processed
         else {
             // Debug this part - Showing internal server error
-            axios.post('/doctor/signin/', {
-                user: {
-                    "username": `${data.first_name}${data.last_name}${data.registration_number}`,
-                    "age": data.age,
-                    "gender": data.gender,
-                    "primary_phone_number": data.primary_phone_number,
-                    "role": "Doctor",
-                    "is_verified": false,
-                    "occupation": "Doctor",
-                    "first_name": data.first_name,
-                    "last_name": data.last_name,
-                    "email": data.email,
-                    "password": data.password,
-                    "secondary_phone_number": data.secondary_phone_number,
-                    "is_staff": true,
-                    "is_active": true,
-                    "is_superuser": false
-                },
-                specialization: data.specialization,
-                consultation_fee: data.consultation_fee,
-                experience: data.experience,
-                registration_number: data.registration_number
+            axios.post('/frontdesk/signin/', {
+                ...data,
+                "username": `${data.first_name}${data.last_name}`,
+                "role": "FrontDesk",
+                "is_verified": false,
+                "occupation": "Employee",
+                "is_staff": true,
+                "is_active": true,
+                "is_superuser": false
             })
             .then( (response) => {
-                router.push({ name: 'DoctorLogin' })
+                router.push({ name: 'FrontDeskLogin' })
             })
             .catch( (error) => {
-                warn("Failed to create a new doctor user.")
+                warn("Failed to create a new front desk user.")
             })
         }
     }
@@ -187,19 +145,6 @@
             <div class="sub-container">
                 <InputNumber class="elements" id="age" placeholder="Age*" inputId="withoutgrouping" :useGrouping="false" v-model.number="age" :min="0" :max="100" :allowEmpty="true"/>
                 <Select class="elements" id="gender" v-model.trim="gender" :options="genderChoices" optionLabel="gender" placeholder="Gender*"/>
-            </div>
-
-            <div class="sub-container">
-                <InputNumber class="elements" id="consultation-fee" placeholder="Consultation Fee*" inputId="currency-india" mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" v-model.number="consultation_fee" :min="0" :allowEmpty="true"/>
-                <InputNumber class="elements" id="experience" placeholder="Experience (in years)" inputId="integerOnly" v-model.number="experience" :min="0" :max="age" :allowEmpty="true"/>
-            </div>
-
-            <div class="sub-container">
-                <Select class="elements" id="specialization" v-model.trim="specialization" :options="specializationsAvailable" optionLabel="specialization" placeholder="Specialization*" />
-            </div>
-
-            <div class="sub-container">
-                <InputText class="elements" id="registration" placeholder="Doctor Registration Number*" v-model.number="registration_number"  @keyup.enter="submit"/>
             </div>
         </div>
 
