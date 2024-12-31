@@ -45,7 +45,7 @@ class PatientUser(models.Model):
     medical_history = models.TextField(blank=True)
 
     def __str__(self):
-        return f"Patient Name: {self.user.first_name} {self.user.last_name}"
+        return f"Patient Name: {self.first_name} {self.last_name}"
     
     
 class Appointment(models.Model):
@@ -64,7 +64,7 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled', verbose_name="Status")
     
     def __str__(self):
-        return f"Appointment with Dr. {self.doctor} for {self.patient} on {self.date} at {self.time_assigned}"
+        return f"Appointment with Dr. {self.doctor} for {self.patient} on {self.date}. Token Number: {self.token_assigned}"
 
 
 class PrescribedMedicine(models.Model):

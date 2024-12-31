@@ -3,8 +3,8 @@ from rest_framework import views, response, status, permissions, exceptions
 from administrator.serializers import UserSerializer
 from administrator import authentication
 from administrator.models import User
-from doctor.models import DoctorUser, Appointment
-from doctor.serializers import AppointmentSerializer
+from doctor.models import DoctorUser, Appointment, PatientUser
+from doctor.serializers import AppointmentSerializer, PatientSerializer
 
 class SignIn(views.APIView):
     '''
@@ -28,6 +28,46 @@ class SignIn(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetPatients(views.APIView):
+    '''
+        Get method returns all patient's name and details
+        Post method gets the patients that are scheduled for a particular doctor's appointment
+    '''
+    authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request):
+
+        patients = PatientUser.objects.all()
+
+        resp = []
+
+        for patient in patients:
+            serializer = PatientSerializer(patient)
+
+            last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
+
+
+            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': last_appointment.date})
+
+        return response.Response(resp)
+
+    def post(self, request):
+        
+        doctor_id = request.data['doctor_id']
+
+        doctor = DoctorUser.objects.get(id=doctor_id)
+        appointments = Appointment.objects.filter(doctor=doctor, status='Scheduled').order_by('token_assigned').order_by('date')
+
+        resp = []
+
+        for appointment in appointments:
+            serializer = AppointmentSerializer(appointment)
+            resp.append(serializer.data)
+
+        return response.Response(resp)
 
 
 class AddPatient(views.APIView):
@@ -57,11 +97,18 @@ class AddPatient(views.APIView):
     def post(self, request):
         # To add to the request: token_number: figure out the logic for that
         try:
-            last_appointment_token = Appointment.objects.filter(doctor=request.data['doctor']).order_by('-token_assigned').first().token_assigned
+            last_appointment_token = Appointment.objects.filter(doctor=request.data['doctor'], date=request.data['date']).order_by('-token_assigned').first().token_assigned
         except Exception:
             last_appointment_token = 0
 
-        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1})
+        # The doctor's id is replaced with the actual doctor object as it would otherwise turn itself into its __str__ format.
+        doctor = request.data['doctor']
+        try:
+            doctor = DoctorUser.objects.get(id=doctor)
+        except Exception as e:
+            raise response.Response(f'Failed to get the doctor user.')
+
+        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, doctor: doctor})
 
         if serializer.is_valid():
 
