@@ -13,8 +13,8 @@
 
     const toast = useToast();
 
-    const warn = (summary, detailed) => {
-        toast.add({ severity: 'warn', summary: summary, detail: detailed, life: 3000 });
+    const warn = (severity, summary, detailed) => {
+        toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
     const first_name = ref('');
@@ -43,10 +43,10 @@
         }));
         })
         .catch( (error) => {
-            warn("Error getting doctor users data.", "Please check the status of the server or try reloading.");
+            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
         })
     } else {
-        warn('Please log in to access this page.');
+        warn('warn', 'Please log in to access this page.', '');
     }
 
     const submit = () => {
@@ -78,12 +78,12 @@
         }
 
         if (!selected_doctor.value) {
-            warn('Patient has to be assgined a doctor.', 'Select a doctor from the dropdown menu.');
+            warn('warn', 'Patient has to be assgined a doctor.', 'Select a doctor from the dropdown menu.');
             return;
         }
 
         if (!checkDate(appointment_date))  {
-            warn('Error with appointment date.', 'Make sure the date is filled and is today or after today.');
+            warn('warn', 'Error with appointment date.', 'Make sure the date is filled and is today or after today.');
             return;
         }
 
@@ -96,16 +96,22 @@
                 date: format(new Date(appointment_date.value), 'yyyy-MM-dd'),
                 status: 'Scheduled'
             })
+            .then( (response) => {
+                warn('success', `Token Number: ${response.data.token_assigned}`, 'Successfully added patient.')
+            })  
+            .catch( (error) => {
+                warn('warn', 'Failed to add patient into the system.', 'Make sure all the fields are filled appropriately or try reloading this page.')
+            })
         } else {
-            warn('Not all fields are filled.', '')
+            warn('warn', 'Not all fields are filled.', '')
         }
     }
 </script>
 
 <template>
-     <div class="flex align-items-center justify-content-center">
+    <div class="flex align-items-center justify-content-center">
         <Toast/>
-        <h1 class="text-3xl font-bold m-3">Add Patient</h1>
+        <h1 class="text-3xl font-bold m-3">Add New Patient</h1>
     </div>
 
     <div class="top-container centered">
@@ -122,11 +128,11 @@
 
             <div class="sub-container">
                 <InputNumber class="elements" id="age" placeholder="Age*" inputId="withoutgrouping" :useGrouping="false" v-model.number="age" :min="0" :max="100" :allowEmpty="true"/>
-                <Select class="elements" id="gender" v-model.trim="gender" :options="gender_choices" optionLabel="gender" placeholder="Gender*"/>
+                <Select class="elements" id="gender" v-model.trim="gender" :options="gender_choices" optionLabel="gender" placeholder="Gender*" showClear/>
             </div>
 
             <div class="sub-container">
-                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctorsData" optionLabel="label" placeholder="Doctor Assigned*" />
+                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctorsData" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
                 <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
             </div>
         </div>

@@ -54,14 +54,14 @@
             }
         }
         catch (err) {
-            warn("Required fields are not filled!", "Please fill in all the required fields with appropriate values.");
+            warn('Required fields are not filled!', 'Please fill in all the required fields with appropriate values.');
             return;
         }
         
         let filled = true;
 
         if (data.password !== confirmPassword.value){
-            warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.")
+            warn('Passwords do not match!', 'Password and confirmation password do not match. Ensure that they are the same.')
             return;
         }
 
@@ -77,32 +77,39 @@
         }
 
         if (!filled){
-            warn("Required fields are not filled!", "Please fill in all the required fields with appropriate values.");
+            warn('Required fields are not filled!', 'Please fill in all the required fields with appropriate values.');
         }
         else {
-            axios.post("/api/v1/jwt/create/", {
+            axios.post('/api/v1/jwt/create/', {
                 
-                "username": `${data.first_name}${data.last_name}`,
-                "password": data.password
+                'username': `${data.first_name}${data.last_name}`,
+                'password': data.password
             })
             .then( (response) => {
+
+                console.log(response.data)
+
                 store.dispatch('setLoginDetails', {
                     'usertype': 'administrator',
                     'isRegistered': true,
                     'refreshToken': response.data.refresh,
                     'accessToken': response.data.access,
                     'firstName': data.first_name,
-                    'lastName': data.last_name
+                    'lastName': data.last_name,
                 });
 
                 emit('logged-in');
 
                 router.push({ name: 'AdminHomePage' })
             })
+            .then( () => {
+                axios.get('/administrator/getID')
+                
+            })
             .catch( (error) => {
                 // If an error is raised, not working now
-                axios.defaults.headers.common['Authorization'] = ""
-                warn("Unauthorized credentials!", "Invalid username/password or unauthorized by the admin. Contact admin for further details.");
+                axios.defaults.headers.common['Authorization'] = ''
+                warn('Unauthorized credentials!', 'Invalid username/password or unauthorized by the admin. Contact admin for further details.');
             })
         }
     };

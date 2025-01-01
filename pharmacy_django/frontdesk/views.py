@@ -5,6 +5,7 @@ from administrator import authentication
 from administrator.models import User
 from doctor.models import DoctorUser, Appointment, PatientUser
 from doctor.serializers import AppointmentSerializer, PatientSerializer
+from datetime import datetime
 
 class SignIn(views.APIView):
     '''
@@ -36,7 +37,7 @@ class GetPatients(views.APIView):
         Post method gets the patients that are scheduled for a particular doctor's appointment
     '''
     authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.AllowAny, )
 
     def get(self, request):
 
@@ -49,8 +50,11 @@ class GetPatients(views.APIView):
 
             last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
 
+            date = last_appointment.date  # This is already a datetime.date object
+            date = date.strftime("%d-%m-%Y")  # Convert it directly to the desired format
 
-            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': last_appointment.date})
+
+            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': date})
 
         return response.Response(resp)
 
@@ -65,14 +69,20 @@ class GetPatients(views.APIView):
 
         for appointment in appointments:
             serializer = AppointmentSerializer(appointment)
-            resp.append(serializer.data)
+
+            # Converting from yyyy-mm-dd to dd-mm-yyyy format
+            date = serializer.data['date']
+            date = datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m-%Y")
+
+            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'],'token_assigned': serializer.data['token_assigned'], 'appointment_date': date})
 
         return response.Response(resp)
 
 
 class AddPatient(views.APIView):
     '''
-        View to add the preliminary details of the patient
+        Get view is used to retun all the doctors
+        Post View is used to add the preliminary details of the patient
     '''
     authentication_classes = (authentication.CustomFrontDeskAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )

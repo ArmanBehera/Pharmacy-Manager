@@ -21,7 +21,8 @@ import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
 import FrontDeskLogin from '../views/FrontDeskViews/Login.vue'
 import FrontDeskHomePage from '../views/FrontDeskViews/HomePage.vue'
-import AddPatient from '../views/FrontDeskViews/AddPatient.vue'
+import AddNewPatient from '../views/FrontDeskViews/AddNewPatient.vue'
+import AddExistingPatient from '../views/FrontDeskViews/AddExistingPatient.vue'
 
 import Pharmacy from '../views/PharmacyViews/Index.vue'
 import PharmacySignin from '../views/PharmacyViews/Signin.vue'
@@ -120,11 +121,15 @@ const routes = [
         component: FrontDeskSignin
       },
       {
-        path: 'addPatient',
-        name: 'AddPatient',
-        component: AddPatient
+        path: 'addNewPatient',
+        name: 'AddNewPatient',
+        component: AddNewPatient
       },
-      
+      {
+        path: 'addExistingPatient',
+        name: 'AddExistingPatient',
+        component: AddExistingPatient
+      }
     ]
   },
   {

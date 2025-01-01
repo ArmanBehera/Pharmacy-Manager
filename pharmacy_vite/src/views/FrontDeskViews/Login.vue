@@ -87,7 +87,7 @@
             .then( (response) => {
                 var username = `${data.first_name}${data.last_name}`;
                 store.dispatch('setLoginDetails', {
-                    'usertype': 'doctor',
+                    'usertype': 'frontdesk',
                     'isRegistered': true,
                     'refreshToken': response.data.refresh,
                     'accessToken': response.data.access,
@@ -128,7 +128,7 @@
 
             <Button label="Submit" @click.prevent="submit"/>
             <br>
-            Need to make a new account?<router-link class="underline" :to="{ name: 'DoctorSignin'}">Sign In</router-link>
+            Need to make a new account?<router-link class="underline" :to="{ name: 'FrontDeskSignin'}">Sign In</router-link>
         </div>
 
         <div class="vertical-divide" v-show="visibility"></div>

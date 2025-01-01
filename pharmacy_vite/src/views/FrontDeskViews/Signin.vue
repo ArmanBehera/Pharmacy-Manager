@@ -144,7 +144,7 @@
 
             <div class="sub-container">
                 <InputNumber class="elements" id="age" placeholder="Age*" inputId="withoutgrouping" :useGrouping="false" v-model.number="age" :min="0" :max="100" :allowEmpty="true"/>
-                <Select class="elements" id="gender" v-model.trim="gender" :options="genderChoices" optionLabel="gender" placeholder="Gender*"/>
+                <Select class="elements" id="gender" v-model.trim="gender" :options="genderChoices" optionLabel="gender" placeholder="Gender*" showClear/>
             </div>
         </div>
 
