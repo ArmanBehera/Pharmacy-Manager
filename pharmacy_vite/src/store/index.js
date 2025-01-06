@@ -10,7 +10,8 @@ const state = {
   firstName: '',
   lastName: '',
   accessToken: '',
-  refreshToken: ''
+  refreshToken: '',
+  userId: '' // If the role is a doctor, then the user_id will be the id from DoctorUser model
 }
 
 export default createStore({

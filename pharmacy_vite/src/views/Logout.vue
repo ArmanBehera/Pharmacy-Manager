@@ -9,8 +9,6 @@
     const store = useStore()
     store.dispatch('initializeStore')
     
-    console.log(store.state.isRegistered)
-
     if (store.state.isRegistered === "true") {  
         const usertype = store.getters.getUserDetails['usertype']
         const url = '/' + usertype + '/logout/'

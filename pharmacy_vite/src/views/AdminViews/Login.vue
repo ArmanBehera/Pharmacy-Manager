@@ -87,24 +87,16 @@
             })
             .then( (response) => {
 
-                console.log(response.data)
-
                 store.dispatch('setLoginDetails', {
                     'usertype': 'administrator',
                     'isRegistered': true,
                     'refreshToken': response.data.refresh,
                     'accessToken': response.data.access,
+                    'userId': response.data.user_id,
                     'firstName': data.first_name,
                     'lastName': data.last_name,
                 });
-
-                emit('logged-in');
-
-                router.push({ name: 'AdminHomePage' })
-            })
-            .then( () => {
-                axios.get('/administrator/getID')
-                
+                router.push({ name: 'AdminHomePage' });
             })
             .catch( (error) => {
                 // If an error is raised, not working now

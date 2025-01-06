@@ -7,12 +7,15 @@ export const initializeStore = ({ commit, getters }) => {
         const lastName = localStorage.getItem('lastName');
         const refreshToken = localStorage.getItem('refreshToken');
         const accessToken = localStorage.getItem('accessToken');
+        const userId = localStorage.getItem('userId')
 
         commit('setIsRegistered', isRegistered);
-        commit('setUsername', firstName, lastName);
+        commit('setFirstName', firstName);
+        commit('setLastName', lastName);
         commit('setUserType', usertype);
         commit('setRefreshToken', refreshToken);
         commit('setAccessToken', accessToken);
+        commit('setUserId', userId);
     }
 }
 
@@ -23,6 +26,7 @@ export const logout = ({ commit }) => {
     localStorage.setItem('accessToken', '');
     localStorage.setItem('firstName', '');
     localStorage.setItem('lastName', '');
+    localStorage.setItem('userId', '');
     commit('logout');
 }
 
@@ -33,10 +37,13 @@ export const setLoginDetails = ({ commit }, payload) => {
     localStorage.setItem('accessToken', payload.accessToken);
     localStorage.setItem('firstName', payload.firstName);
     localStorage.setItem('lastName', payload.lastName);
+    localStorage.setItem('userId', payload.userId);
 
     commit('setUserType', payload.usertype);
-    commit('setUsername', payload.firstName, payload.lastName); // Sets both the first name and last name
+    commit('setFirstName', payload.firstName);
+    commit('setLastName', payload.lastName);
     commit('setIsRegistered', payload.isRegistered);
     commit('setRefreshToken', payload.refreshToken);
     commit('setAccessToken', payload.accessToken);
+    commit('setUserId', payload.userId);
 }

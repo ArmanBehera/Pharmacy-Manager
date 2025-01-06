@@ -5,7 +5,7 @@ export const isRegistered = state => {
 export const getUserDetails = state => {
     if (isRegistered)
         return {'usertype' : state.usertype, 'refreshToken': state.refreshToken, 'accessToken': state.accessToken,
-         'firstName': state.firstName, 'lastName': state.lastName, 'username': state.username };
+         'firstName': state.firstName, 'lastName': state.lastName, 'username': state.username, 'userId': state.userId };
     
-    return {'usertype' : '', 'usertype': '', 'refreshToken': '', 'accessToken': '', 'firstName': '', 'lastName': ''};
+    return {'usertype' : '', 'usertype': '', 'refreshToken': '', 'accessToken': '', 'firstName': '', 'lastName': '', 'userId': ''};
 }

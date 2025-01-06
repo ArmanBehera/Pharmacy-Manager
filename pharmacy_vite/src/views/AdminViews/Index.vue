@@ -22,7 +22,16 @@
             command: () => {
                 drawerVisible.value = true;
             }
-        },    
+        },
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            loggedIn: false,
+            loggedOut: true,
+            command: () => {
+                router.push({ name: 'Home' })
+            }
+        },   
         {
             label: 'Home',  
             icon: 'pi pi-home',

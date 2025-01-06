@@ -33,7 +33,6 @@
             isLoaded.value[0] = true;
         })
         .catch( (error) => {
-            console.log(error)
             warn("Error getting patients data.", "Please check the status of the server or try reloading.")
         })
     }

@@ -5,7 +5,7 @@ from administrator import authentication
 from administrator.models import User
 from doctor.models import DoctorUser, Appointment, PatientUser
 from doctor.serializers import AppointmentSerializer, PatientSerializer
-from datetime import datetime
+from datetime import datetime, date
 
 class SignIn(views.APIView):
     '''
@@ -36,8 +36,8 @@ class GetPatients(views.APIView):
         Get method returns all patient's name and details
         Post method gets the patients that are scheduled for a particular doctor's appointment
     '''
-    authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
-    permission_classes = (permissions.AllowAny, )
+    authentication_classes  = (authentication.CustomDoctorAuthentication, authentication.CustomFrontDeskAuthentication)
+    permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
 
@@ -50,32 +50,29 @@ class GetPatients(views.APIView):
 
             last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
 
-            date = last_appointment.date  # This is already a datetime.date object
-            date = date.strftime("%d-%m-%Y")  # Convert it directly to the desired format
-
+            date = last_appointment.date
+            date = date.strftime("%d-%m-%Y") 
 
             resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': date})
 
         return response.Response(resp)
+
 
     def post(self, request):
         
         doctor_id = request.data['doctor_id']
 
         doctor = DoctorUser.objects.get(id=doctor_id)
-        appointments = Appointment.objects.filter(doctor=doctor, status='Scheduled').order_by('token_assigned').order_by('date')
+        today = date.today()
+        appointments = Appointment.objects.filter(doctor=doctor, status='Scheduled', date__gte=today).order_by('date', 'token_assigned')
 
         resp = []
 
         for appointment in appointments:
             serializer = AppointmentSerializer(appointment)
 
-            # Converting from yyyy-mm-dd to dd-mm-yyyy format
-            date = serializer.data['date']
-            date = datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m-%Y")
-
-            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'],'token_assigned': serializer.data['token_assigned'], 'appointment_date': date})
-
+            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'],'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
+        
         return response.Response(resp)
 
 

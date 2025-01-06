@@ -18,9 +18,7 @@
     const data = ref([]);
     const length = ref(-1);
     const editingRows = ref([]);
-
-    console.log(store.getters.isRegistered)
-
+    
     if (store.state.isRegistered === "true") {
         axios.get(`/${usertype}/viewMedicines/`)
         .then( (response) => {

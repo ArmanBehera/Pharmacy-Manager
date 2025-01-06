@@ -93,9 +93,12 @@
                     'isRegistered': true,
                     'refreshToken': response.data.refresh,
                     'accessToken': response.data.access,
+                    'userId': response.data.user_id,
                     'firstName': data.first_name,
                     'lastName': data.last_name
                 });
+
+                console.log(response.data.user_id)
                 router.push({ name: 'DoctorHomePage' })
             })
             .catch( (error) => {

@@ -1,5 +1,4 @@
 <script setup>
-    
     import '../../styles/styles.css';
     import axios from '../../axios';
     import { useStore } from 'vuex';
@@ -15,21 +14,24 @@
         toast.add({ severity: 'warn', summary: summary, detail: detailed, life: 3000 });
     }
 
+    const patientsData = ref([]);
+    const isLoaded = ref([false])
+
     if (store.state.isRegistered) {
-        axios.get('/frontdesk/addPatient')
+        axios.post('/frontdesk/getPatients/', {
+            doctor_id: store.state.userId
+        })
         .then( (response) => {
-            doctorsData.value = response.data.map(doctor => ({
-                ...doctor,
-                label: `${doctor.name}: ${doctor.specialization}`
+            patientsData.value = response.data.map(patient => ({
+                ...patient,
+                name: `${patient.first_name} ${patient.last_name}`
             }));
-            
-            selectedDoctor.value = doctorsData.value[0]
+            isLoaded.value[0] = true;
         })
         .catch( (error) => {
-            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
+            warn("Error getting patients data.", "Please check the status of the server or try reloading.")
         })
     }
-    
 </script>
 
 <template>
@@ -44,6 +46,14 @@
                         <Column field="token_assigned" header="Token Number" style="width: 30%" sortable></Column>
                         <Column field="appointment_date" header="Date" style="width: 30%;" sortable></Column>
                     </DataTable>
+                    
+                    <div v-else-if="patientsData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+                        There are no scheduled patients in this system.
+                    </div>
+
+                    <div class="centered" v-else>
+                        <ProgressSpinner/>
+                    </div>
                 </div>
             </div>
         </div>

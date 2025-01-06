@@ -7,9 +7,12 @@ export default {
         state.isRegistered = isRegistered;
     },
 
-    setUsername(state, firstName, lastName) {
+    setFirstName(state, firstName) {
         state.firstName = firstName;
-        state.lastName = lastName;
+    },
+
+    setLastName(state, lastName) {
+        state.lastName = lastName
     },
     
     setRefreshToken(state, refresh) {
@@ -20,13 +23,17 @@ export default {
         state.accessToken = access
     },
 
-    logout (state) {
+    setUserId(state, userId) {
+        state.userId = userId
+    },
 
+    logout (state) {    
         state.usertype = '';
         state.isRegistered = false;
         state.accessToken = '';
         state.refreshToken = '';
         state.firstName = '';
         state.lastName = '';
+        state.userId = '';
     }
 }
