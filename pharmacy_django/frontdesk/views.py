@@ -33,30 +33,39 @@ class SignIn(views.APIView):
 
 class GetPatients(views.APIView):
     '''
-        Get method returns all patient's name and details
-        Post method gets the patients that are scheduled for a particular doctor's appointment
+        Post method is used to return all patients or ones match a particular filter
     '''
-    authentication_classes  = (authentication.CustomDoctorAuthentication, authentication.CustomFrontDeskAuthentication)
-    permission_classes = (permissions.IsAuthenticated, )
+    #authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
+    #permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request):
-
-        patients = PatientUser.objects.all()
+    # Filters that can be used: First Name, Last Name, Gender
+    def post(self, request):
+        
+        patients = PatientUser.objects.filter(first_name__icontains=request.data['first_name'], last_name__icontains=request.data['last_name'], gender__icontains=request.data['gender'])
 
         resp = []
 
         for patient in patients:
-            serializer = PatientSerializer(patient)
-
+            
             last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
+            serializer = AppointmentSerializer(last_appointment)
 
             date = last_appointment.date
             date = date.strftime("%d-%m-%Y") 
 
-            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': date})
+            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
 
         return response.Response(resp)
 
+
+class GetPatientsForDoctor(views.APIView):
+
+    '''
+        Post method gets the patients that are scheduled for a particular doctor's appointment
+    '''
+
+    authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         
@@ -71,15 +80,14 @@ class GetPatients(views.APIView):
         for appointment in appointments:
             serializer = AppointmentSerializer(appointment)
 
-            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'],'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
+            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
         
         return response.Response(resp)
 
 
-class AddPatient(views.APIView):
+class GetDoctors(views.APIView):
     '''
         Get view is used to retun all the doctors
-        Post View is used to add the preliminary details of the patient
     '''
     authentication_classes = (authentication.CustomFrontDeskAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
@@ -100,6 +108,14 @@ class AddPatient(views.APIView):
             resp.append(doctor_data)
 
         return response.Response(resp)
+
+
+class AddPatient(views.APIView):
+    '''
+        Post View is used to add the preliminary details of the patient
+    '''
+    authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         # To add to the request: token_number: figure out the logic for that

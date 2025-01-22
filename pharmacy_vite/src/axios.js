@@ -1,8 +1,5 @@
 import axios from 'axios';
 import router from './router';
-import { useStore } from 'vuex';
-
-const store = useStore();
 
 const instance = axios.create({
     baseURL: 'http://127.0.0.1:8000'
@@ -67,9 +64,14 @@ instance.interceptors.response.use(
         }
         // Indicates that the refresh token is expired and user needs to be logged in again. 
         else if (error.response.status === 401) {
-            console.log('RUnnig.')
             const usertype = localStorage.getItem('usertype');
-            store.dispatch('logout')
+            localStorage.setItem('usertype', '');
+            localStorage.setItem('isRegistered', false);
+            localStorage.setItem('refreshToken', '');
+            localStorage.setItem('accessToken', '');
+            localStorage.setItem('firstName', '');
+            localStorage.setItem('lastName', '');
+            localStorage.setItem('userId', '');
             // If there isn't a usertype and the user is in the login page then the user will be directed to the home page
             if (!usertype && !window.location.href.includes('login')) {
                 router.push('/');

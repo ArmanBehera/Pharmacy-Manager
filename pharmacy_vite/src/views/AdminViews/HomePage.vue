@@ -58,11 +58,10 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <DataTable v-if="isLoaded[0] & employeesData.length != 0" :value="employeesData" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+                    <DataTable v-if="isLoaded[0] & employeesData.length > 0" :value="employeesData" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
                     </DataTable>
-
 
                     <div v-else-if="employeesData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
                         There are no employees in this system.
@@ -80,7 +79,7 @@
 
             <div>
                 <div class="card ml-5">
-                    <DataTable v-if="isLoaded[1] & unverifiedUsersData.length != 0" :value="unverifiedUsersData" datakey="id" removableSort :rows="2" paginator tableStyle="min-width: 22rem">
+                    <DataTable v-if="isLoaded[1] & unverifiedUsersData.length > 0" :value="unverifiedUsersData" removableSort :rows="2" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
                     </DataTable>
@@ -93,7 +92,7 @@
                         <ProgressSpinner/>
                     </div>
 
-                    <div class="centered" v-if="unverifiedUsersData.length != 0">
+                    <div class="centered" v-if="unverifiedUsersData.length > 0">
                         <Button label="Verify Employees" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'VerifyEmployees' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
@@ -103,7 +102,7 @@
         <div>
             <div>
                 <div class="card ml-5">
-                    <DataTable v-if="isLoaded[2] & medicineInventoryData.length != 0" :value="medicineInventoryData" datakey="id" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
+                    <DataTable v-if="isLoaded[2] & medicineInventoryData.length > 0" :value="medicineInventoryData" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                         <Column field="name" header="Name" style="width: 30%" sortable></Column>
                         <Column field="stock" header="Stock" style="width: 30%" sortable></Column>
                         <Column field="expiration_date" header="Expiration Date" style="width: 40%" :sortable="true"></Column>

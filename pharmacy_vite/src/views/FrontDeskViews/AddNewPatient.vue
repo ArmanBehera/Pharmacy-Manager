@@ -35,7 +35,7 @@
 
     if (store.state.isRegistered) {
         
-        axios.get('/frontdesk/addPatient')
+        axios.get('/frontdesk/getDoctors/')
         .then( (response) => {
             doctorsData.value = response.data.map(doctor => ({
             ...doctor,

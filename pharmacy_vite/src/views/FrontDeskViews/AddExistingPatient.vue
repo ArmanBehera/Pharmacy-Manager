@@ -19,21 +19,49 @@
     const isLoaded = ref([false]);
     const selectedPatient = ref();
 
-    const filters = ref({
-        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-    })
+    const first_name = ref('');
+    const last_name = ref('');
+    const gender = ref('');
 
     if (store.state.isRegistered) {
-        axios.get('/frontdesk/getPatients')
+        axios.post('/frontdesk/getPatients/', {
+            'first_name': '',
+            'last_name': '',
+            'gender': ''
+        })
         .then( (response) => {
             patientsData.value = response.data.map(patient => ({
                 ...patient,
                 name: `${patient.first_name} ${patient.last_name}`
             }));
-            isLoaded.value[0] = true;
+            isLoaded.value[0] = true;   
         })
         .catch( (error) => {
             warn("Error getting patients data.", "Please check the status of the server or try reloading.")
+        })
+    } else {
+        warn('warn', 'Please log in to access this page.', '');
+    }
+
+    const search = () => {
+
+        let data = {
+            first_name: first_name.value,
+            last_name: last_name.value,
+            gender: gender.value
+        }
+
+        axios.post('/frontdesk/getPatients/', {
+            ...data
+        })
+        .then( (response) => {
+            patientsData.value = response.data.map(patient => ({
+                ...patient,
+                name: `${patient.first_name} ${patient.last_name}`
+            }));
+        })
+        .catch( (error) => {
+            warn('warn', 'Error in searching for the patient.', '')
         })
     }
 </script>
@@ -42,55 +70,32 @@
     <div class="flex flex-column align-items-center justify-content-center">
         <Toast/>
         <h1 class="text-3xl font-bold m-3">Add Existing Patient</h1>
+    </div>
 
-        <div class="card centered" style="width: 80%; max-width: 600px;">
-            
-            <DataTable v-if="isLoaded[0] && patientsData.length > 0" :value="patientsData"
-                datakey="id" v-model:selection="selectedPatient" removableSort :rows="7" paginator
-                v-model:filters="filteredArray" filterDisplay="row" :globalFilterFields="['name']">
-                <template #header>
-                    <div class="flex justify-end">
-                        <IconField>
-                            <InputIcon>
-                                <i class="pi pi-search" />
-                            </InputIcon>
-                            <InputText v-model="filters['name'].value" placeholder="Keyword Search"/>
-                        </IconField>
-                    </div>
-                </template>
-                <template #empty>
-                     No patients found.
-                     <Button label="Add New Patient" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AddNewPatient' })" style="margin: 0.5rem"/> 
-                </template>
-                <template #loading> Loading patients data. Please wait. </template>
-                
-                <Column field="name" header="Name" sortable>
-                    <template #body="{ data }">
-                        {{ data.name }}
-                    </template>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Search by name" />
-                    </template>
-                </Column>
-                <Column field="age" header="Age" sortable>
-                    <template #body="{ data } ">
-                        {{  data.age }}
-                    </template>
-                </Column>
-                <Column field="last_appointment_date" header="Last Appointment Date" sortable>
-                    <template #body="{ data } ">
-                        {{  data.last_appointment_date }}
-                    </template>
-                </Column>
-            </DataTable>
-
-            <div v-else-if="patientsData.length === 0 && isLoaded[0]" class="text-center" style="padding: 1rem;">
-                <p>There are no scheduled patients in this system.</p>
-            </div>
-
-            <div v-else class="flex justify-content-center" style="padding: 2rem;">
-                <ProgressSpinner/>
-            </div>
+    <div class="container">
+        <div class="sub-container align-items-center justify-content-center">
+            <InputText class="elements" id="first-name" placeholder="First Name" v-model.trim="first_name"/>
+            <InputText class="elements" id="last-name" placeholder="Last Name" v-model.trim="last_name"/>
+            <InputText class="elements" id="gender" placeholder="Gender" v-model.trim="gender"/>
+            <Button id="search" label="Search" @click.prevent="search"/>
         </div>
+    </div>
+
+    
+
+    <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+        <Column field="name" header="Name" style="width: 20%" sortable></Column>
+        <Column field="age" header="Age" style="width: 20%" sortable></Column>
+        <Column field="gender" header="Gender" style="width: 20%;" sortable></Column>
+        <Column field="token_assigned" header="Token Number" style="width: 20%;" sortable></Column>
+        <Column field="appointment_date" header="Last Appointment date" style="width: 20%" sortable></Column>
+    </DataTable>
+
+    <div v-else-if="patientsData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+        There are no employees in this system.
+    </div>
+
+    <div class="centered" v-else>
+        <ProgressSpinner/>
     </div>
 </template>

@@ -18,6 +18,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        expected_role = self.initial_data.get('role', None)
+        if expected_role and self.user.role != expected_role:
+            raise AuthenticationFailed(f'Invalid role.')
+
         # Check if the user is verified
         if not self.user.is_verified:
             raise AuthenticationFailed('User is not verified. Contact Admin.')

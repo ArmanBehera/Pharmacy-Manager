@@ -25,7 +25,9 @@
 
     const id = route.query.id;
 
-    if (store.state.isRegistered === "true") {
+    const isRegistered = ref(store.state.isRegistered);
+
+    if (isRegistered === "true") {
         axios.get(`/administrator/editMedicines/?id=${id}`)
         .then( (response) => {
             data.value = response.data
@@ -35,11 +37,10 @@
             stock.value = response.data.stock
         })
         .catch( (error) => {
-            message.value = "Log in using an admin or pharmacist account to access this page."
+            warn("warn", "Log in using an admin or pharmacist account to access this page.", "")
         })
-    }
-    else {
-        message.value = "Log in using an admin or pharmacist account to access this page."
+    } else {
+        warn('warn', 'Please log in to access this page.', '');
     }
 
     const submit = () => {
@@ -50,11 +51,7 @@
 <template>
     <Toast />
 
-    <div class="centered">
-        <h1 class="text-3xl font-bold m-3">{{ message }}</h1>
-    </div>
-
-    <div class="centered" v-if="!message">
+    <div class="centered" v-if="isRegistered">
         <h1 class="text-3xl font-bld m-3">Edit Medicines</h1>
     </div>
 

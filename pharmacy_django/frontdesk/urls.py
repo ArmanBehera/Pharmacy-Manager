@@ -6,4 +6,6 @@ urlpatterns = [
     path('logout/', views.Logout.as_view(), name='logout'),
     path('addPatient/', views.AddPatient.as_view(), name='addPatient'),
     path('getPatients/', views.GetPatients.as_view(), name='getPatients'),
+    path('getDoctors/', views.GetDoctors.as_view(), name='getDoctors'),
+    path('getPatientsForDoctor/', views.GetPatientsForDoctor.as_view(), name='getPatientsForDoctor'),
 ]

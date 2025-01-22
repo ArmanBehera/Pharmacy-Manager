@@ -24,7 +24,7 @@
     if (store.state.isRegistered) {
 
         // Gets all the doctors
-        axios.get('/frontdesk/addPatient')
+        axios.get('/frontdesk/getDoctors/')
         .then( (response) => {
             doctorsData.value = response.data.map(doctor => ({
                 ...doctor,
@@ -40,7 +40,7 @@
         watch(selectedDoctor, (newVal, oldVal) => {
             try{ 
                 if (typeof selectedDoctor.value == 'object') {
-                    axios.post('/frontdesk/getPatients/', { doctor_id: selectedDoctor.value['id'] })
+                    axios.post('/frontdesk/getPatientsForDoctor/', { doctor_id: selectedDoctor.value['id'] })
                     .then( (response) => {
                         patientsData.value = response.data;
                         isLoaded.value[0] = true;
@@ -78,7 +78,7 @@
             <div class="mb-4">
                 <div class="card ml-5">
                     <AutoComplete v-model="selectedDoctor" optionLabel="label" dropdown :suggestions="filteredArray" @complete="(event) => search(event, doctorsData)" class="w-full" forceSelection/>
-                    <DataTable v-if="isLoaded[0] & patientsData.length != 0" :value="patientsData" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+                    <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
                         <Column field="token_assigned" header="Token Number" style="width: 30%" sortable></Column>

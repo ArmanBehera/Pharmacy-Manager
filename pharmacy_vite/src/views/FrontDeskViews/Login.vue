@@ -82,7 +82,8 @@
             axios.post("/api/v1/jwt/create/", {
                 
                 "username": `${data.first_name}${data.last_name}`,
-                "password": data.password
+                "password": data.password,
+                'role': 'FrontDesk'
             })
             .then( (response) => {
                 var username = `${data.first_name}${data.last_name}`;
@@ -92,7 +93,8 @@
                     'refreshToken': response.data.refresh,
                     'accessToken': response.data.access,
                     'firstName': data.first_name,
-                    'lastName': data.last_name
+                    'lastName': data.last_name,
+                    'userId': response.data.user_id
                 });
                 router.push({ name: 'FrontDeskHomePage' })
             })

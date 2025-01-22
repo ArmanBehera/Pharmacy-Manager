@@ -83,7 +83,8 @@
             axios.post('/api/v1/jwt/create/', {
                 
                 'username': `${data.first_name}${data.last_name}`,
-                'password': data.password
+                'password': data.password,
+                'role': 'Admin'
             })
             .then( (response) => {
 
@@ -100,7 +101,6 @@
             })
             .catch( (error) => {
                 // If an error is raised, not working now
-                axios.defaults.headers.common['Authorization'] = ''
                 warn('Unauthorized credentials!', 'Invalid username/password or unauthorized by the admin. Contact admin for further details.');
             })
         }

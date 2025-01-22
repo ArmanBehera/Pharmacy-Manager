@@ -18,7 +18,7 @@
     const isLoaded = ref([false])
 
     if (store.state.isRegistered) {
-        axios.post('/frontdesk/getPatients/', {
+        axios.post('/doctor/getPatients/', {
             doctor_id: store.state.userId
         })
         .then( (response) => {
@@ -40,7 +40,7 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <DataTable v-if="isLoaded[0] & patientsData.length != 0" :value="patientsData" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+                    <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
                         <Column field="token_assigned" header="Token Number" style="width: 30%" sortable></Column>

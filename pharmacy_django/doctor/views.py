@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import views, response, status, permissions, exceptions
 from administrator.models import User
-from .models import DoctorUser, SpecializationAvailable
-from .serializers import DoctorSerializer, SpecializationSerializer
+from .models import DoctorUser, SpecializationAvailable, PatientUser, Appointment
+from .serializers import DoctorSerializer, SpecializationSerializer, PatientSerializer
 from administrator.serializers import UserSerializer
 from administrator import authentication
 import jwt
@@ -78,6 +78,33 @@ class PatientAPI(views.APIView):
     
     def get(self, request):
         pass
+
+
+class GetPatients(views.APIView):
+    '''
+        Get method returns all patient's name and details
+        Post method gets the patients that are scheduled for a particular doctor's appointment
+    '''
+    authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request):
+
+        patients = PatientUser.objects.all()
+
+        resp = []
+
+        for patient in patients:
+            serializer = PatientSerializer(patient)
+
+            last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
+
+            date = last_appointment.date
+            date = date.strftime("%d-%m-%Y") 
+
+            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': date})
+
+        return response.Response(resp)
 
 
 class Logout(views.APIView):

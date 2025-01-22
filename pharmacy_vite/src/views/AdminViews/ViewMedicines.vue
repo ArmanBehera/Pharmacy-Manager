@@ -90,7 +90,7 @@
                 <h1 class="text-3xl font-bold m-3">View Medicines</h1>    
             </div>
 
-            <div class="sub-container" v-if="data.length != 0">
+            <div class="sub-container" v-if="data.length > 0">
                 <div class="card">
                     <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                     resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 

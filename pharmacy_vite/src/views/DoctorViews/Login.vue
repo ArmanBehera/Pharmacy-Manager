@@ -84,7 +84,8 @@
             axios.post("/api/v1/jwt/create/", {
                 
                 "username": `${data.first_name}${data.last_name}${data.registration_number}`,
-                "password": data.password
+                "password": data.password,
+                'role': 'Doctor'
             })
             .then( (response) => {
                 var username = `${data.first_name}${data.last_name}${data.registration_number}`;
