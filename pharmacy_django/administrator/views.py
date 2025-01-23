@@ -8,8 +8,8 @@ from administrator.serializers import UserSerializer
 from doctor.serializers import SpecializationSerializer
 
 from administrator import authentication
-from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock
-from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, CategoriesSerializer, IngredientsSerializer, SideEffectsSerializer, MedicineStockSerializer
+from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock, LabTests
+from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, CategoriesSerializer, IngredientsSerializer, SideEffectsSerializer, MedicineStockSerializer, LabTestsSerializer
 
 class SignIn(views.APIView):
     '''
@@ -240,7 +240,6 @@ class SpecializationAvailableView(views.APIView):
 
         return response.Response(resp)
     
-
     def post(self, request):
         
         serializer = SpecializationSerializer(data=request.data)
@@ -252,6 +251,46 @@ class SpecializationAvailableView(views.APIView):
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class AddLabTest(views.APIView):
+    '''
+        In a successful post request, an object of LabTest is made
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        serializer = LabTestsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            labTest = serializer.save()
+
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ViewLabTests(views.APIView):
+    '''
+        In a get request, all the labtests available are  
+    '''
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request):
+
+        labTests = LabTests.objects.all()
+
+        resp = []
+
+        for labTest in labTests:
+            serializer = LabTestsSerializer(labTest)
+
+            resp.append(serializer.data)
+
+        return response.Response(resp)
 
 
 class Logout(views.APIView):

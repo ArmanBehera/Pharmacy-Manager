@@ -92,7 +92,7 @@
                 patient: {
                     ...data
                 },
-                doctor: selected_doctor.value.id,
+                doctor_id: selected_doctor.value.id,
                 date: format(new Date(appointment_date.value), 'yyyy-MM-dd'),
                 status: 'Scheduled'
             })

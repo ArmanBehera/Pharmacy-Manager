@@ -35,8 +35,8 @@ class GetPatients(views.APIView):
     '''
         Post method is used to return all patients or ones match a particular filter
     '''
-    #authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
-    #permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     # Filters that can be used: First Name, Last Name, Gender
     def post(self, request):
@@ -53,7 +53,7 @@ class GetPatients(views.APIView):
             date = last_appointment.date
             date = date.strftime("%d-%m-%Y") 
 
-            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
+            resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
 
         return response.Response(resp)
 
@@ -80,7 +80,7 @@ class GetPatientsForDoctor(views.APIView):
         for appointment in appointments:
             serializer = AppointmentSerializer(appointment)
 
-            resp.append({'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
+            resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
         
         return response.Response(resp)
 
@@ -125,9 +125,9 @@ class AddPatient(views.APIView):
             last_appointment_token = 0
 
         # The doctor's id is replaced with the actual doctor object as it would otherwise turn itself into its __str__ format.
-        doctor = request.data['doctor']
+        doctor_id = request.data['doctor_id']
         try:
-            doctor = DoctorUser.objects.get(id=doctor)
+            doctor = DoctorUser.objects.get(id=doctor_id)
         except Exception as e:
             raise response.Response(f'Failed to get the doctor user.')
 
@@ -139,6 +139,38 @@ class AddPatient(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddExistingPatient(views.APIView):
+    '''
+        Post View is used to create an appointment for an existing patient
+    '''
+    #authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    #permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        patient_id = request.data['patient_id']
+        patient = PatientUser.objects.get(id=patient_id)
+
+        doctor_id = request.data['doctor_id']
+        doctor = DoctorUser.objects.get(id=doctor_id)
+
+        try:
+            last_appointment_token = Appointment.objects.filter(doctor=request.data['doctor'], date=request.data['date']).order_by('-token_assigned').first().token_assigned
+        except Exception:
+            last_appointment_token = 0
+
+        try:
+            # Try to parse the date into a valid format (e.g., YYYY-MM-DD)
+            date = datetime.strptime(request.data['date'], '%Y-%m-%d').date()
+        except ValueError:
+            return response.Response('Unable to make an appointment.')
+
+        appointment = Appointment.objects.create(patient=patient, doctor=doctor, date=date, token_assigned=last_appointment_token + 1, status=request.data['status'])
+        appointment.save()
+
+        return response.Response('Successfully created an appointment.')
 
 class Logout(views.APIView):
     '''

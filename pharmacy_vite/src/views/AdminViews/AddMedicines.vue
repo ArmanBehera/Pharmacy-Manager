@@ -10,8 +10,6 @@
     const store = useStore();
     const toast = useToast();
 
-    const message = ref('');
-
     const ingredientsCount = ref(1);
     const ingredientsData = ref([]);
     let selectedIngredients = ref([]);
@@ -34,14 +32,16 @@
     const stock = ref();
     const price = ref();
     const manufacturer = ref('');
-    const expiration_date = ref('');
+    const expiration_date = ref();
     const description = ref('');
+
+    const isRegistered = ref(store.state.isRegistered)
     
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.getters.isRegistered) { 
+    if (isRegistered.value === "true") { 
         const usertype = store.getters.getUserDetails['usertype']
         if (usertype === 'administrator' || usertype === 'pharmacy') {
             axios.get('/administrator/addMedicines/')
@@ -55,7 +55,7 @@
                 warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
             })
         } else {
-            message.value = "Log in using an admin or pharmacist account to access this page."
+            warn('warn', 'Log in using an admin or pharmacist account to access this page.', '')
         }
     } else {
         warn('warn', 'Please log in to access this page.', '');
@@ -163,17 +163,17 @@
 <template>
     <Toast />
 
-    <div class="centered" v-if="!message">
+    <div class="centered" v-if="isRegistered === 'true'">
         <h1 class="text-3xl font-bld m-3">Add Medicines</h1>
     </div>
 
     <div class="container mx-auto p-6 bg-grey shadow-md rounded-lg">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div class="flex flex-col space-y-4">
-                <InputText id="Name" placeholder="Name *" v-model.trim="name" class="p-inputtext-sm w-full"/>
+                <InputText id="name" placeholder="Name *" v-model.trim="name" class="p-inputtext-sm w-full"/>
                 <InputNumber id="stock" placeholder="Stock *" inputId="withoutgrouping" :useGrouping="false" v-model.number="stock" :min="0" class="p-inputnumber-sm w-full"/>
                 <InputNumber id="price" placeholder="Price *" inputId="currency-india" mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" v-model.number="price" :min="0" class="p-inputnumber-sm w-full"/>
-                <InputText id="Manufacturer" placeholder="Manufacturer *" v-model.trim="manufacturer" class="p-inputtext-sm w-full"/>
+                <InputText id="manufacturer" placeholder="Manufacturer *" v-model.trim="manufacturer" class="p-inputtext-sm w-full"/>
                 <DatePicker v-model="expiration_date" dateFormat="dd/mm/yy" placeholder="Expiration Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
                 <FloatLabel class="mt-4">
                     <Textarea v-model="description" autoResize rows="5" cols="54" class="w-full" />
@@ -214,11 +214,12 @@
                         <AutoComplete :placeholder="`Side Effect ${n}*`" v-model="selectedSideEffects[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, sideEffectsData)" class="w-full" />
                     </div>
                     <Button label="Add Side Effect" @click.prevent="sideEffectsCount += 1" class="p-button-sm" />
-                </div>    
+                </div>
             </div>
         </div>
         <div class="flex justify-center mt-4">
-            <Button label="Submit" @click.prevent="submit" class="p-button-lg" />
+            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'true'"/>
+            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'false'" disabled/>
         </div>
     </div>
 </template>

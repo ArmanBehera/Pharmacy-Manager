@@ -79,6 +79,9 @@ class LabTests(models.Model):
     name = models.CharField(max_length=255, verbose_name="Test Name", blank=False)
     description = models.TextField(verbose_name="Test Description", blank=True, null=True)
     test_cost = models.FloatField(verbose_name="Test cost", blank=False)
+    sample_required = models.CharField(max_length=100, verbose_name="Sample Required")
+    pre_test_requirements = models.TextField(verbose_name="Pre-Test Requirements", blank=True, null=True)  
+    provider = models.CharField(max_length=255, verbose_name="Provider for the lab test", blank=False)
 
     def __str__(self):
         return f"Test Name - {self.name}. Cost - {self.test_cost}"

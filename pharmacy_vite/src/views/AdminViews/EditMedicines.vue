@@ -27,7 +27,7 @@
 
     const isRegistered = ref(store.state.isRegistered);
 
-    if (isRegistered === "true") {
+    if (isRegistered.value === "true") {
         axios.get(`/administrator/editMedicines/?id=${id}`)
         .then( (response) => {
             data.value = response.data
@@ -51,7 +51,7 @@
 <template>
     <Toast />
 
-    <div class="centered" v-if="isRegistered">
+    <div class="centered" v-if="isRegistered === 'true'">
         <h1 class="text-3xl font-bld m-3">Edit Medicines</h1>
     </div>
 

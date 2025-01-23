@@ -1,5 +1,5 @@
 from rest_framework import serializers, exceptions
-from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock
+from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock, LabTests
 
 class IngredientsSerializer(serializers.ModelSerializer):
     
@@ -53,7 +53,6 @@ class AllergensSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         
         object = Allergens.objects.create(**validated_data)
-        
         return object
     
 
@@ -151,3 +150,16 @@ class MedicineStockSerializer(serializers.ModelSerializer):
             medicine.delete()  # Cleanup created Medicine object on failure
             raise serializers.ValidationError('Failed to create medicine stock object.')
 
+
+class LabTestsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = LabTests
+        fields = '__all__'
+
+    def create(self, validated_data):
+        
+        object = LabTests.objects.create(**validated_data)
+
+        return object

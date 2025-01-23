@@ -16,6 +16,8 @@ import ViewEmployees from '../views/AdminViews/ViewEmployees.vue'
 import ViewMedicines from '../views/AdminViews/ViewMedicines.vue'
 import AddMedicines from '../views/AdminViews/AddMedicines.vue'
 import EditMedicines from '../views/AdminViews/EditMedicines.vue'
+import AddLabTests from '../views/AdminViews/AddLabTests.vue'
+import ViewLabTests from '../views/AdminViews/ViewLabTests.vue'
 
 import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
@@ -98,6 +100,16 @@ const routes = [
         path: 'EditMedicines',
         name: 'EditMedicines',
         component: EditMedicines
+      },
+      {
+        path: 'AddLabTests',
+        name: 'AddLabTests',
+        component: AddLabTests
+      },
+      {
+        path: 'ViewLabTests',
+        name: 'ViewLabTests',
+        component: ViewLabTests
       }
     ]
   },
