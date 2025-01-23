@@ -18,18 +18,20 @@
 
     const toast = useToast();
 
-    const warn = (summary, detailed) => {
-        toast.add({ severity: 'warn', summary: summary, detail: detailed, life: 3000 });
+    const warn = (warn, summary, detailed) => {
+        toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.isRegistered) {
+    const isRegistered = ref(store.state.isRegistered)
+
+    if (isRegistered.value === 'true') {
         axios.get('administrator/verifyEmployees/')
         .then( (response) => {
             unverifiedUsersData.value = response.data;
             isLoaded.value[0] = true;
         })
         .catch( (error) => {
-            warn("Error getting unverified users data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting unverified users data.", "Please check the status of the server or try reloading.")
         })
 
         axios.get('administrator/viewEmployees/')
@@ -38,7 +40,7 @@
             isLoaded.value[1] = true;
         })
         .catch( (error) => {
-            warn("Error getting employees data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting employees data.", "Please check the status of the server or try reloading.")
         })
 
         // To get data for inventory
@@ -48,7 +50,7 @@
             isLoaded.value[2] = true;
         })
         .catch( (error) => {
-            warn("Error getting medicines data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting medicines data.", "Please check the status of the server or try reloading.")
         })
 
         axios.get('/administrator/viewLabTests/')
@@ -57,17 +59,18 @@
             isLoaded.value[3] = true;
         })
         .catch( (error) => {
-            warn("Error getting lab tests data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting lab tests data.", "Please check the status of the server or try reloading.")
         })
     }
 </script>
 
 <template>
     <Toast/>
-    <div class="flex flex-row space-y-2">
+    <div class="flex flex-row space-y-2" v-if="isRegistered === 'true'">
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
+                    <h1 class="text-l font-bld m-2">Employees</h1>
                     <DataTable v-if="isLoaded[0] & employeesData.length > 0" :value="employeesData" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
@@ -89,6 +92,7 @@
 
             <div>
                 <div class="card ml-5">
+                    <h1 class="text-l font-bld m-2">Verify Employees</h1>
                     <DataTable v-if="isLoaded[1] & unverifiedUsersData.length > 0" :value="unverifiedUsersData" removableSort :rows="2" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
@@ -112,8 +116,9 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
+                    <h1 class="text-l font-bld m-2">Medicines</h1>
                     <DataTable v-if="isLoaded[2] & medicineInventoryData.length > 0" :value="medicineInventoryData" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
-                        <Column field="name" header="Name" style="width: 30%" sortable></Column>
+                        <Column field="medicine.name" header="Name" style="width: 30%" sortable></Column>
                         <Column field="stock" header="Stock" style="width: 30%" sortable></Column>
                         <Column field="expiration_date" header="Expiration Date" style="width: 40%" :sortable="true"></Column>
                     </DataTable>
@@ -134,8 +139,10 @@
 
             <div>
                 <div class="card ml-5">
+                    <h1 class="text-l font-bld m-2">Lab Tests</h1>
                     <DataTable v-if="isLoaded[3] & labTestsData.length > 0" :value="labTestsData" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                         <Column field="name" header="Name"/>
+                        <Column field="provider" header="Provider"/>
                     </DataTable>
 
                     <div v-else-if="isLoaded[2] & labTestsData.length == 0" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">

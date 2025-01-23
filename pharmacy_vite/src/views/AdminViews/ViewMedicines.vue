@@ -14,23 +14,27 @@
 
     const deletionDialog = ref();
     const selected = ref()
-    const message = ref();
     const data = ref([]);
     const length = ref(-1);
     const editingRows = ref([]);
     
+    const warn = (warn, summary, detailed) => {
+        toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
+    }
+
     if (store.state.isRegistered === "true") {
         axios.get(`/${usertype}/viewMedicines/`)
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
+            console.log(data.value)
         })
         .catch( (error) => {
-            message.value = "Log in using an admin account to access this page."
+            warn('warn', 'Log in using an admin account to access this page.', '')
         })
     }
     else {
-        message.value = "Log in using an admin account to access this page."
+        warn('warn', 'Log in using an admin account to access this page.', '')
     }
 
     const confirmDeletion = () => {      
@@ -52,7 +56,6 @@
              "description": newData.description
         });
     };
-
 
     const sendRequest = () => {
         deletionDialog.value = false;
@@ -79,18 +82,13 @@
 
 <template>
     <Toast />
-
-    <div class="centered">
-        <h1 class="text-3xl font-bold m-3">{{ message }}</h1>
-    </div>
-
     <div class="top-container" v-if="data.length >= 0">
         <div class="container">
             <div class="centered">
                 <h1 class="text-3xl font-bold m-3">View Medicines</h1>    
             </div>
 
-            <div class="sub-container" v-if="data.length > 0">
+            <div v-if="data.length > 0">
                 <div class="card">
                     <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                     resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
@@ -101,12 +99,11 @@
                                     style:  state['d_editing'] && 'padding-top: 0.75rem; padding-bottom: 0.75rem'
                                 })
                             }
-                        }"
-                        
+                        }" 
                     >
                         <Column selectionMode="multiple" style="width: 5rem"></Column>
 
-                        <Column field="name" header="Name">
+                        <Column field="medicine.name" header="Name">
                             <template #editor="{ data, field }">
                                 <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
                             </template>
@@ -118,13 +115,13 @@
                             </template>
                         </Column>
 
-                        <Column field="price" header="Price">
+                        <Column field="medicine.price" header="Price">
                             <template #editor="{ data, field }">
                                 <InputNumber v-model.number="data[field]" :min="0" class="w-full p-inputnumber-sm" />
                             </template>
                         </Column>
                         
-                        <Column field="manufacturer" header="Manufacturer">
+                        <Column field="medicine.manufacturer" header="Manufacturer">
                             <template #editor="{ data, field }">
                                 <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
                             </template>
@@ -136,9 +133,9 @@
                             </template>
                         </Column>
 
-                        <Column field="description" header="Description">
+                        <Column field="medicine.description" header="Description">
                             <template #editor="{ data, field }">
-                                <InputText v-model="data[field]" class="w-full p-inputtext-sm" :style="{ minWidth: '20rem' }"/>
+                                <InputText v-model="data['field']" class="w-full p-inputtext-sm" :style="{ minWidth: '20rem' }"/>
                             </template>
                         </Column>
 
@@ -155,7 +152,6 @@
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
                 <Button label="Add Medicines" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddMedicines' })"/>  
             </div>
-
         </div>
     </div>
 

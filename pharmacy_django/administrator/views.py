@@ -93,6 +93,7 @@ class VerifyEmployees(views.APIView):
         
 
 class ViewEmployees(views.APIView):
+
     authentication_classes = (authentication.CustomAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
@@ -133,20 +134,20 @@ class ViewMedicines(views.APIView):
     
     def get(self, request):
         
-        medicines = Medicines.objects.all()
+        medicines = MedicineStock.objects.all()
         
         resp = []
         
         for medicine in medicines:
-            medicine_serialized = MedicinesSerializer(medicine)
+            medicine_serialized = MedicineStockSerializer(medicine)
             resp.append(medicine_serialized.data)
         
         return response.Response(resp)
     
+    # To update this
     def post(self, request):
         
         try:
-
             for id in request.data['ids']:
             
                 medicine = Medicines.objects.get(id=id)
@@ -218,7 +219,6 @@ class AddMedicines(views.APIView):
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-
 class SpecializationAvailableView(views.APIView):
     '''
         In a get request, returns all specializations available
@@ -257,8 +257,8 @@ class AddLabTest(views.APIView):
         In a successful post request, an object of LabTest is made
     '''
 
-    authentication_classes = (authentication.CustomAdminAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
+    #authentication_classes = (authentication.CustomAdminAuthentication, )
+    #permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
 
@@ -274,10 +274,10 @@ class AddLabTest(views.APIView):
 
 class ViewLabTests(views.APIView):
     '''
-        In a get request, all the labtests available are  
+        In a get request, all the labtests object available are returned
     '''
-    authentication_classes = (authentication.CustomAdminAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
+    #authentication_classes = (authentication.CustomAdminAuthentication, )
+    #permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
 
@@ -291,6 +291,22 @@ class ViewLabTests(views.APIView):
             resp.append(serializer.data)
 
         return response.Response(resp)
+
+    def post(self, request):
+        
+        try:
+            for id in request.data['ids']:
+            
+                labTest = LabTests.objects.get(id=id)
+                labTest.delete()
+            
+            return response.Response({"message": "LabTest updated successfully."}, status=status.HTTP_200_OK)
+            
+        except LabTests.DoesNotExist:
+            return response.Response({"error": "LabTest not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 class Logout(views.APIView):

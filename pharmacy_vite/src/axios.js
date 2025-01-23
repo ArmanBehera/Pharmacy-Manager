@@ -51,6 +51,7 @@ instance.interceptors.response.use(
         return response
     },
     async (error) => {
+        console.log(error)
         console.log(error.response.status)
         const originalRequest = error.config
 
@@ -79,9 +80,7 @@ instance.interceptors.response.use(
             else if (usertype) {
                 router.push(`/${usertype}/login/`);
             }
-            
         }
-        
         // This statement is executed for all others errors, such as permission denied (403). They are to be handled individually by the respective pages.
         return Promise.reject(error);
     }

@@ -12,5 +12,4 @@ urlpatterns = [
     path('specializations/', views.SpecializationAvailableView.as_view(), name="specializations"),
     path('addLabTest/', views.AddLabTest.as_view(), name='addLabTest'),
     path('viewLabTests/', views.ViewLabTests.as_view(), name='viewLabTests'),
-    
 ]

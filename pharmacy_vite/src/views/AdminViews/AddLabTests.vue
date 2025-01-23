@@ -4,8 +4,6 @@
     import { ref } from 'vue';
     import '../../styles/styles.css';
     import axios from '../../axios';
-    import { format } from 'date-fns';
-    import { checkDate } from '../../helpers';
 
     const store = useStore();
     const toast = useToast();
@@ -30,12 +28,33 @@
     const submit = () => {
         const data = {
             'name': name.value,
-            'price': price.value,
+            'test_cost': price.value,
             'provider': provider.value,
-            'description': description.value
+            'description': description.value,
+            'sample_required': sample_required.value,
+            'pre_test_requirements': pre_test_requirements.value
         }
 
+        for (const key in data) {
+            const value = data[key];
+            if (typeof value === 'string' && value.trim() === '') {
+                warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
+                return; // Exit the loop early if an empty field is found
+            } else if (typeof value === 'number' && value === 0) {
+                warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
+                return; // Exit the loop early if a zero value is found
+            }
+        }
 
+        axios.post('administrator/addLabTest/', {
+            ...data
+        })
+        .then( (response) => {
+            warn('success', 'Successfully added new labtest.', '')
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in adding the labtest.', '')
+        })
     }
 </script>    
 
@@ -46,8 +65,8 @@
         <h1 class="text-3xl font-bld m-3">Add Lab Tests</h1>
     </div>
 
-    <div class="flex flex-column align-items-center justify-content-center">
-        <div class="flex flex-column">
+    <div class="flex flex-row align-items-center justify-content-center">
+        <div class="flex flex-column mr-4">
             <div class="flex flex-col space-y-4">
                 <InputText id="name" placeholder="Test Name *" v-model.trim="name" class="p-inputtext-sm w-full"/>
                 <InputNumber id="price" placeholder="Price *" inputId="currency-india" mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" v-model.number="price" :min="0" class="p-inputnumber-sm w-full"/>
@@ -60,9 +79,20 @@
             </div>
         </div>
 
-        <div class="flex justify-center mt-4">
-            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'true'"/>
-            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'false'" disabled/>
+        <div class="flex flex-column">
+            <div class="flex flex-col space-y-4">
+                <InputText id="sample-required" placeholder="Sample Required *" v-model.trim="sample_required" class="p-inputtext-sm w-full"/>
+                
+                <FloatLabel class="mt-4">
+                    <Textarea v-model="pre_test_requirements" autoResize rows="5" cols="54" class="w-full" />
+                    <label>Pre-Test Requirements *</label>
+                </FloatLabel>
+            </div>
         </div>
+    </div>
+
+    <div class="flex justify-center mt-4">
+        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'true'"/>
+        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'false'" disabled/>
     </div>
 </template>
