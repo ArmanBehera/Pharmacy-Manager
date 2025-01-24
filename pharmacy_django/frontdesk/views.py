@@ -80,7 +80,7 @@ class GetPatientsForDoctor(views.APIView):
         for appointment in appointments:
             serializer = AppointmentSerializer(appointment)
 
-            resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
+            resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y")})
         
         return response.Response(resp)
 

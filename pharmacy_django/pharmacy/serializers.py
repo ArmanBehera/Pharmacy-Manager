@@ -163,3 +163,15 @@ class LabTestsSerializer(serializers.ModelSerializer):
         object = LabTests.objects.create(**validated_data)
 
         return object
+    
+    def update(self, instance, validated_data):
+
+        instance.name = validated_data.get('name', instance.name)
+        instance.test_cost = validated_data.get('test_cost', instance.test_cost)
+        instance.description = validated_data.get('description', instance.description)
+        instance.sample_required = validated_data.get('sample_required', instance.sample_required)
+        instance.pre_test_requirements = validated_data.get('pre_test_requirements', instance.pre_test_requirements)
+        instance.provider = validated_data.get('provider', instance.provider)
+
+        instance.save()
+        return instance

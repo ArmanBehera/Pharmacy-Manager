@@ -47,7 +47,7 @@ class Medicines(models.Model):
     '''
         Stores the medicines value
     '''
-    name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False)
+    name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
     price = models.FloatField(validators=[MinValueValidator(0.0)], verbose_name="Price", help_text="Price of the medicine", blank=False)
     description = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Description of the medicine")
     manufacturer = models.CharField(max_length=255, verbose_name="Manufacturer", help_text="Manufacturer of the medicine", blank=False)

@@ -21,7 +21,9 @@
 
     const selectedDoctor = ref();
 
-    if (store.state.isRegistered) {
+    const isRegistered = ref(store.state.isRegistered)
+
+    if (isRegistered.value === 'true') {
 
         // Gets all the doctors
         axios.get('/frontdesk/getDoctors/')
@@ -73,7 +75,7 @@
 
 <template>
     <Toast/>
-    <div class="flex flex-row space-y-2">
+    <div class="flex flex-row space-y-2" v-if="isRegistered === 'true'">
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">

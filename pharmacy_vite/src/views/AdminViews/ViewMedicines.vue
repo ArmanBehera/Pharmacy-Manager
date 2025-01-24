@@ -46,7 +46,7 @@
 
         data.value[index] = newData;
 
-        axios.post('/administrator/viewMedicines/', {
+        axios.post('/administrator/editMedicines/', {
              "id": newData.id,
              "name": newData.name,
              "manufacturer": newData.manufacturer,
@@ -66,7 +66,7 @@
             idArray.push(selected.value[i]['id'])
         }
 
-        axios.post('/administrator/viewMedicines/', { ids: idArray })
+        axios.post('/administrator/deleteMedicines/', { ids: idArray })
         .then( (response) => {
             
             data.value = data.value.filter(val => !selected.value.includes(val));
@@ -90,11 +90,11 @@
 
             <div v-if="data.length > 0">
                 <div class="card">
-                    <DataTable :value="data" resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
+                    <DataTable :value="data" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
                      v-model:selection="selected"
                      paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-                     v-model:editingRows="editingRows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id" 
-                     groupRowsBy="medicine.id" rowGroupMode="rowspan"
+                     v-model:editingRows="editingRows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id"
+                     groupRowsBy="medicine.name" rowGroupMode="rowspan"
                         :pt="{
                             table: { style: 'min-width: 50rem' },
                             column: {
@@ -153,7 +153,8 @@
 
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add Medicines" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddMedicines' })"/>  
+                <Button label="Add New Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddNewMedicine' })"/> 
+                <Button label="Add Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddExistingMedicine' })"/> 
             </div>
         </div>
     </div>

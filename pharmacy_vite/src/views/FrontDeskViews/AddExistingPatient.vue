@@ -112,13 +112,11 @@
         <h1 class="text-3xl font-bold m-3">Add Existing Patient</h1>
     </div>
 
-    <div class="container">
-        <div class="sub-container align-items-center justify-content-center">
-            <InputText class="elements" id="first-name" placeholder="First Name" v-model.trim="first_name"/>
-            <InputText class="elements" id="last-name" placeholder="Last Name" v-model.trim="last_name"/>
-            <InputText class="elements" id="gender" placeholder="Gender" v-model.trim="gender"/>
-            <Button id="search" label="Search" @click.prevent="search"/>
-        </div>
+    <div class="flex flex-row align-items-center justify-content-center">
+        <InputText class="elements" id="first-name" placeholder="First Name" v-model.trim="first_name"/>
+        <InputText class="elements" id="last-name" placeholder="Last Name" v-model.trim="last_name"/>
+        <InputText class="elements" id="gender" placeholder="Gender" v-model.trim="gender"/>
+        <Button id="search" label="Search" @click.prevent="search"/>
     </div>
 
     <div class="card m-10">
@@ -148,7 +146,5 @@
 
             <Button id="submit" label="Submit" @click.prevent="submit"/>
         </div>
-        
-            
     </div>
 </template>

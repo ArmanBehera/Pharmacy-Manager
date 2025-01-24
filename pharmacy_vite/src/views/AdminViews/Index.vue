@@ -148,7 +148,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('AddMedicines')"
+                                        @click="redirect('AddNewMedicine')"
                                     >
                                         <i class="pi pi-plus mr-4"></i>
                                         <span class="font-medium">Add Medcines Inventory</span>

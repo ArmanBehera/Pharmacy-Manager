@@ -11,6 +11,8 @@ from administrator import authentication
 from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock, LabTests
 from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, CategoriesSerializer, IngredientsSerializer, SideEffectsSerializer, MedicineStockSerializer, LabTestsSerializer
 
+from datetime import datetime
+
 class SignIn(views.APIView):
     '''
         API view for administrator signin
@@ -159,6 +161,19 @@ class GetMedicines(views.APIView):
         
         return response.Response(resp)
 
+    def post(self, request):
+
+        medicineStocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name'])
+        resp = []
+
+        for medicineStock in medicineStocks:
+
+            serializer = MedicineStockSerializer(medicineStock)
+
+            resp.append(serializer.data)
+
+        return response.Response(resp)
+
 
 class AddMedicines(views.APIView):
     '''
@@ -212,6 +227,27 @@ class AddMedicines(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddMedicineStock(views.APIView):
+
+    '''
+        In a successful post request, a new Medicine Stock objet is created
+    '''
+
+    authentication_classes = (authentication.CustomUserAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        medicine = Medicines.objects.get(id=request.data['id'])
+
+        try: 
+            MedicineStock.objects.create(medicine=medicine, stock=request.data['stock'], expiration_date=datetime.strptime(request.data['expiration_date'], "%Y-%m-%d").date())
+        except:
+            return response.Response('Unable to add stock.', status=status.HTTP_400_BAD_REQUEST)
+
+        return response.Response('Added stock for medicine.', status=status.HTTP_201_CREATED)
 
 
 # Faulty. Need to debug this.
@@ -331,6 +367,21 @@ class EditLabTests(views.APIView):
     '''
         In a successful post request, an already existing object of LabTest is update.
     '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        labtest = LabTests.objects.get(id=request.data['id'])
+        serializer = LabTestsSerializer(labtest, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else: 
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
 
 class DeleteLabTests(views.APIView):
 

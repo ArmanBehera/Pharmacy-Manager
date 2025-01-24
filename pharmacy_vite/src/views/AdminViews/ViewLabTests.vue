@@ -67,8 +67,18 @@
         // Updating the local instance
         data.value[index] = newData;
 
+        console.log(data.value[index])
+        
         // Sending a request to the backend to update the instance. 
-        axios.post()
+        axios.post('/administrator/editLabTests/', {
+            ...data.value[index]
+        })
+        .then( (response) => {
+            warn('success', 'Successfully edited medicines.', '')
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in editing medicines.', 'Please try again.')
+        })  
     }
 </script>
 
@@ -119,7 +129,7 @@
             </div>
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add Medicines" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddMedicines' })"/>  
+                <Button label="Add Medicines" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddNewMedicine' })"/>  
             </div>
         </div>
     </div>

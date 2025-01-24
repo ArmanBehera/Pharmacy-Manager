@@ -14,9 +14,10 @@ import AdminLogin from '../views/AdminViews/Login.vue'
 import VerifyEmployees from '../views/AdminViews/VerifyEmployees.vue'
 import ViewEmployees from '../views/AdminViews/ViewEmployees.vue'
 import ViewMedicines from '../views/AdminViews/ViewMedicines.vue'
-import AddMedicines from '../views/AdminViews/AddMedicines.vue'
+import AddNewMedicine from '../views/AdminViews/AddNewMedicine.vue'
 import AddLabTests from '../views/AdminViews/AddLabTests.vue'
 import ViewLabTests from '../views/AdminViews/ViewLabTests.vue'
+import AddExistingMedicine from '../views/AdminViews/AddExistingMedicine.vue'
 
 import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
@@ -91,9 +92,9 @@ const routes = [
         component: ViewMedicines
       },
       {
-        path: 'AddMedicines',
-        name: 'AddMedicines',
-        component: AddMedicines
+        path: 'AddNewMedicine',
+        name: 'AddNewMedicine',
+        component: AddNewMedicine
       },
       {
         path: 'AddLabTests',
@@ -104,6 +105,11 @@ const routes = [
         path: 'ViewLabTests',
         name: 'ViewLabTests',
         component: ViewLabTests
+      },
+      {
+        path: 'AddExistingMedicine',
+        name: 'AddExistingMedicine',
+        component: AddExistingMedicine
       }
     ]
   },
