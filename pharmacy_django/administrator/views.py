@@ -52,6 +52,11 @@ class EditProfile(views.APIView):
 
 class VerifyEmployees(views.APIView):
     
+    '''
+        In a get request, returns all the unverified employees
+        In a post requets, tries to verify the user whose ids are submitted
+    '''
+
     authentication_classes = (authentication.CustomAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
@@ -82,7 +87,7 @@ class VerifyEmployees(views.APIView):
                 elif code == 1:
                     user.delete()
         except:
-            return exceptions.NotAcceptable('Failed to delete users.')
+            return exceptions.NotAcceptable('Failed to verify users.')
         
         if code == 0:
             return response.Response('Users successfully verified.')
@@ -92,7 +97,10 @@ class VerifyEmployees(views.APIView):
             return exceptions.NotAcceptable('The code provided is not a valid code.')
         
 
-class ViewEmployees(views.APIView):
+class GetEmployees(views.APIView):
+    '''
+        In a get request, returns all the employees in the system
+    '''
 
     authentication_classes = (authentication.CustomAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
@@ -108,7 +116,16 @@ class ViewEmployees(views.APIView):
             resp.append(user_serializer.data)
             
         return response.Response(resp)
-    
+
+
+class DeleteEmployees(views.APIView):
+    '''
+        In a post request, deletes the employees whose ids are submitted
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
     def post(self, request):
         
         ids = request.data['ids']
@@ -122,11 +139,9 @@ class ViewEmployees(views.APIView):
             
         return response.Response('Users successfully deleted from system.')
 
-
-class ViewMedicines(views.APIView):
+class GetMedicines(views.APIView):
     '''
         When it's a get request, this API returns all the medicines available
-        When it's a post request, this API allows to delete the medicine
     '''
     
     authentication_classes = (authentication.CustomUserAuthentication, )
@@ -143,27 +158,7 @@ class ViewMedicines(views.APIView):
             resp.append(medicine_serialized.data)
         
         return response.Response(resp)
-    
-    # To update this
-    def post(self, request):
-        
-        try:
-            for id in request.data['ids']:
-            
-                medicine = Medicines.objects.get(id=id)
-                medicineStocks = MedicineStock.objects.filter(medicine=medicine)
-                
-                medicineStocks.delete()
-                medicine.delete()
-            
-            return response.Response({"message": "Medicine updated successfully."}, status=status.HTTP_200_OK)
-            
-        except Medicines.DoesNotExist:
-            return response.Response({"error": "Medicine not found."}, status=status.HTTP_404_NOT_FOUND)
-        
-        except Exception as e:
-            return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class AddMedicines(views.APIView):
     '''
@@ -217,12 +212,40 @@ class AddMedicines(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
 
-class SpecializationAvailableView(views.APIView):
+
+# Faulty. Need to debug this.
+class DeleteMedicines(views.APIView):
+    '''
+        When it's a post request, deletes the medicines whose ids are submitted
+    '''
+
+    authentication_classes = (authentication.CustomUserAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        
+        try:
+            for id in request.data['ids']:
+            
+                medicine = Medicines.objects.get(id=id)
+                medicineStocks = MedicineStock.objects.filter(medicine=medicine)
+                
+                medicineStocks.delete()
+                medicine.delete()
+            
+            return response.Response({"message": "Medicine updated successfully."}, status=status.HTTP_200_OK)
+            
+        except Medicines.DoesNotExist:
+            return response.Response({"error": "Medicine not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetSpecializationAvailable(views.APIView):
     '''
         In a get request, returns all specializations available
-        In a post request, can make new entires into the SpecializationAvailable model
     '''
 
     authentication_classes = (authentication.CustomAdminAuthentication, )
@@ -239,6 +262,16 @@ class SpecializationAvailableView(views.APIView):
             resp.append(object_serializer.data)
 
         return response.Response(resp)
+
+
+class AddSpecializationAvailable(views.APIView):
+
+    '''
+        In a post request, can make new entires into the SpecializationAvailable model
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     
     def post(self, request):
         
@@ -252,32 +285,13 @@ class SpecializationAvailableView(views.APIView):
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AddLabTest(views.APIView):
-    '''
-        In a successful post request, an object of LabTest is made
-    '''
 
-    #authentication_classes = (authentication.CustomAdminAuthentication, )
-    #permission_classes = (permissions.IsAuthenticated, )
-
-    def post(self, request):
-
-        serializer = LabTestsSerializer(data=request.data)
-
-        if serializer.is_valid():
-            labTest = serializer.save()
-
-            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-
-class ViewLabTests(views.APIView):
+class GetLabTests(views.APIView):
     '''
         In a get request, all the labtests object available are returned
     '''
-    #authentication_classes = (authentication.CustomAdminAuthentication, )
-    #permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
 
@@ -292,6 +306,41 @@ class ViewLabTests(views.APIView):
 
         return response.Response(resp)
 
+
+class AddLabTests(views.APIView):
+    '''
+        In a successful post request, an object of LabTest is made
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        serializer = LabTestsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            labTest = serializer.save()
+
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EditLabTests(views.APIView):
+    '''
+        In a successful post request, an already existing object of LabTest is update.
+    '''
+
+class DeleteLabTests(views.APIView):
+
+    '''
+        In a post request, delete the labtests whose indexes are submitted in the authentication classes. 
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
     def post(self, request):
         
         try:
@@ -300,14 +349,13 @@ class ViewLabTests(views.APIView):
                 labTest = LabTests.objects.get(id=id)
                 labTest.delete()
             
-            return response.Response({"message": "LabTest updated successfully."}, status=status.HTTP_200_OK)
+            return response.Response({"message": "LabTest deleted successfully."}, status=status.HTTP_200_OK)
             
         except LabTests.DoesNotExist:
             return response.Response({"error": "LabTest not found."}, status=status.HTTP_404_NOT_FOUND)
         
         except Exception as e:
             return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-
 
 class Logout(views.APIView):
     '''

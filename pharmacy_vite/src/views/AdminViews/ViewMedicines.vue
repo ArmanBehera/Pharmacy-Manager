@@ -23,7 +23,7 @@
     }
 
     if (store.state.isRegistered === "true") {
-        axios.get(`/${usertype}/viewMedicines/`)
+        axios.get(`/${usertype}/getMedicines/`)
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
@@ -72,10 +72,10 @@
             data.value = data.value.filter(val => !selected.value.includes(val));
             selected.value = null;
 
-            toast.add({severity:'success', summary: 'Successfully deleted medicines!', life: 3000});
+            warn('success', 'Successfully deleted medicines!', '');
         })
         .catch( (error) => {
-            toast.add({severity:'warn', summary: 'Unsuccesful in deleting medicines.', message: 'Please try again.', life:3000});
+            warn('warn', 'Unsuccesful in deleting medicines.', 'Please try again.');
         })
     }
 </script>
@@ -90,8 +90,11 @@
 
             <div v-if="data.length > 0">
                 <div class="card">
-                    <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-                    resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
+                    <DataTable :value="data" resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
+                     v-model:selection="selected"
+                     paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+                     v-model:editingRows="editingRows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id" 
+                     groupRowsBy="medicine.id" rowGroupMode="rowspan"
                         :pt="{
                             table: { style: 'min-width: 50rem' },
                             column: {

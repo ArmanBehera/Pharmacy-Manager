@@ -18,18 +18,24 @@
     store.dispatch('initializeStore');
     const toast = useToast();
 
-    if (store.getters.isRegistered){
+    const isRegistered = ref(store.state.isRegistered)
+
+    const warn = (severity, summary, detailed) => {
+        toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
+    }
+
+    if (store.getters.isRegistered === 'true'){
         axios.get('/administrator/verifyEmployees/')
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
         })
         .catch( (error) => {
-            message.value = "Log in using an admin account to access this page."
+            warn('warn', "Log in using an admin account to access this page.", '');
         })
     }
     else {
-        message.value = "Log in using an admin account to access this page."
+        warn('warn', "Log in using an admin account to access this page.", '');
     }
 
     const confirmVerification = () => {
@@ -73,13 +79,8 @@
 
 <template>
     <Toast/>
-
-    <div class="centered">
-        <h1 class="text-3xl font-bold m-3"> {{ message }}</h1>
-    </div>
     
     <div class="top-container">
-        
         <div class="container">
             <div class="centered" v-if="length > 0">
                 <h1 class="text-xl font-bold m-2">Verify Employees</h1>
@@ -113,8 +114,11 @@
             <span>Are you sure you want to verify the selected users?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="verificationDialog = false"/>
-            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)"/>
+            <Button label="No" icon="pi pi-times" text @click="verificationDialog = false" v-if="isRegistered.value === 'true'"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)" v-if="isRegistered.value === 'true'"/>
+
+            <Button label="No" icon="pi pi-times" text @click="verificationDialog = false" disabled v-if="isRegistered.value === 'false'"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)" disabled v-if="isRegistered.value === 'false'"/>
         </template>
     </Dialog>
 

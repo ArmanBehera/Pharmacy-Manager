@@ -8,24 +8,28 @@
     const deletionDialog = ref();
     const data = ref([]);
     const selected = ref();
-    const message = ref();
     const toast = useToast();
 
     const store = useStore();
     store.dispatch('initializeStore');
 
+    const isRegistered = ref(store.state.isRegistered)
+
+    const warn = (severity, summary, detailed) => {
+        toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
+    }
 
     if (store.state.isRegistered === "true") {
-        axios.get('/administrator/viewEmployees/')
+        axios.get('/administrator/getEmployees/')
         .then( (response) => {
             data.value = response.data
         })
         .catch( (error) => {
-            message.value = "Log in using an admin account to access this page."
+            warn('warn', "Log in using an admin account to access this page.", '');
         })
     }
     else {
-        message.value = "Log in using an admin account to access this page."
+        warn('warn', "Log in using an admin account to access this page.", '');
     }
 
     const confirmDeletion = () => {      
@@ -40,7 +44,7 @@
             idArray.push(selected.value[i]['id'])
         }
 
-        axios.post('/administrator/viewEmployees/', { ids: idArray })
+        axios.post('/administrator/deleteEmployees/', { ids: idArray })
         .then( (response) => {
             
             data.value = data.value.filter(val => !selected.value.includes(val));
@@ -56,10 +60,6 @@
 
 <template>
     <Toast/>
-
-    <div class="centered">
-        <h1 class="text-3xl font-bold m-3"> {{ message }}</h1>
-    </div>
 
     <div class="top-container" v-if="data.length >= 0">
         <div class="container">

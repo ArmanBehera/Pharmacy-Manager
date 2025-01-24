@@ -21,7 +21,7 @@
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (isRegistered.value === 'true') {
+    if (isRegistered.value === 'false') {
         warn('warn', 'Please log in to access this page.', '')
     }
 
@@ -46,7 +46,7 @@
             }
         }
 
-        axios.post('administrator/addLabTest/', {
+        axios.post('administrator/addLabTests/', {
             ...data
         })
         .then( (response) => {
@@ -61,7 +61,7 @@
 <template>
     <Toast />
 
-    <div class="centered" v-if="isRegistered === 'true'">
+    <div class="centered">
         <h1 class="text-3xl font-bld m-3">Add Lab Tests</h1>
     </div>
 

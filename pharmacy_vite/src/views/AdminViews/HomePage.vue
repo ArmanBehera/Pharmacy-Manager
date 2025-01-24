@@ -34,7 +34,7 @@
             warn("warn", "Error getting unverified users data.", "Please check the status of the server or try reloading.")
         })
 
-        axios.get('administrator/viewEmployees/')
+        axios.get('administrator/getEmployees/')
         .then( (response) => {
             employeesData.value = response.data;
             isLoaded.value[1] = true;
@@ -44,7 +44,7 @@
         })
 
         // To get data for inventory
-        axios.get('/administrator/viewMedicines/')
+        axios.get('/administrator/getMedicines/')
         .then( (response) => {
             medicineInventoryData.value = response.data;
             isLoaded.value[2] = true;
@@ -53,7 +53,7 @@
             warn("warn", "Error getting medicines data.", "Please check the status of the server or try reloading.")
         })
 
-        axios.get('/administrator/viewLabTests/')
+        axios.get('/administrator/getLabTests/')
         .then( (response) => {
             labTestsData.value = response.data;
             isLoaded.value[3] = true;

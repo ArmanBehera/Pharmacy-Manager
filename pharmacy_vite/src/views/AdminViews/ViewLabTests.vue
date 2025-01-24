@@ -23,7 +23,7 @@
     }
 
     if (store.state.isRegistered === "true") {
-        axios.get(`/${usertype}/viewLabTests/`)
+        axios.get(`/${usertype}/getLabTests/`)
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
@@ -40,7 +40,7 @@
         deletionDialog.value = true;
     }
 
-    const sendRequest = () => {
+    const sendDeleteRequest = () => {
         deletionDialog.value = false;
 
         let idArray = []
@@ -49,16 +49,26 @@
             idArray.push(selected.value[i]['id'])
         }
 
-        axios.post('/administrator/viewLabTests/', { ids: idArray })
+        axios.post('/administrator/deleteLabTests/', { ids: idArray })
         .then( (response) => {
             data.value = data.value.filter(val => !selected.value.includes(val));
             selected.value = null;
 
-            toast.add({severity:'success', summary: 'Successfully deleted medicines!', life: 3000});
+            warn('success', 'Successfully deleted medicines!', '');
         })
         .catch( (error) => {
-            toast.add({severity:'warn', summary: 'Unsuccesful in deleting medicines.', message: 'Please try again.', life:3000});
+            warn('warn', 'Unsuccesful in deleting medicines.', 'Please try again.');
         })
+    }
+
+    const onRowEditSave = (event) => {
+        let { newData, index } = event;
+
+        // Updating the local instance
+        data.value[index] = newData;
+
+        // Sending a request to the backend to update the instance. 
+        axios.post()
     }
 </script>
 
@@ -126,7 +136,7 @@
         </div>
         <template #footer>
             <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
-            <Button label="Yes" icon="pi pi-check" text @click="sendRequest"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
         </template>
     </Dialog>
 </template>
