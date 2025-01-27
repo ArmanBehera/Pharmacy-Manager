@@ -10,6 +10,8 @@
     const drawerVisible = ref(false);
     const dropdownOpenEmployees = ref(false);
     const dropdownOpenMedicines = ref(false);
+    const dropdownOpenLabTests = ref(false);
+    const dropdownOpenSpecializations = ref(false);
 
     store.dispatch('initializeStore');
 
@@ -73,6 +75,14 @@
         dropdownOpenMedicines.value = !dropdownOpenMedicines.value;
     }
 
+    const toggleDropdownLabTests = () => {
+        dropdownOpenLabTests.value = !dropdownOpenLabTests.value
+    }
+
+    const toggleDropdownSpecializations = () => {
+        dropdownOpenSpecializations.value = !dropdownOpenSpecializations.value
+    }
+
     const redirect = (urlName) => {
         router.push({ name: urlName})
         drawerVisible.value = false
@@ -131,7 +141,7 @@
                                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
                             >
                                 <i class="pi pi-chart-line mr-4"></i>
-                                <span class="font-medium">Manage Medicine Inventory</span>
+                                <span class="font-medium">Manage Medicines</span>
                                 <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenMedicines }"></i>
                             </a>
                             <ul v-show="dropdownOpenMedicines" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
@@ -151,7 +161,70 @@
                                         @click="redirect('AddNewMedicine')"
                                     >
                                         <i class="pi pi-plus mr-4"></i>
-                                        <span class="font-medium">Add Medcines Inventory</span>
+                                        <span class="font-medium">Add New Medcines</span>
+                                    </a>
+                                </li>
+                                <li> 
+                                    <a 
+                                        class="flex items-center cursor-pointer p-4"
+                                        @click="redirect('AddExistingMedicine')"
+                                    >
+                                        <i class="pi pi-plus mr-4"></i>
+                                        <span class="font-medium">Add Stock for Existing Medcines</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a
+                                @click="toggleDropdownLabTests"
+                                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
+                            >
+                                <i class="pi pi-chart-line mr-4"></i>
+                                <span class="font-medium">Manage Lab Tests</span>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenLabTests }"></i>
+                            </a>
+                            <ul v-show="dropdownOpenLabTests" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                                <li> 
+                                    <a 
+                                        class="flex items-center cursor-pointer p-4"
+                                         @click="redirect('ViewLabTests')"
+                                    >
+                                        
+                                        <i class="pi pi-eye mr-4"></i>
+                                        <span class="font-medium">View Lab Tests</span>
+                                    </a>
+                                </li>
+                                <li> 
+                                    <a 
+                                        class="flex items-center cursor-pointer p-4"
+                                        @click="redirect('AddLabTests')"
+                                    >
+                                        <i class="pi pi-plus mr-4"></i>
+                                        <span class="font-medium">Add Lab Test</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a
+                                @click="toggleDropdownSpecializations"
+                                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
+                            >
+                                <i class="pi pi-chart-line mr-4"></i>
+                                <span class="font-medium">Manage Specializations</span>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenSpecializations }"></i>
+                            </a>
+                            <ul v-show="dropdownOpenSpecializations" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                                <li> 
+                                    <a 
+                                        class="flex items-center cursor-pointer p-4"
+                                         @click="redirect('ViewSpecializations')"
+                                    >   
+                                        <i class="pi pi-eye mr-4"></i>
+                                        <span class="font-medium">View or Add Specializations Available</span>
                                     </a>
                                 </li>
                             </ul>

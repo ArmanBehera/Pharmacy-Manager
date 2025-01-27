@@ -88,7 +88,7 @@
         }
 
         if (filled) {
-            axios.post('/frontdesk/addPatient/', {
+            axios.post('/frontdesk/addNewPatient/', {
                 patient: {
                     ...data
                 },
@@ -100,6 +100,7 @@
                 warn('success', `Token Number: ${response.data.token_assigned}`, 'Successfully added patient.')
             })  
             .catch( (error) => {
+                console.log(error)
                 warn('warn', 'Failed to add patient into the system.', 'Make sure all the fields are filled appropriately or try reloading this page.')
             })
         } else {

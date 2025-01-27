@@ -19,6 +19,7 @@ import AddNewMedicine from '../views/AdminViews/AddNewMedicine.vue'
 import AddLabTests from '../views/AdminViews/AddLabTests.vue'
 import ViewLabTests from '../views/AdminViews/ViewLabTests.vue'
 import AddExistingMedicine from '../views/AdminViews/AddExistingMedicine.vue'
+import ViewSpecializations from '../views/AdminViews/ViewSpecializations.vue'
 
 import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
@@ -52,17 +53,17 @@ const routes = [
         component: DoctorHomePage
       },
       {
-        path: 'signin',
+        path: 'Signin',
         name: 'DoctorSignin',
         component: DoctorSignin
       },
       {
-        path: 'login',
+        path: 'Login',
         name: 'DoctorLogin',
         component: DoctorLogin
       },
       {
-        path: 'addPrescription',
+        path: 'AddPrescription',
         name: 'AddPrescription',
         component: AddPrescription
       }
@@ -78,7 +79,7 @@ const routes = [
         component: AdminHomePage
       },
       {
-        path: 'login',
+        path: 'Login',
         name: 'AdminLogin',
         component: AdminLogin
       },
@@ -116,6 +117,11 @@ const routes = [
         path: 'AddExistingMedicine',
         name: 'AddExistingMedicine',
         component: AddExistingMedicine
+      },
+      {
+        path: 'ViewSpecializations',
+        name: 'ViewSpecializations',
+        component: ViewSpecializations
       }
     ]
   },
@@ -129,12 +135,12 @@ const routes = [
         component: FrontDeskHomePage
       },
       {
-        path: 'login',
+        path: 'Login',
         name: 'FrontDeskLogin',
         component: FrontDeskLogin
       },
       {
-        path: 'signin',
+        path: 'Signin',
         name: 'FrontDeskSignin',
         component: FrontDeskSignin
       },
@@ -155,12 +161,12 @@ const routes = [
     component: Pharmacy,
     children: [
       {
-        path: 'login',
+        path: 'Login',
         name: 'PharmacyLogin',
         component: PharmacyLogin
       },
       {
-        path: 'signin',
+        path: 'Signin',
         name: 'PharmacySignin',
         component: PharmacySignin
       }

@@ -80,10 +80,10 @@
 <template>
     <Toast/>
     
-    <div class="top-container">
+    <div class="top-container mt-4">
         <div class="container">
             <div class="centered" v-if="length > 0">
-                <h1 class="text-xl font-bold m-2">Verify Employees</h1>
+                <h1 class="text-3xl font-bold m-2">Verify Employees</h1>
             </div>
             <div class="sub-container" style="margin-left:7rem;" v-if="length != 0">
                 <div class="card">

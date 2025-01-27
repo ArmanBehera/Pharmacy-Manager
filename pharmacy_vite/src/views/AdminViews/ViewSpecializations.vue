@@ -17,13 +17,15 @@
     const data = ref([]);
     const length = ref(-1);
     const editingRows = ref([]);
+
+    const specializationName = ref([]);
     
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
     if (store.state.isRegistered === "true") {
-        axios.get(`/${usertype}/getLabTests/`)
+        axios.get(`/administrator/getSpecializations/`)
         .then( (response) => {
             data.value = response.data
             length.value = data.value.length
@@ -49,15 +51,15 @@
             idArray.push(selected.value[i]['id'])
         }
 
-        axios.post('/administrator/deleteLabTests/', { ids: idArray })
+        axios.post('/administrator/deleteSpecializations/', { ids: idArray })
         .then( (response) => {
             data.value = data.value.filter(val => !selected.value.includes(val));
             selected.value = null;
 
-            warn('success', 'Successfully deleted lab tests!', '');
+            warn('success', 'Successfully deleted specializations!', '');
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccesful in deleting lab tests.', 'Please try again.');
+            warn('warn', 'Unsuccesful in deleting specializations.', 'Please try again.');
         })
     }
 
@@ -70,24 +72,41 @@
         console.log(data.value[index])
         
         // Sending a request to the backend to update the instance. 
-        axios.post('/administrator/editLabTests/', {
+        axios.post('/administrator/editSpecializations/', {
             ...data.value[index]
         })
         .then( (response) => {
-            warn('success', 'Successfully edited lab tests.', '')
+            warn('success', 'Successfully edited specializations.', '')
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in editing lab tests.', 'Please try again.')
+            warn('warn', 'Unsuccessful in editing specializations.', 'Please try again.')
         })  
+    }
+
+    const submit = () => {
+        if (!specializationName.value) {
+            warn('warn', 'Specialization Name field should be filled with the name of the specialization.', '');
+            return;
+        }
+
+        axios.post('/administrator/addSpecializations/', {
+            'specialization': specializationName.value
+        })
+        .then( (response) => {
+            warn('success', 'Succesfully added specialization.', '')
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in adding specialization', '')
+        })
     }
 </script>
 
 <template>
     <Toast />
-    <div class="top-container mt-4" v-if="data.length >= 0">
+    <div class="top-container flex flex-column justify-content-center align-items-center mt-4" v-if="data.length >= 0">
         <div class="container">
             <div class="centered">
-                <h1 class="text-3xl font-bold m-3">View Lab Tests</h1>    
+                <h1 class="text-3xl font-bold m-3">View Specializations</h1>    
             </div>
 
             <div class="flex flex-column" v-if="data.length > 0">
@@ -105,21 +124,15 @@
                     >
                         <Column selectionMode="multiple" style="width: 5rem"></Column>
                         
-                        <Column field="name" header="Name">
+                        <Column field="specialization" header="Specialization Name">
                             <template #editor="{ data, field }">
                                 <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
                             </template>
                         </Column>
 
-                        <Column field="test_cost" header="Test Cost">
+                        <Column field="number" header="Number of doctors under this specialization">
                             <template #editor="{ data, field }">
-                                <InputNumber v-model.number="data[field]" :min="0" class="w-full p-inputnumber-sm" />
-                            </template>
-                        </Column>
-
-                        <Column field="provider" header="Provider">
-                            <template #editor="{ data, field }">
-                                <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
+                                <InputNumber v-model.number="data[field]" :min="0" class="w-full p-inputnumber-sm" disabled/>
                             </template>
                         </Column>
 
@@ -129,24 +142,36 @@
             </div>
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add Lab Tests" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddLabTests' })"/>  
+                <Button label="Add Specialization" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddSpecialization' })"/>  
             </div>
         </div>
+
+        
     </div>
 
-
     <div v-else>
-        <h1 class="text-3xl font-bold m-3">There are no lab tests registered in the system.</h1>
+        <h1 class="text-3xl font-bold m-3">There are no specializations registered in the system.</h1>
+    </div>
+        
+    <div class="flex flex-column align-items-center justify-content-center">
+        <h1 class="text-xl font-bold mt-10">Add Specializations</h1>  
+
+        <div class="flex flex-row mt-2">
+            <InputText id="name" placeholder="Specialization Name *" v-model.trim="specializationName"/>
+            <Button label="Submit" @click.prevent="submit" class="ml-2"/>
+        </div>
     </div>
 
     <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
-            <span>Are you sure you want to delete the selected lab tests?</span>
+            <span>Are you sure you want to delete the selected specializations?</span>
         </div>
         <template #footer>
             <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
         </template>
     </Dialog>
+
+
 </template>

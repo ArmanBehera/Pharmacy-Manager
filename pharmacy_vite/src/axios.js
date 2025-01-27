@@ -54,6 +54,7 @@ instance.interceptors.response.use(
         console.log(error.response.data.detail)
         const originalRequest = error.config
 
+        // If the access token is expired and needs to be refreshed
         if (error.response.status === 403 && error.response.data.detail === 'Authentication credentials were not provided.') {
             const newAccessToken = await refreshAccessToken(); // Gets a new access token as the previous token is expired
 
@@ -63,7 +64,7 @@ instance.interceptors.response.use(
             }
         }
         // Indicates that the refresh token is expired and user needs to be logged in again. 
-        else if (error.response.status === 401) {
+        else if (error.response.status === 401 && error.response.data.detail === 'Token is invalid or expired') {
             const usertype = localStorage.getItem('usertype');
             localStorage.setItem('usertype', '');
             localStorage.setItem('isRegistered', false);
@@ -76,7 +77,7 @@ instance.interceptors.response.use(
             if (!usertype && !window.location.href.includes('login')) {
                 router.push('/');
             }
-            else if (usertype) {
+            else if (usertype  && !window.location.href.includes('login')) {
                 router.push(`/${usertype}/login/`);
             }
         }

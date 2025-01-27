@@ -27,9 +27,10 @@
     const specializationsAvailable = ref([]);
 
     onBeforeMount(() => {
-        axios.get('administrator/specializations/')
+        axios.get('administrator/getSpecializations/')
         .then( (response) => {
             specializationsAvailable.value = response.data;
+            console.log(specializationsAvailable.value)
         })
         .catch( (error) => {
             warn("Error getting specializations.")

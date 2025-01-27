@@ -61,7 +61,7 @@
 <template>
     <Toast/>
 
-    <div class="top-container" v-if="data.length >= 0">
+    <div class="top-container mt-4" v-if="data.length >= 0">
         <div class="container">
             <div class="centered">
                 <h1 class="text-3xl font-bold m-3">All Employees</h1>    
