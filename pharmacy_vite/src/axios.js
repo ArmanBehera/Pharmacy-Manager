@@ -51,11 +51,10 @@ instance.interceptors.response.use(
         return response
     },
     async (error) => {
-        console.log(error)
-        console.log(error.response.status)
+        console.log(error.response.data.detail)
         const originalRequest = error.config
 
-        if (error.response.status === 403) {
+        if (error.response.status === 403 && error.response.data.detail === 'Authentication credentials were not provided.') {
             const newAccessToken = await refreshAccessToken(); // Gets a new access token as the previous token is expired
 
             if (newAccessToken) {

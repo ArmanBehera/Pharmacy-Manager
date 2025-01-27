@@ -7,6 +7,7 @@ import Doctor from '../views/DoctorViews/Index.vue'
 import DoctorHomePage from '../views/DoctorViews/HomePage.vue'
 import DoctorSignin from '../views/DoctorViews/Signin.vue'
 import DoctorLogin from '../views/DoctorViews/Login.vue'
+import AddPrescription from '../views/DoctorViews/AddPrescription.vue'
 
 import Admin from '../views/AdminViews/Index.vue'
 import AdminHomePage from '../views/AdminViews/HomePage.vue'
@@ -59,6 +60,11 @@ const routes = [
         path: 'login',
         name: 'DoctorLogin',
         component: DoctorLogin
+      },
+      {
+        path: 'addPrescription',
+        name: 'AddPrescription',
+        component: AddPrescription
       }
     ]
   },

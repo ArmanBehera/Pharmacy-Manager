@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework import views, response, status, permissions, exceptions
 from administrator.models import User
 from .models import DoctorUser, SpecializationAvailable, PatientUser, Appointment
-from .serializers import DoctorSerializer, SpecializationSerializer, PatientSerializer
+from .serializers import DoctorSerializer, SpecializationSerializer, PatientSerializer, AppointmentSerializer
 from administrator.serializers import UserSerializer
 from administrator import authentication
 import jwt
 from django.conf import settings
+from datetime import datetime, date
 
 class SignIn(views.APIView):
     '''
@@ -27,29 +28,6 @@ class SignIn(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class res(views.APIView):
-    permission_classes  =(permissions.AllowAny, )
-    
-    def post(self, request):
-        
-        '''
-            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZXhwIjoxNzIxMTkzMTYwLCJpYXQiOjE3MjExMDY3MDB9.nqdfgWcXDugRfXYRX51NJ4hraGmFNL5VoB7GbaDbTvQ
-        '''
-        
-        cookie = request.data['cookie']
-        
-        try:
-            payload = jwt.decode(cookie, settings.JWT_SECRET, algorithms=["HS256"])
-        except jwt.exceptions.DecodeError as e:
-            raise exceptions.AuthenticationFailed(f"Unauthorized {e}")
-        
-        # Returns a user that is decoded from the token
-        user = User.objects.filter(id=payload["id"]).first()  
-        
-        serializer = UserSerializer(user)
-        
-        return response.Response(serializer.data)
 
 
 class DoctorAPI(views.APIView):
@@ -80,30 +58,30 @@ class PatientAPI(views.APIView):
         pass
 
 
-class GetPatients(views.APIView):
+class GetPatientsForDoctor(views.APIView):
+
     '''
-        Get method returns all patient's name and details
         Post method gets the patients that are scheduled for a particular doctor's appointment
     '''
-    authentication_classes  = (authentication.CustomFrontDeskAuthentication, )
+
+    authentication_classes = (authentication.CustomDoctorAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request):
+    def post(self, request):
+        
+        doctor_id = request.data['doctor_id']
 
-        patients = PatientUser.objects.all()
+        doctor = DoctorUser.objects.get(id=doctor_id)
+        today = date.today()
+        appointments = Appointment.objects.filter(doctor=doctor, status='Scheduled', date__gte=today).order_by('date', 'token_assigned')
 
         resp = []
 
-        for patient in patients:
-            serializer = PatientSerializer(patient)
+        for appointment in appointments:
+            serializer = AppointmentSerializer(appointment)
 
-            last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
-
-            date = last_appointment.date
-            date = date.strftime("%d-%m-%Y") 
-
-            resp.append({'first_name': serializer.data['first_name'], 'last_name': serializer.data['last_name'], 'age': serializer.data['age'], 'last_appointment_date': date})
-
+            resp.append(serializer.data)
+        
         return response.Response(resp)
 
 
