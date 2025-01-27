@@ -110,7 +110,7 @@ class GetDoctors(views.APIView):
         return response.Response(resp)
 
 
-class AddPatient(views.APIView):
+class AddNewPatient(views.APIView):
     '''
         Post View is used to add the preliminary details of the patient
     '''
@@ -124,14 +124,9 @@ class AddPatient(views.APIView):
         except Exception:
             last_appointment_token = 0
 
-        # The doctor's id is replaced with the actual doctor object as it would otherwise turn itself into its __str__ format.
         doctor_id = request.data['doctor_id']
-        try:
-            doctor = DoctorUser.objects.get(id=doctor_id)
-        except Exception as e:
-            raise response.Response(f'Failed to get the doctor user.')
 
-        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, doctor: doctor})
+        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, 'doctor': doctor_id})
 
         if serializer.is_valid():
 

@@ -4,10 +4,9 @@ from . import views
 urlpatterns = [
     path('signin/', views.SignIn.as_view(), name='signin'),
     path('logout/', views.Logout.as_view(), name='logout'),
-    path('addPatient/', views.AddPatient.as_view(), name='addPatient'),
+    path('addNewPatient/', views.AddNewPatient.as_view(), name='addPatient'),
+    path('addExistingPatient/', views.AddExistingPatient.as_view(), name='addExistingPatient'),
     path('getPatients/', views.GetPatients.as_view(), name='getPatients'),
     path('getDoctors/', views.GetDoctors.as_view(), name='getDoctors'),
     path('getPatientsForDoctor/', views.GetPatientsForDoctor.as_view(), name='getPatientsForDoctor'),
-    path('addExistingPatient/', views.AddExistingPatient.as_view(), name='addExistingPatient'),
-    
 ]

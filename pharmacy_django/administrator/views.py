@@ -2,14 +2,14 @@ from django.shortcuts import render
 from rest_framework import views, response, status, permissions, exceptions
 
 from administrator.models import User
-from doctor.models import SpecializationAvailable
+from doctor.models import SpecializationAvailable, DoctorUser
+from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock, LabTests
 
+from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, CategoriesSerializer, IngredientsSerializer, SideEffectsSerializer, MedicineStockSerializer, LabTestsSerializer
 from administrator.serializers import UserSerializer
 from doctor.serializers import SpecializationSerializer
 
 from administrator import authentication
-from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock, LabTests
-from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, CategoriesSerializer, IngredientsSerializer, SideEffectsSerializer, MedicineStockSerializer, LabTestsSerializer
 
 from datetime import datetime
 
@@ -295,7 +295,9 @@ class GetSpecializationAvailable(views.APIView):
 
         for object in objects:
             object_serializer = SpecializationSerializer(object)
-            resp.append(object_serializer.data)
+
+            number = len(DoctorUser.objects.filter(specialization=object))
+            resp.append({**object_serializer.data, "number": number})
 
         return response.Response(resp)
 
@@ -320,6 +322,53 @@ class AddSpecializationAvailable(views.APIView):
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class EditSpecializationAvailable(views.APIView):
+    '''
+        In a successful post request, an already existing object of LabTest is update.
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        specializationAvailable = SpecializationAvailable.objects.get(id=request.data['id'])
+        serializer = SpecializationSerializer(specializationAvailable, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else: 
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+
+class DeleteSpecializationAvailable(views.APIView):
+
+    '''
+        In a post request, delete the labtests whose indexes are submitted in the authentication classes. 
+    '''
+
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        
+        try:
+            for id in request.data['ids']:
+            
+                specializationAvailable = SpecializationAvailable.objects.get(id=id)
+                specializationAvailable.delete()
+            
+            return response.Response({"message": "Specialization deleted successfully."}, status=status.HTTP_200_OK)
+            
+        except LabTests.DoesNotExist:
+            return response.Response({"error": "SpecializationAvailable object not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetLabTests(views.APIView):
@@ -403,7 +452,7 @@ class DeleteLabTests(views.APIView):
             return response.Response({"message": "LabTest deleted successfully."}, status=status.HTTP_200_OK)
             
         except LabTests.DoesNotExist:
-            return response.Response({"error": "LabTest not found."}, status=status.HTTP_404_NOT_FOUND)
+            return response.Response({"error": "LabTest object not found."}, status=status.HTTP_404_NOT_FOUND)
         
         except Exception as e:
             return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)

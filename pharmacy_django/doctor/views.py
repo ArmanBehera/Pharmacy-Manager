@@ -30,34 +30,6 @@ class SignIn(views.APIView):
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DoctorAPI(views.APIView):
-    '''
-        This viewpoint can only be used if the user is authenticated.
-        This API does not do anything as of yet, just an example of how a view can be set which is only accessible to user who are authenticated.
-    '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-    
-    def get(self, request):
-        user = request.user
-        
-        serializer = UserSerializer(user)
-        
-        return response.Response(serializer.data)
-        
-
-class PatientAPI(views.APIView):
-    '''
-        This viewpoint can only be used if the user is authenticated and the user is a doctor.
-        This API also does not do anything as of yet, just an example for an API with doctor and authenticated requirements.
-    '''
-    authentication_classes = (authentication.CustomDoctorAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-    
-    def get(self, request):
-        pass
-
-
 class GetPatientsForDoctor(views.APIView):
 
     '''
@@ -68,8 +40,17 @@ class GetPatientsForDoctor(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
-        
-        doctor_id = request.data['doctor_id']
+        try:
+            doctor_id = request.data['doctor_id']
+        except:
+            return response.Response('Failed to get doctor id.')
+
+        # Refreshing the statuses of the patient who did not show up
+        today = datetime.now().date()
+        appointments = Appointment.objects.filter(status='Scheduled', date__lt=today)
+
+        # Update their statuses
+        appointments.update(status='No Show')  # Example: Mark as 'No Show'
 
         doctor = DoctorUser.objects.get(id=doctor_id)
         today = date.today()
@@ -99,4 +80,3 @@ class Logout(views.APIView):
         resp.data = {"message": "Successfully logged out user."}
         
         return resp
-        
