@@ -1,0 +1,96 @@
+Date : 2025-01-27 21:58:49
+Directory : c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite
+Total : 51 files,  6867 codes, 15 comments, 642 blanks, all 7524 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| vue        |         30 |      3,264 |          2 |        543 |      3,809 |
+| JSON       |          2 |      2,953 |          0 |          2 |      2,955 |
+| JavaScript |         12 |        490 |         13 |         68 |        571 |
+| CSS        |          3 |        141 |          0 |         24 |        165 |
+| HTML       |          1 |         13 |          0 |          1 |         14 |
+| Markdown   |          1 |          4 |          0 |          4 |          8 |
+| XML        |          2 |          2 |          0 |          0 |          2 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                     | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                        |         51 |      6,867 |         15 |        642 |      7,524 |
+| . (Files)                                                                                                                                |          6 |      2,995 |          1 |         11 |      3,007 |
+| public                                                                                                                                   |          1 |          1 |          0 |          0 |          1 |
+| src                                                                                                                                      |         44 |      3,871 |         14 |        631 |      4,516 |
+| src (Files)                                                                                                                              |          7 |        259 |         12 |         48 |        319 |
+| src\assets                                                                                                                               |          1 |          1 |          0 |          0 |          1 |
+| src\components                                                                                                                           |          2 |         51 |          0 |          7 |         58 |
+| src\router                                                                                                                               |          1 |        174 |          0 |          8 |        182 |
+| src\store                                                                                                                                |          4 |        107 |          0 |         20 |        127 |
+| src\styles                                                                                                                               |          2 |         71 |          0 |         14 |         85 |
+| src\views                                                                                                                                |         27 |      3,208 |          2 |        534 |      3,744 |
+| src\views (Files)                                                                                                                        |          2 |        118 |          2 |         17 |        137 |
+| src\views\AdminViews                                                                                                                     |         11 |      1,541 |          0 |        278 |      1,819 |
+| src\views\DoctorViews                                                                                                                    |          5 |        488 |          0 |         76 |        564 |
+| src\views\FrontDeskViews                                                                                                                 |          6 |        703 |          0 |        109 |        812 |
+| src\views\PharmacyViews                                                                                                                  |          3 |        358 |          0 |         54 |        412 |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                                 | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\README.md                                       | Markdown   |          4 |          0 |          4 |          8 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\index.html                                      | HTML       |         13 |          0 |          1 |         14 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\package-lock.json                               | JSON       |      2,924 |          0 |          1 |      2,925 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\package.json                                    | JSON       |         29 |          0 |          1 |         30 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\public\vite.svg                                 | XML        |          1 |          0 |          0 |          1 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\App.vue                                     | vue        |          5 |          0 |          2 |          7 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\assets\vue.svg                              | XML        |          1 |          0 |          0 |          1 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\axios.js                                    | JavaScript |         72 |          4 |         13 |         89 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\components\CustomPassword.vue               | vue        |         17 |          0 |          0 |         17 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\components\HelloWorld.vue                   | vue        |         34 |          0 |          7 |         41 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\helpers.js                                  | JavaScript |         27 |          6 |          9 |         42 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\main.js                                     | JavaScript |         67 |          2 |         10 |         79 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\router\index.js                             | JavaScript |        174 |          0 |          8 |        182 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\storage.js                                  | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\store\actions.js                            | JavaScript |         44 |          0 |          6 |         50 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\store\getters.js                            | JavaScript |          9 |          0 |          2 |         11 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\store\index.js                              | JavaScript |         22 |          0 |          5 |         27 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\store\mutations.js                          | JavaScript |         32 |          0 |          7 |         39 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\style.css                                   | CSS        |         70 |          0 |         10 |         80 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\styles\styles.css                           | CSS        |         68 |          0 |         14 |         82 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\styles\tailwind.css                         | CSS        |          3 |          0 |          0 |          3 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\temp.js                                     | JavaScript |         18 |          0 |          3 |         21 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddExistingMedicine.vue    | vue        |        106 |          0 |         22 |        128 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddLabTests.vue            | vue        |         83 |          0 |         15 |         98 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddNewMedicine.vue         | vue        |        213 |          0 |         40 |        253 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\HomePage.vue               | vue        |        166 |          0 |         31 |        197 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\Index.vue                  | vue        |        232 |          0 |         20 |        252 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\Login.vue                  | vue        |        119 |          0 |         24 |        143 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\VerifyEmployees.vue        | vue        |        114 |          0 |         21 |        135 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewEmployees.vue          | vue        |         89 |          0 |         19 |        108 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewLabTests.vue           | vue        |        127 |          0 |         25 |        152 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewMedicines.vue          | vue        |        147 |          0 |         29 |        176 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewSpecializations.vue    | vue        |        145 |          0 |         32 |        177 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\AddPrescription.vue       | vue        |          4 |          0 |          3 |          7 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\HomePage.vue              | vue        |         70 |          0 |         11 |         81 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\Index.vue                 | vue        |        101 |          0 |          7 |        108 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\Login.vue                 | vue        |        124 |          0 |         27 |        151 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\Signin.vue                | vue        |        189 |          0 |         28 |        217 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\AddExistingPatient.vue | vue        |        130 |          0 |         20 |        150 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\AddNewPatient.vue      | vue        |        123 |          0 |         19 |        142 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\HomePage.vue           | vue        |         90 |          0 |         16 |        106 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\Index.vue              | vue        |        101 |          0 |          7 |        108 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\Login.vue              | vue        |        119 |          0 |         25 |        144 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\Signin.vue             | vue        |        140 |          0 |         22 |        162 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\HomeView.vue                          | vue        |         81 |          2 |         11 |         94 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\Logout.vue                            | vue        |         37 |          0 |          6 |         43 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\PharmacyViews\Index.vue               | vue        |        101 |          0 |          7 |        108 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\PharmacyViews\Login.vue               | vue        |        117 |          0 |         25 |        142 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\PharmacyViews\Signin.vue              | vue        |        140 |          0 |         22 |        162 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\tailwind.config.js                              | JavaScript |         10 |          1 |          2 |         13 |
+| c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\vite.config.js                                  | JavaScript |         15 |          0 |          2 |         17 |
+| Total                                                                                                                                    |            |      6,867 |         15 |        642 |      7,524 |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

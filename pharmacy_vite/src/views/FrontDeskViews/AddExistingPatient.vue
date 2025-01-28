@@ -88,12 +88,12 @@
         }
 
         if (!data.patient_id || !data.doctor_id || !data.date) {
-            warn('warn', 'All values must be filled.')
+            warn('warn', 'All values must be filled.', '')
             return;
         }
 
         if (!checkDate(appointment_date))  {
-            warn('warn', 'Error with appointment date.', 'Make sure the date is filled and is today or after today.');
+            warn('warn', 'Error with appointment date.', 'Make sure the date is filled and is today or after today.', '');
             return;
         }
 
@@ -101,7 +101,10 @@
             ...data
         })
         .then( (response) => {
-            warn('success', 'Successfully made appointment.', '')
+            warn('success', 'Successfully made appointment.', `Token assigned to: ${response.data.token}`)
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in making appointment.', 'Please check the status of the server or try reloading.')
         })
     }
 </script>

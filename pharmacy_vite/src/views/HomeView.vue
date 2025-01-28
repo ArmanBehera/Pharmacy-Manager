@@ -48,8 +48,8 @@
                         <div class="text-white text-2xl p-4 rounded">{{ slotProps.data.name }}</div>
                         <div class="mt-10 text-l">{{ slotProps.data.description }}</div>
                         <span class="mt-5">
-                            <Button icon="pi pi-sign-in" severity="secondary" label="Sign In" @click="$router.push({ name: slotProps.data.siginroute })" v-if="slotProps.data.siginroute"/>
-                            <Button icon="pi pi-user" label="Log In" class="ml-4" @click="$router.push({ name: slotProps.data.loginroute })"/>
+                            <Button icon="pi pi-sign-in" severity="secondary" label="Sign In" @click.prevent="$router.push({ name: slotProps.data.siginroute })" v-if="slotProps.data.siginroute"/>
+                            <Button icon="pi pi-user" label="Log In" class="ml-4" @click.prevent="$router.push({ name: slotProps.data.loginroute })"/>
                         </span>
                     </div>
                 </div>
