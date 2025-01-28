@@ -4,7 +4,7 @@ from administrator.serializers import UserSerializer
 from administrator import authentication
 from administrator.models import User
 from doctor.models import DoctorUser, Appointment, PatientUser
-from doctor.serializers import AppointmentSerializer, PatientSerializer
+from doctor.serializers import AppointmentSerializer, PatientSerializer, DoctorSerializer
 from datetime import datetime, date
 
 class SignIn(views.APIView):
@@ -171,14 +171,18 @@ class NoShowUpdate(views.APIView):
     authentication_classes = (authentication.CustomFrontDeskAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request):
+    def post(self, request):
         # Refreshing the statuses of the patient who did not show up
         today = datetime.now().date()
         scheduledAppointments = Appointment.objects.filter(status='Scheduled', date__lt=today)
 
         # Update their statuses
         scheduledAppointments.update(status='No Show')
-        noShowAppointments = Appointment.objects.filter(status='No Show')
+
+        doctor_id = request.data['doctor_id']
+        doctor = DoctorUser.objects.get(id=doctor_id)
+
+        noShowAppointments = Appointment.objects.filter(status='No Show', doctor=doctor)
 
         serializer = AppointmentSerializer(noShowAppointments, many=True)
 
@@ -206,6 +210,41 @@ class CancelAppointment(views.APIView):
 
         return response.Response('Successful in deleting the appointment for the patient.', status=status.HTTP_200_OK)
 
+
+class RebookAppointment(views.APIView):
+
+    '''
+        On a successful request, changes the status of a 'no-show' appointment to a 'scheduled' appointment
+    '''
+    authentication_classes = (authentication.CustomUserAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        id = request.data['id']
+        date = request.data['date']
+
+        try:
+            appointment = Appointment.objects.get(id=id)
+            doctor = appointment.doctor
+        
+            try:
+                last_appointment_token = Appointment.objects.filter(doctor=doctor, date=request.data['date']).order_by('-token_assigned').first().token_assigned
+            except AttributeError:
+                last_appointment_token = 0
+
+            
+            serializer = AppointmentSerializer(appointment, {'status': 'Scheduled', 'date': datetime.strptime(date, '%Y-%m-%d').date(), 'token_assigned': last_appointment_token + 1}, partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return response.Response('Failed to change appointment status for the patient', status=status.HTTP_400_BAD_REQUEST)
+        
+        return response.Response('Successfully changed appointment status for the patient.', status=status.HTTP_200_OK)
+    
 
 class Logout(views.APIView):
     '''

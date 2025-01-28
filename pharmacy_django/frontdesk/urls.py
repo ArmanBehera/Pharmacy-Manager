@@ -11,4 +11,5 @@ urlpatterns = [
     path('getPatientsForDoctor/', views.GetPatientsForDoctor.as_view(), name='getPatientsForDoctor'),
     path('cancelAppointment/', views.CancelAppointment.as_view(), name='cancelAppointment'),
     path('noShowUpdate/', views.NoShowUpdate.as_view(), name='noShowUpdate'),
+    path('rebookAppointment/', views.RebookAppointment.as_view(), name='rebookAppointment'),
 ]
