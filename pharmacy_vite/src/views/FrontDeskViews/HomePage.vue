@@ -5,14 +5,18 @@
     import { useStore } from 'vuex';
     import { ref, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
-    import { convertDateFormat } from '../../helpers';
+    import { checkDate, convertDateFormat } from '../../helpers';
+    import { format } from 'date-fns';
     
     const patientsData = ref([]);
     const doctorsData = ref([]);
     const noShowPatientsData = ref([]);
     const isLoaded = ref([false, false, false]);
-
-    const deletionDialog = ref(false);
+    
+    // The below variables are for scheduling a new appointment for a patient
+    const appointment_date = ref();
+    const selectedAppointment = ref();
+    const rebookAppointmentDialog = ref(false);
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -40,6 +44,25 @@
         })
         .catch( (error) => {
             warn('warn', "Error getting patients data.", "Please check the status of the server or try reloading.")
+        })
+    }
+
+    const getPatientsNoShow = () => {
+        axios.post('/frontdesk/noShowUpdate/', {
+            'doctor_id': selectedDoctorNoShow.value['id']
+        })
+        .then( (response) => {
+            noShowPatientsData.value = response.data.map(appointment => ({
+                ...appointment,
+                'appointment_date': convertDateFormat(appointment.date),
+                'name': `${appointment.patient.first_name} ${appointment.patient.last_name}`
+            }));
+
+            isLoaded.value[2] = true;
+        })
+        .catch( (error) => {
+            
+            warn('warn', 'Error getting patients who did not show up.', '')
         })
     }
 
@@ -71,19 +94,18 @@
             }
         })
 
-        axios.get('/frontdesk/noShowUpdate/')
-        .then( (response) => {
-            noShowPatientsData.value = response.data.map(appointment => ({
-                ...appointment,
-                'appointment_date': convertDateFormat(appointment.date),
-                'name': `${appointment.patient.first_name} ${appointment.patient.last_name}`
-            }));
-            isLoaded.value[2] = true;
+        watch(selectedDoctorNoShow, (newVal, oldVal) => {
+            try { 
+                if (typeof selectedDoctorNoShow.value == 'object') {
+                    getPatientsNoShow();
+                }
+            }
+            catch (error) {
+                warn('warn', 'Error getting data for patients.', '')
+            }
         })
-        .catch( (error) => {
-            
-            warn('warn', 'Error getting patients who did not show up.', '')
-        })
+
+        
     } else {
         warn('warn', 'Please log in to access this page.', '')
     }
@@ -91,23 +113,56 @@
     const filteredArrayScheduled = ref([]);
     const filteredArrayNoShow = ref([]);
 
-    const confirmDeletion = () => {      
-        deletionDialog.value = true;
+    const confirmNewAppointment = (id) => {      
+        rebookAppointmentDialog.value = true;
+        selectedAppointment.value = id;
     }
 
-    const sendDeleteRequest = () => {
-        deletionDialog.value = false;
+    // For patients with 'no-show'
+    const sendRebookAppointmentRequest = () => {
+        rebookAppointmentDialog.value = false;
+
+        if (!checkDate(appointment_date)) {
+            warn('warn', 'Error with appointment date.', 'Make sure the date is filled and is today or after today.');
+            return;
+        }
+
+        axios.post('/frontdesk/rebookAppointment/', {
+
+            'id': selectedAppointment.value,
+            'date': format(new Date(appointment_date.value), 'yyyy-MM-dd')
+        })
+        .then( (response) => {
+            warn('success', 'Successfully created an appointment for the patient.', '')
+            getPatientsNoShow();
+            getPatients();
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in creating an appointment for the patient.', 'Please check the status of the server or try reloading.')
+        })
     }
 
-    const search = (event, fullArray) => {
+    const searchScheduled = (event, fullArray) => {
         setTimeout(() => {
-            const query = event.query.toLowerCase(); // User's search input
+            const query = event.query.toLowerCase(); // User's searchScheduled input
             // Filter the full array based on the query
             const filtered = fullArray.filter(item =>
                 item.label.toLowerCase().includes(query)
             );
             // Update the reactive ref's value
             filteredArrayScheduled.value = filtered;
+        }, 50);
+    };
+
+    const searchNoShow = (event, fullArray) => {
+        setTimeout(() => {
+            const query = event.query.toLowerCase(); // User's searchScheduled input
+            // Filter the full array based on the query
+            const filtered = fullArray.filter(item =>
+                item.label.toLowerCase().includes(query)
+            );
+            // Update the reactive ref's value
+            filteredArrayNoShow.value = filtered;
         }, 50);
     };
 
@@ -132,11 +187,16 @@
             <div class="mb-4">
                 <div class="card ml-5">
                     <h1 class="text-l font-bld m-2">Scheduled Appointments</h1>
-                    <AutoComplete v-model="selectedDoctorScheduled" optionLabel="label" dropdown :suggestions="filteredArrayScheduled" @complete="(event) => search(event, doctorsData)" class="w-full" forceSelection/>
+                    <AutoComplete v-model="selectedDoctorScheduled" optionLabel="label" dropdown :suggestions="filteredArrayScheduled" @complete="(event) => searchScheduled(event, doctorsData)" class="w-full" forceSelection/>
                     <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                         <Column field="name" header="Name" sortable></Column>
                         <Column field="token_assigned" header="Token" sortable></Column>
                         <Column field="appointment_date" header="Date" sortable></Column>
+                        <Column>
+                            <template #body="slotProps">
+                                <Button severity="success" label="Rebook Appointment" @click.prevent="confirmNewAppointment(slotProps.data.id)"></Button>
+                            </template>
+                        </Column>
                         <Column>
                             <template #body="slotProps">
                                 <Button severity="danger" label="Cancel Appointment" @click.prevent="cancel(slotProps.data.id)"></Button>
@@ -163,14 +223,14 @@
         <div class="mb-4">
             <div class="card ml-5">
                 <h1 class="text-l font-bld m-2">No Show Appointments</h1>
-                <AutoComplete v-model="selectedDoctorNoShow" optionLabel="label" dropdown :suggestions="filteredArrayNoShow" @complete="(event) => search(event, doctorsData, filteredArrayNoShow)" class="w-full" forceSelection/>
+                <AutoComplete v-model="selectedDoctorNoShow" optionLabel="label" dropdown :suggestions="filteredArrayNoShow" @complete="(event) => searchNoShow(event, doctorsData)" class="w-full" forceSelection/>
                 <DataTable v-if="isLoaded[2] & noShowPatientsData.length > 0" :value="noShowPatientsData" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                     <Column field="name" header="Name" sortable></Column>
                     <Column field="token_assigned" header="Token" sortable></Column>
                     <Column field="appointment_date" header="Date" sortable></Column>
                     <Column>
                         <template #body="slotProps">
-                            <Button severity="success" label="New Appointment" icon="pi pi-external-link"  iconPos="right" @click.prevent=""></Button>
+                            <Button severity="success" label="Rebook Appointment" @click.prevent="confirmNewAppointment(slotProps.data.id)"></Button>
                         </template>
                     </Column>
                 </DataTable>
@@ -186,14 +246,10 @@
         </div>
     </div>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
-        <div class="flex items-center gap-4">
-            <i class="pi pi-exclamation-triangle !text-3xl" />
-            <span>Are you sure you want to delete the selected lab tests?</span>
+    <Dialog v-model:visible="rebookAppointmentDialog" :style="{ width: '450px' }" header="Confirm">
+        <div class="flex flex-column align-items-center justify-content-center">
+            <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
+            <Button label="Submit" icon="pi pi-check" text @click="sendRebookAppointmentRequest" class="mt-4"/>
         </div>
-        <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
-            <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
-        </template>
     </Dialog>
 </template>
