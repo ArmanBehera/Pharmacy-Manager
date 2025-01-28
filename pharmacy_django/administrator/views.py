@@ -65,14 +65,8 @@ class VerifyEmployees(views.APIView):
     def get(self, request):
         
         unverifiedEmployees = User.objects.filter(is_verified=False)
-        
-        resp = []
-            
-        for user in unverifiedEmployees:
-            user_serializer = UserSerializer(user)
-            resp.append(user_serializer.data)
-            
-        return response.Response(resp)
+
+        return response.Response(UserSerializer(unverifiedEmployees, many=True).data)
     
     def post(self, request):
         
@@ -110,14 +104,8 @@ class GetEmployees(views.APIView):
     def get(self, request):
         
         users = User.objects.exclude(is_superuser=True)
-        
-        resp = []
-        
-        for user in users:
-            user_serializer = UserSerializer(user)
-            resp.append(user_serializer.data)
             
-        return response.Response(resp)
+        return response.Response(UserSerializer(users, many=True).data)
 
 
 class DeleteEmployees(views.APIView):
@@ -152,27 +140,14 @@ class GetMedicines(views.APIView):
     def get(self, request):
         
         medicines = MedicineStock.objects.all()
-        
-        resp = []
-        
-        for medicine in medicines:
-            medicine_serialized = MedicineStockSerializer(medicine)
-            resp.append(medicine_serialized.data)
-        
-        return response.Response(resp)
+
+        return response.Response(MedicineStockSerializer(medicines, many=True).data)
 
     def post(self, request):
 
         medicineStocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name'])
-        resp = []
 
-        for medicineStock in medicineStocks:
-
-            serializer = MedicineStockSerializer(medicineStock)
-
-            resp.append(serializer.data)
-
-        return response.Response(resp)
+        return response.Response(MedicineStockSerializer(medicineStocks, many=True).data)
 
 
 class AddMedicines(views.APIView):
@@ -291,15 +266,7 @@ class GetSpecializationAvailable(views.APIView):
 
         objects = SpecializationAvailable.objects.all()
 
-        resp = []
-
-        for object in objects:
-            object_serializer = SpecializationSerializer(object)
-
-            number = len(DoctorUser.objects.filter(specialization=object))
-            resp.append({**object_serializer.data, "number": number})
-
-        return response.Response(resp)
+        return response.Response(SpecializationSerializer(objects,  many=True).data)
 
 
 class AddSpecializationAvailable(views.APIView):
@@ -382,14 +349,7 @@ class GetLabTests(views.APIView):
 
         labTests = LabTests.objects.all()
 
-        resp = []
-
-        for labTest in labTests:
-            serializer = LabTestsSerializer(labTest)
-
-            resp.append(serializer.data)
-
-        return response.Response(resp)
+        return response.Response(LabTestsSerializer(labTests, many=True).data)
 
 
 class AddLabTests(views.APIView):
@@ -465,9 +425,5 @@ class Logout(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
     
     def post(self, request):
-        resp = response.Response()
-        # resp.delete_cookie("jwt")
         
-        resp.data = {"message": "Successfully logged out user."}
-        
-        return resp
+        return response.Response("Successfully logged out user.")

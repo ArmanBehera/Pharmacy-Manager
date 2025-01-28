@@ -9,4 +9,6 @@ urlpatterns = [
     path('getPatients/', views.GetPatients.as_view(), name='getPatients'),
     path('getDoctors/', views.GetDoctors.as_view(), name='getDoctors'),
     path('getPatientsForDoctor/', views.GetPatientsForDoctor.as_view(), name='getPatientsForDoctor'),
+    path('cancelAppointment/', views.CancelAppointment.as_view(), name='cancelAppointment'),
+    path('noShowUpdate/', views.NoShowUpdate.as_view(), name='noShowUpdate'),
 ]

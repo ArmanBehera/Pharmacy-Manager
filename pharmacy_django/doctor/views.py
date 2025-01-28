@@ -45,25 +45,11 @@ class GetPatientsForDoctor(views.APIView):
         except:
             return response.Response('Failed to get doctor id.')
 
-        # Refreshing the statuses of the patient who did not show up
-        today = datetime.now().date()
-        appointments = Appointment.objects.filter(status='Scheduled', date__lt=today)
-
-        # Update their statuses
-        appointments.update(status='No Show')  # Example: Mark as 'No Show'
-
         doctor = DoctorUser.objects.get(id=doctor_id)
         today = date.today()
         appointments = Appointment.objects.filter(doctor=doctor, status='Scheduled', date__gte=today).order_by('date', 'token_assigned')
-
-        resp = []
-
-        for appointment in appointments:
-            serializer = AppointmentSerializer(appointment)
-
-            resp.append(serializer.data)
         
-        return response.Response(resp)
+        return response.Response(AppointmentSerializer(appointments, many=True).data)
 
 
 class Logout(views.APIView):
