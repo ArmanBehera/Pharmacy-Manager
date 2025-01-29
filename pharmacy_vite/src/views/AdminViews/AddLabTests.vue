@@ -16,6 +16,7 @@
     const pre_test_requirements = ref(''); // Get from backend
 
     const isRegistered = ref(store.state.isRegistered)
+    const usertype = store.getters.getUserDetails['usertype']
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
@@ -46,7 +47,7 @@
             }
         }
 
-        axios.post('administrator/addLabTests/', {
+        axios.post(`${usertype}/addLabTests/`, {
             ...data
         })
         .then( (response) => {

@@ -49,7 +49,7 @@
             idArray.push(selected.value[i]['id'])
         }
 
-        axios.post('/administrator/deleteLabTests/', { ids: idArray })
+        axios.post(`/${usertype}/deleteLabTests/`, { ids: idArray })
         .then( (response) => {
             data.value = data.value.filter(val => !selected.value.includes(val));
             selected.value = null;

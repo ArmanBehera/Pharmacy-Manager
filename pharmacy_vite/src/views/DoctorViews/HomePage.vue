@@ -5,7 +5,7 @@
     import { ref } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import { convertDateFormat, checkToday } from '../../helpers'
-import router from '../../router';
+    import router from '../../router';
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -29,8 +29,7 @@ import router from '../../router';
                 appointment_date: convertDateFormat(appointment.date), 
                 name: `${appointment.patient.first_name} ${appointment.patient.last_name}`
             }));
-            isLoaded.value[0] = true;
-            console.log(patientsData.value)
+            isLoaded.value[0] = true; 
         })
         .catch( (error) => {
             warn("Error getting patients data.", "Please check the status of the server or try reloading.")
@@ -56,8 +55,8 @@ import router from '../../router';
                         <Column field="appointment_date" header="Date" style="width: 20%;" sortable></Column>
                         <Column style="width: 20%">
                             <template #body="slotProps">
-                                <Button severity="success" label="Prescription" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AddPrescription', query: { id: slotProps.data.id } })" v-if="checkToday(slotProps.data.appointment_date)"/>
-                                <Button severity="secondary" label="Prescription" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AddPrescription', query: { id: slotProps.data.id } })" v-else disabled/>
+                                <Button severity="success" label="Prescription" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AddPrescription', query: { id: slotProps.data.id } })" v-if="checkToday(slotProps.data.date)"/>
+                                <Button severity="secondary" label="Prescription" icon="pi pi-external-link"  iconPos="right" v-else disabled/>
                             </template>
                         </Column>
                     </DataTable>

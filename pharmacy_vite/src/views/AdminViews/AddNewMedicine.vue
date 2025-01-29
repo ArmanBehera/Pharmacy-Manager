@@ -36,6 +36,7 @@
     const description = ref('');
 
     const isRegistered = ref(store.state.isRegistered)
+    const usertype = store.getters.getUserDetails['usertype']
     
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
@@ -43,22 +44,18 @@
 
     if (isRegistered.value === "true") { 
         const usertype = store.getters.getUserDetails['usertype']
-        if (usertype === 'administrator' || usertype === 'pharmacy') {
-            axios.get('/administrator/addMedicines/')
-            .then((response) => {
-                allergensData.value = response.data.allergens
-                ingredientsData.value = response.data.ingredients
-                categoriesData.value = response.data.categories
-                sideEffectsData.value = response.data.sideEffects
-            })
-            .catch((error) => {
-                warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
-            })
-        } else {
-            warn('warn', 'Log in using an admin or pharmacist account to access this page.', '')
-        }
+        axios.get(`/${usertype}/addMedicines/`)
+        .then((response) => {
+            allergensData.value = response.data.allergens
+            ingredientsData.value = response.data.ingredients
+            categoriesData.value = response.data.categories
+            sideEffectsData.value = response.data.sideEffects
+        })
+        .catch((error) => {
+            warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
+        })
     } else {
-        warn('warn', 'Please log in to access this page.', '');
+        warn('warn', 'Please log in with an appropriate account to access this page.', '');
     }
 
     const search = (event, fullArray) => {
@@ -145,7 +142,7 @@
             "expiration_date" : format(new Date(expiration_date.value), 'yyyy-MM-dd')
         }
 
-        axios.post('/administrator/addMedicines/', requestToSend)
+        axios.post(`/${usertype}/addMedicines/`, requestToSend)
         .then( (response) => {
             warn('success', 'Successfully added medicine.', '')
             

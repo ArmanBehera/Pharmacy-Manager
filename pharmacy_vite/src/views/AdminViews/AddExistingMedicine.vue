@@ -25,10 +25,9 @@
     const expiration_date = ref();
 
     const isRegistered = ref(store.state.isRegistered)
+    const usertype = store.getters.getUserDetails['usertype']
 
     if (isRegistered.value === 'true') {
-
-        const usertype = store.getters.getUserDetails['usertype']
         axios.get(`${usertype}/getMedicines/`)
         .then( (response) => {
             medicinesData.value = response.data
@@ -49,7 +48,7 @@
             return;
         }
 
-        axios.post('/administrator/getMedicines/', {
+        axios.post(`/${usertype}/getMedicines/`, {
             'name': medicineName.value
         })
         .then( (response) => {
@@ -72,7 +71,7 @@
             return;
         }
 
-        axios.post('administrator/addMedicineStock/', {
+        axios.post(`${usertype}/addMedicineStock/`, {
             "id": selectedMedicine.value.medicine.id,
             "stock": stock.value,
             "expiration_date": format(new Date(expiration_date.value), 'yyyy-MM-dd')  

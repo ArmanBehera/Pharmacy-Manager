@@ -31,6 +31,7 @@ import AddExistingPatient from '../views/FrontDeskViews/AddExistingPatient.vue'
 import Pharmacy from '../views/PharmacyViews/Index.vue'
 import PharmacySignin from '../views/PharmacyViews/Signin.vue'
 import PharmacyLogin from '../views/PharmacyViews/Login.vue'
+import PharmacyHomePage from '../views/PharmacyViews/HomePage.vue'
 
 const routes = [
   {
@@ -161,6 +162,11 @@ const routes = [
     component: Pharmacy,
     children: [
       {
+        path: '',
+        name: 'PharmacyHomePage',
+        component: PharmacyHomePage
+      },
+      {
         path: 'Login',
         name: 'PharmacyLogin',
         component: PharmacyLogin
@@ -169,6 +175,31 @@ const routes = [
         path: 'Signin',
         name: 'PharmacySignin',
         component: PharmacySignin
+      },
+      {
+        path: 'ViewMedicines',
+        name: 'ViewMedicines',
+        component: ViewMedicines
+      },
+      {
+        path: 'AddNewMedicine',
+        name: 'AddNewMedicine',
+        component: AddNewMedicine
+      },
+      {
+        path: 'AddLabTests',
+        name: 'AddLabTests',
+        component: AddLabTests
+      },
+      {
+        path: 'ViewLabTests',
+        name: 'ViewLabTests',
+        component: ViewLabTests
+      },
+      {
+        path: 'AddExistingMedicine',
+        name: 'AddExistingMedicine',
+        component: AddExistingMedicine
       }
     ]
   }

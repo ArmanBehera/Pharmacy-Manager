@@ -46,7 +46,7 @@
 
         data.value[index] = newData;
 
-        axios.post('/administrator/editMedicines/', {
+        axios.post(`/${usertype}/editMedicines/`, {
              "id": newData.id,
              "name": newData.name,
              "manufacturer": newData.manufacturer,
