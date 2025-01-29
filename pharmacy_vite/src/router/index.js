@@ -9,17 +9,17 @@ import DoctorSignin from '../views/DoctorViews/Signin.vue'
 import DoctorLogin from '../views/DoctorViews/Login.vue'
 import AddPrescription from '../views/DoctorViews/AddPrescription.vue'
 
-import Admin from '../views/AdminViews/Index.vue'
-import AdminHomePage from '../views/AdminViews/HomePage.vue'
-import AdminLogin from '../views/AdminViews/Login.vue'
-import VerifyEmployees from '../views/AdminViews/VerifyEmployees.vue'
-import ViewEmployees from '../views/AdminViews/ViewEmployees.vue'
-import ViewMedicines from '../views/AdminViews/ViewMedicines.vue'
-import AddNewMedicine from '../views/AdminViews/AddNewMedicine.vue'
-import AddLabTests from '../views/AdminViews/AddLabTests.vue'
-import ViewLabTests from '../views/AdminViews/ViewLabTests.vue'
-import AddExistingMedicine from '../views/AdminViews/AddExistingMedicine.vue'
-import ViewSpecializations from '../views/AdminViews/ViewSpecializations.vue'
+import Administrator from '../views/AdministratorViews/Index.vue'
+import AdministratorHomePage from '../views/AdministratorViews/HomePage.vue'
+import AdministratorLogin from '../views/AdministratorViews/Login.vue'
+import VerifyEmployees from '../views/AdministratorViews/VerifyEmployees.vue'
+import ViewEmployees from '../views/AdministratorViews/ViewEmployees.vue'
+import ViewMedicines from '../views/AdministratorViews/ViewMedicines.vue'
+import AddNewMedicine from '../views/AdministratorViews/AddNewMedicine.vue'
+import AddLabTests from '../views/AdministratorViews/AddLabTests.vue'
+import ViewLabTests from '../views/AdministratorViews/ViewLabTests.vue'
+import AddExistingMedicine from '../views/AdministratorViews/AddExistingMedicine.vue'
+import ViewSpecializations from '../views/AdministratorViews/ViewSpecializations.vue'
 
 import FrontDesk from '../views/FrontDeskViews/Index.vue'
 import FrontDeskSignin from '../views/FrontDeskViews/Signin.vue'
@@ -72,56 +72,56 @@ const routes = [
   },
   {
     path: '/administrator',
-    component: Admin,
+    component: Administrator,
     children: [
       {
         path: '',
-        name: 'AdminHomePage',
-        component: AdminHomePage
+        name: 'AdministratorHomePage',
+        component: AdministratorHomePage
       },
       {
         path: 'Login',
-        name: 'AdminLogin',
-        component: AdminLogin
+        name: 'AdministratorLogin',
+        component: AdministratorLogin
       },
       {
         path: 'VerifyEmployees',
-        name: 'VerifyEmployees',
+        name: 'AdministratorVerifyEmployees',
         component: VerifyEmployees
       },
       {
         path: 'ViewEmployees',
-        name: 'ViewEmployees',
+        name: 'AdministratorViewEmployees',
         component: ViewEmployees
       },
       {
         path: 'ViewMedicines',
-        name: 'ViewMedicines',
+        name: 'AdministratorViewMedicines',
         component: ViewMedicines
       },
       {
         path: 'AddNewMedicine',
-        name: 'AddNewMedicine',
+        name: 'AdministratorAddNewMedicine',
         component: AddNewMedicine
       },
       {
         path: 'AddLabTests',
-        name: 'AddLabTests',
+        name: 'AdministratorAddLabTests',
         component: AddLabTests
       },
       {
         path: 'ViewLabTests',
-        name: 'ViewLabTests',
+        name: 'AdministratorViewLabTests',
         component: ViewLabTests
       },
       {
         path: 'AddExistingMedicine',
-        name: 'AddExistingMedicine',
+        name: 'AdministratorAddExistingMedicine',
         component: AddExistingMedicine
       },
       {
         path: 'ViewSpecializations',
-        name: 'ViewSpecializations',
+        name: 'AdministratorViewSpecializations',
         component: ViewSpecializations
       }
     ]
@@ -178,27 +178,27 @@ const routes = [
       },
       {
         path: 'ViewMedicines',
-        name: 'ViewMedicines',
+        name: 'PharmacyViewMedicines',
         component: ViewMedicines
       },
       {
         path: 'AddNewMedicine',
-        name: 'AddNewMedicine',
+        name: 'PharmacyAddNewMedicine',
         component: AddNewMedicine
       },
       {
         path: 'AddLabTests',
-        name: 'AddLabTests',
+        name: 'PharmacyAddLabTests',
         component: AddLabTests
       },
       {
         path: 'ViewLabTests',
-        name: 'ViewLabTests',
+        name: 'PharmacyViewLabTests',
         component: ViewLabTests
       },
       {
         path: 'AddExistingMedicine',
-        name: 'AddExistingMedicine',
+        name: 'PharmacyAddExistingMedicine',
         component: AddExistingMedicine
       }
     ]

@@ -40,7 +40,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                router.push({ name: 'AdminHomePage' })
+                router.push({ name: 'AdministratorHomePage' })
             }
         },
         {
@@ -49,7 +49,7 @@
             loggedIn: false,
             loggedOut: true,
             command: () => {
-                router.push({ name: 'AdminLogin' })
+                router.push({ name: 'AdministratorLogin' })
             }
         },
         {
@@ -116,7 +116,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('ViewEmployees')"
+                                        @click="redirect('AdministratorViewEmployees')"
                                     >
                                         
                                         <i class="pi pi-eye mr-4"></i>
@@ -126,7 +126,7 @@
                                 <li> 
                                     <a
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('VerifyEmployees')"
+                                        @click="redirect('AdministratorVerifyEmployees')"
                                     >
                                         <i class="pi pi-user-plus mr-4"></i>
                                         <span class="font-medium">Verify Employees</span>
@@ -148,7 +148,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                         @click="redirect('ViewMedicines')"
+                                         @click="redirect('AdministratorViewMedicines')"
                                     >
                                         
                                         <i class="pi pi-eye mr-4"></i>
@@ -158,7 +158,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('AddNewMedicine')"
+                                        @click="redirect('AdministratorAddNewMedicine')"
                                     >
                                         <i class="pi pi-plus mr-4"></i>
                                         <span class="font-medium">Add New Medcines</span>
@@ -167,7 +167,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('AddExistingMedicine')"
+                                        @click="redirect('AdministratorAddExistingMedicine')"
                                     >
                                         <i class="pi pi-plus mr-4"></i>
                                         <span class="font-medium">Add Stock for Existing Medcines</span>
@@ -189,7 +189,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                         @click="redirect('ViewLabTests')"
+                                         @click="redirect('AdministratorViewLabTests')"
                                     >
                                         
                                         <i class="pi pi-eye mr-4"></i>
@@ -199,7 +199,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                        @click="redirect('AddLabTests')"
+                                        @click="redirect('AdministratorAddLabTests')"
                                     >
                                         <i class="pi pi-plus mr-4"></i>
                                         <span class="font-medium">Add Lab Test</span>
@@ -221,7 +221,7 @@
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
-                                         @click="redirect('ViewSpecializations')"
+                                         @click="redirect('AdministratorViewSpecializations')"
                                     >   
                                         <i class="pi pi-eye mr-4"></i>
                                         <span class="font-medium">View or Add Specializations Available</span>

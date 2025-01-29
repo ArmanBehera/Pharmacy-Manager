@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="centered">
-                        <Button label="View or Delete Employees" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'ViewEmployees' })" style="margin: 0.5rem"/>
+                        <Button label="View or Delete Employees" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AdministratorViewEmployees' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                     </div>
 
                     <div class="centered" v-if="unverifiedUsersData.length > 0">
-                        <Button label="Verify Employees" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'VerifyEmployees' })" style="margin: 0.5rem"/>
+                        <Button label="Verify Employees" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AdministratorVerifyEmployees' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
                     </div>
 
                     <div class="centered">
-                        <Button label="Edit or Add Medicines" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'ViewMedicines' })" style="margin: 0.5rem"/>
+                        <Button label="Edit or Add Medicines" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AdministratorViewMedicines' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
             </div>
@@ -164,7 +164,7 @@
                     </div>
 
                     <div class="centered">
-                        <Button label="Edit or Add Lab Tests" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'ViewLabTests' })" style="margin: 0.5rem"/>
+                        <Button label="Edit or Add Lab Tests" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AdministratorViewLabTests' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
             </div>
@@ -188,7 +188,7 @@
                     </div>
 
                     <div class="centered">
-                        <Button label="Edit or Add Specializations" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'ViewSpecializations' })" style="margin: 0.5rem"/>
+                        <Button label="Edit or Add Specializations" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AdminViewSpecializations' })" style="margin: 0.5rem"/>
                     </div>
                 </div>
             </div>

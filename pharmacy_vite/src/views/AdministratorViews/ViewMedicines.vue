@@ -4,6 +4,7 @@
     import axios from '../../axios';
     import { useToast } from 'primevue/usetoast';
     import '../../styles/styles.css';
+    import { capitalize } from '../../helpers';
 
     const toast = useToast();
 
@@ -11,6 +12,7 @@
     store.dispatch('initializeStore');
 
     const usertype = store.getters.getUserDetails['usertype']
+    const usertype2 = capitalize(usertype);
 
     const deletionDialog = ref();
     const selected = ref()
@@ -153,8 +155,8 @@
 
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add New Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddNewMedicine' })"/> 
-                <Button label="Add Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddExistingMedicine' })"/> 
+                <Button label="Add New Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddNewMedicine` })"/> 
+                <Button label="Add Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddExistingMedicine` })"/> 
             </div>
         </div>
     </div>

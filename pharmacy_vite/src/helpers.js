@@ -40,3 +40,7 @@ export const convertDateFormat = (dateString) => {
     // Reorder the parts and join with a hyphen
     return `${third}-${second}-${first}`;
 };
+
+export const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}

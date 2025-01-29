@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { capitalize, ref } from 'vue';
     import { useStore } from 'vuex';
     import axios from '../../axios';
     import { useToast } from 'primevue/usetoast';
@@ -11,6 +11,7 @@
     store.dispatch('initializeStore');
 
     const usertype = store.getters.getUserDetails['usertype']
+    const usertype2 = capitalize(usertype)
 
     const deletionDialog = ref();
     const selected = ref()
@@ -129,7 +130,7 @@
             </div>
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add Lab Tests" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddLabTests' })"/>  
+                <Button label="Add Lab Tests" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddLabTests` })"/>  
             </div>
         </div>
     </div>

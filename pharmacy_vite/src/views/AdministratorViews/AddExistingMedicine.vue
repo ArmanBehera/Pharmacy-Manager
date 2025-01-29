@@ -4,7 +4,7 @@
     import { useStore } from 'vuex';
     import { ref } from 'vue';
     import { useToast } from 'primevue/usetoast';
-    import { checkDate } from '../../helpers';
+    import { checkDate, capitalize } from '../../helpers';
     import { format } from 'date-fns';
 
     const store = useStore();

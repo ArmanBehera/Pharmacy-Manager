@@ -8,9 +8,9 @@
 
     const options = ref([
         {
-            'name': 'Admin',
+            'name': 'Administrator',
             'description': 'Manage users, appointments, and system settings',
-            'loginroute': 'AdminLogin'
+            'loginroute': 'AdministratorLogin'
         },
         {
             'name': 'Doctor',
