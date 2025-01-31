@@ -15,14 +15,14 @@
     const sample_required = ref(''); // Get from backend
     const pre_test_requirements = ref(''); // Get from backend
 
-    const isRegistered = ref(store.state.isRegistered)
+    const is_registered = ref(store.state.is_registered)
     const usertype = store.getters.getUserDetails['usertype']
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (isRegistered.value === 'false') {
+    if (is_registered.value === 'false') {
         warn('warn', 'Please log in to access this page.', '')
     }
 
@@ -52,6 +52,9 @@
         })
         .then( (response) => {
             warn('success', 'Successfully added new labtest.', '')
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         })
         .catch( (error) => {
             warn('warn', 'Unsuccessful in adding the labtest.', '')
@@ -93,7 +96,7 @@
     </div>
 
     <div class="flex justify-center mt-4">
-        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'true'"/>
-        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'false'" disabled/>
+        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="is_registered === 'true'"/>
+        <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="is_registered === 'false'" disabled/>
     </div>
 </template>

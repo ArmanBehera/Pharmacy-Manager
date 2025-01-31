@@ -5,13 +5,13 @@ import mutations from './mutations';
 
 
 const state = {
-  isRegistered: false,
+  is_registered: false,
   usertype: '',
-  firstName: '',
-  lastName: '',
-  accessToken: '',
-  refreshToken: '',
-  userId: '' // If the role is a doctor, then the user_id will be the id from DoctorUser model
+  first_name: '',
+  last_name: '',
+  access_token: '',
+  refresh_token: '',
+  user_id: '' // If the role is a doctor, then the user_id will be the id from DoctorUser model
 }
 
 export default createStore({

@@ -10,14 +10,12 @@
     const first_name = ref('');
     const last_name = ref('');
     const password = ref('');
-    const confirmPassword = ref('');
+    const confirm_password = ref('');
 
     const store = useStore();
     const toast = useToast();
 
     store.dispatch('initializeStore');
-
-    const emit = defineEmits(['logged-in'])
 
     const visibility = ref(true);
 
@@ -60,7 +58,7 @@
         
         let filled = true;
 
-        if (data.password !== confirmPassword.value){
+        if (data.password !== confirm_password.value){
             warn('Passwords do not match!', 'Password and confirmation password do not match. Ensure that they are the same.')
             return;
         }
@@ -84,22 +82,23 @@
                 
                 'username': `${data.first_name}${data.last_name}`,
                 'password': data.password,
-                'role': 'Admin'
+                'role': 'Administrator'
             })
             .then( (response) => {
 
                 store.dispatch('setLoginDetails', {
                     'usertype': 'administrator',
-                    'isRegistered': true,
-                    'refreshToken': response.data.refresh,
-                    'accessToken': response.data.access,
-                    'userId': response.data.user_id,
-                    'firstName': data.first_name,
-                    'lastName': data.last_name,
+                    'is_registered': true,
+                    'refresh_token': response.data.refresh,
+                    'access_token': response.data.access,
+                    'user_id': response.data.user_id,
+                    'first_name': data.first_name,
+                    'last_name': data.last_name,
                 });
-                router.push({ name: 'AdminHomePage' });
+                router.push({ name: 'AdministratorHomePage' });
             })
             .catch( (error) => {
+                console.log(error)
                 // If an error is raised, not working now
                 warn('Unauthorized credentials!', 'Invalid username/password or unauthorized by the admin. Contact admin for further details.');
             })
@@ -125,7 +124,7 @@
             </div>
             
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirmPassword"/>
+                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirm_password"/>
             </div>
 
             <Button label="Submit" @click.prevent="submit"/>

@@ -6,25 +6,25 @@ const instance = axios.create({
 });
 
 const getAccessToken = () => {
-    return localStorage.getItem('accessToken');
+    return localStorage.getItem('access_token');
 };
 
 const getRefreshToken = () => {
-    return localStorage.getItem('refreshToken');
+    return localStorage.getItem('refresh_token');
 }
 
 const refreshAccessToken = async () => {
-    const refreshToken = getRefreshToken();
+    const refresh_token = getRefreshToken();
 
-    if (!refreshToken) {
+    if (!refresh_token) {
         return null;
     }
 
     try {
-        const response = await instance.post('/api/v1/jwt/refresh', { refresh: refreshToken });
-        const accessToken = response.data.access;
-        localStorage.setItem('accessToken', accessToken);
-        return accessToken;
+        const response = await instance.post('/api/v1/jwt/refresh', { refresh: refresh_token });
+        const access_token = response.data.access;
+        localStorage.setItem('access_token', access_token);
+        return access_token;
     } catch (error) {
         return null; // The refresh token is invalid or expired.
     }
@@ -32,10 +32,10 @@ const refreshAccessToken = async () => {
 
 instance.interceptors.request.use(
     async(config) => {
-        let accessToken = getAccessToken();
+        let access_token = getAccessToken();
 
-        if (accessToken) {
-            config.headers['Authorization'] = `JWT ${accessToken}`
+        if (access_token) {
+            config.headers['Authorization'] = `JWT ${access_token}`
         }
 
         return config
@@ -52,27 +52,27 @@ instance.interceptors.response.use(
     },
     async (error) => {
         console.log(error.response.data.detail)
-        const originalRequest = error.config
+        const original_request = error.config
 
         // If the access token is expired and needs to be refreshed
         if (error.response.status === 403 && error.response.data.detail === 'Authentication credentials were not provided.') {
-            const newAccessToken = await refreshAccessToken(); // Gets a new access token as the previous token is expired
+            const new_access_token = await refreshAccessToken(); // Gets a new access token as the previous token is expired
 
-            if (newAccessToken) {
-                originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`; // Changes the access token in the header of the original request's to reflect the changes
-                return instance(originalRequest); // Sends the modified original request back to the backend in another try
+            if (new_access_token) {
+                original_request.headers['Authorization'] = `JWT ${new_access_token}`; // Changes the access token in the header of the original request's to reflect the changes
+                return instance(original_request); // Sends the modified original request back to the backend in another try
             }
         }
         // Indicates that the refresh token is expired and user needs to be logged in again. 
         else if (error.response.status === 401 && error.response.data.detail === 'Token is invalid or expired') {
             const usertype = localStorage.getItem('usertype');
             localStorage.setItem('usertype', '');
-            localStorage.setItem('isRegistered', false);
-            localStorage.setItem('refreshToken', '');
-            localStorage.setItem('accessToken', '');
-            localStorage.setItem('firstName', '');
-            localStorage.setItem('lastName', '');
-            localStorage.setItem('userId', '');
+            localStorage.setItem('is_registered', false);
+            localStorage.setItem('refresh-token', '');
+            localStorage.setItem('access_token', '');
+            localStorage.setItem('first_name', '');
+            localStorage.setItem('last_name', '');
+            localStorage.setItem('user_id', '');
             // If there isn't a usertype and the user is in the login page then the user will be directed to the home page
             if (!usertype && !window.location.href.includes('login')) {
                 router.push('/');

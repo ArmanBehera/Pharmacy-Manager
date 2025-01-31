@@ -5,7 +5,7 @@
     import { useToast } from 'primevue/usetoast';
     import '../../styles/styles.css';
 
-    const deletionDialog = ref();
+    const deletion_dialog = ref();
     const data = ref([]);
     const selected = ref();
     const toast = useToast();
@@ -13,13 +13,13 @@
     const store = useStore();
     store.dispatch('initializeStore');
 
-    const isRegistered = ref(store.state.isRegistered)
+    const is_registered = ref(store.state.is_registered)
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.isRegistered === "true") {
+    if (is_registered.value === "true") {
         axios.get('/administrator/getEmployees/')
         .then( (response) => {
             data.value = response.data
@@ -33,11 +33,11 @@
     }
 
     const confirmDeletion = () => {      
-        deletionDialog.value = true;
+        deletion_dialog.value = true;
     }
 
     const sendRequest = () => {
-        deletionDialog.value = false;
+        deletion_dialog.value = false;
         let idArray = []
 
         for (let i = 0; i < selected.value.length; i++) {
@@ -94,13 +94,13 @@
         <h1 class="text-3xl font-bold m-3">There are no employees in the system.</h1>
     </div>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to delete the selected users?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
+            <Button label="No" icon="pi pi-times" text @click="deletion_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendRequest"/>
         </template>
     </Dialog>

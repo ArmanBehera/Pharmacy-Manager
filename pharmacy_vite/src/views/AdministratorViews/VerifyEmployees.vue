@@ -8,23 +8,22 @@
     const data = ref(['1'])
     const length = ref(-1) // Length of the data 
 
-    const message = ref();
     const selected = ref();
 
-    const verificationDialog = ref();
-    const deletionDialog = ref();
+    const verification_dialog = ref();
+    const deletion_dialog = ref();
 
     const store = useStore();
     store.dispatch('initializeStore');
     const toast = useToast();
 
-    const isRegistered = ref(store.state.isRegistered)
+    const is_registered = ref(store.state.isRegistered)
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.getters.isRegistered === 'true'){
+    if (store.state.is_registered === 'true'){
         axios.get('/administrator/verifyEmployees/')
         .then( (response) => {
             data.value = response.data
@@ -39,17 +38,17 @@
     }
 
     const confirmVerification = () => {
-        verificationDialog.value = true;
+        verification_dialog.value = true;
     }
 
     const confirmDeletion = () => {
-        deletionDialog.value = true;
+        deletion_dialog.value = true;
     }
 
     const sendRequest = (code) => {
 
-        verificationDialog.value = false;
-        deletionDialog.value = false;
+        verification_dialog.value = false;
+        deletion_dialog.value = false;
         let idArray = []
 
         for (let i = 0; i < selected.value.length; i++) {
@@ -108,27 +107,24 @@
         </div>
     </div>
 
-    <Dialog v-model:visible="verificationDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="verification_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to verify the selected users?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="verificationDialog = false" v-if="isRegistered.value === 'true'"/>
-            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)" v-if="isRegistered.value === 'true'"/>
-
-            <Button label="No" icon="pi pi-times" text @click="verificationDialog = false" disabled v-if="isRegistered.value === 'false'"/>
-            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)" disabled v-if="isRegistered.value === 'false'"/>
+            <Button label="No" icon="pi pi-times" text @click="verification_dialog = false"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendRequest(0)"/>
         </template>
     </Dialog>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to delete the selected users?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
+            <Button label="No" icon="pi pi-times" text @click="deletion_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendRequest(1)"/>
         </template>
     </Dialog>

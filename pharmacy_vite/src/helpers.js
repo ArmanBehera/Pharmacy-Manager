@@ -5,10 +5,10 @@ export const checkDate = (date) => {
     } else {
         date = new Date(date.value);
 
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
+        const current_date = new Date();
+        current_date.setHours(0, 0, 0, 0);
 
-        if (date < currentDate) {
+        if (date < current_date) {
             return false;
         }
     }
@@ -22,21 +22,21 @@ export const checkToday = (date) => {
         return false;
     }
 
-    const inputDate = new Date(date);
+    const input_date = new Date(date);
     const today = new Date();
 
     // Reset hours, minutes, seconds, and milliseconds for comparison
-    inputDate.setHours(0, 0, 0, 0);
+    input_date.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
 
     // Compare the two dates
-    return inputDate.getDate() === today.getDate();
+    return input_date.getDate() === today.getDate();
 };
 
 
-export const convertDateFormat = (dateString) => {
+export const convertDateFormat = (date_string) => {
     // Split the date string by the hyphen
-    const [first, second, third] = dateString.split('-');
+    const [first, second, third] = date_string.split('-');
     // Reorder the parts and join with a hyphen
     return `${third}-${second}-${first}`;
 };

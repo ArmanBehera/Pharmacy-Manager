@@ -14,17 +14,17 @@
     const usertype = store.getters.getUserDetails['usertype']
     const usertype2 = capitalize(usertype);
 
-    const deletionDialog = ref();
+    const deletion_dialog = ref();
     const selected = ref()
     const data = ref([]);
     const length = ref(-1);
-    const editingRows = ref([]);
+    const editing_rows = ref([]);
     
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.isRegistered === "true") {
+    if (store.state.is_registered === "true") {
         axios.get(`/${usertype}/getMedicines/`)
         .then( (response) => {
             data.value = response.data
@@ -40,7 +40,7 @@
     }
 
     const confirmDeletion = () => {      
-        deletionDialog.value = true;
+        deletion_dialog.value = true;
     }
 
     const onRowEditSave = (event) => {
@@ -60,7 +60,7 @@
     };
 
     const sendRequest = () => {
-        deletionDialog.value = false;
+        deletion_dialog.value = false;
 
         let idArray = []
 
@@ -95,7 +95,7 @@
                     <DataTable :value="data" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
                      v-model:selection="selected"
                      paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-                     v-model:editingRows="editingRows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id"
+                     v-model:editingRows="editing_rows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id"
                      groupRowsBy="medicine.name" rowGroupMode="rowspan"
                         :pt="{
                             table: { style: 'min-width: 50rem' },
@@ -156,7 +156,7 @@
             <div class="flex justify-center space-x-4 mt-8">
                 <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
                 <Button label="Add New Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddNewMedicine` })"/> 
-                <Button label="Add Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddExistingMedicine` })"/> 
+                <Button label="Add Stock for Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddExistingMedicine` })"/> 
             </div>
         </div>
     </div>
@@ -165,13 +165,13 @@
         <h1 class="text-3xl font-bold m-3">There are no medicines registered in the system.</h1>
     </div>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to delete the selected medicines?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
+            <Button label="No" icon="pi pi-times" text @click="deletion_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendRequest"/>
         </template>
     </Dialog>

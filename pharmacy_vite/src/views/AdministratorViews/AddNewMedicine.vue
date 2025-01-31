@@ -10,23 +10,23 @@
     const store = useStore();
     const toast = useToast();
 
-    const ingredientsCount = ref(1);
-    const ingredientsData = ref([]);
-    let selectedIngredients = ref([]);
+    const ingredients_count = ref(1);
+    const ingredients_data = ref([]);
+    let selected_ingredients = ref([]);
 
-    const allergensCount = ref(1);
-    const allergensData = ref([]);
-    let selectedAllergens = ref([]);
+    const allergens_count = ref(1);
+    const allergens_data = ref([]);
+    let selected_allergens = ref([]);
 
-    const categoriesCount = ref(1);
-    const categoriesData = ref([]);
-    let selectedCategories = ref([]);
+    const categories_count = ref(1);
+    const categories_data = ref([]);
+    let selected_categories = ref([]);
 
-    const sideEffectsCount = ref(1);
-    const sideEffectsData = ref([]);
-    let selectedSideEffects = ref([]);
+    const side_effects_count = ref(1);
+    const side_effects_data = ref([]);
+    let selected_side_effects = ref([]);
 
-    const filteredArray = ref();
+    const filtered_array = ref();
 
     const name = ref('');
     const stock = ref();
@@ -35,21 +35,25 @@
     const expiration_date = ref();
     const description = ref('');
 
-    const isRegistered = ref(store.state.isRegistered)
+    const timings = ref('');
+    const timings_choices = ref(['Before Food', 'After Food', 'Custom'])
+    const custom_timing_description = ref('');
+
+    const is_registered = ref(store.state.is_registered)
     const usertype = store.getters.getUserDetails['usertype']
     
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (isRegistered.value === "true") { 
+    if (is_registered.value === "true") { 
         const usertype = store.getters.getUserDetails['usertype']
         axios.get(`/${usertype}/addMedicines/`)
         .then((response) => {
-            allergensData.value = response.data.allergens
-            ingredientsData.value = response.data.ingredients
-            categoriesData.value = response.data.categories
-            sideEffectsData.value = response.data.sideEffects
+            allergens_data.value = response.data.allergens
+            ingredients_data.value = response.data.ingredients
+            categories_data.value = response.data.categories
+            side_effects_data.value = response.data.sideEffects
         })
         .catch((error) => {
             warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
@@ -61,9 +65,9 @@
     const search = (event, fullArray) => {
         setTimeout(() => {
             if (!event.query.trim().length) {
-                filteredArray.value = [...fullArray]
+                filtered_array.value = [...fullArray]
             } else {
-                filteredArray.value = fullArray.filter((element) => {
+                filtered_array.value = fullArray.filter((element) => {
                     return element.name.toLowerCase().startsWith(event.query.toLowerCase());
                 });
             }
@@ -92,40 +96,61 @@
             return;
         }
 
+        if (!timings.value) {
+            warn('warn', 'Timings field should be filled with the timing at which the medicine should be taken.', '');
+            return;
+        }
+
         if (!checkDate(expiration_date)) {
             warn('Error with expiration date.', 'Make sure the date is filled and is today or after today.');
             return;
         }
 
-        if (selectedAllergens.value.length == 0) {
+        if (selected_allergens.value.length == 0) {
             warn('warn', 'Allergens should be filled.', '');
             return;
         }
 
-        if (selectedSideEffects.value.length == 0){
+        if (selected_side_effects.value.length == 0){
             warn('warn', 'Side Effects should be filled.', '');
             return;
         }
 
+        const backend_timing = ref();
+
+        if (timings.value === 'Before Food') {
+            backend_timing.value = 'before_food'
+        } else if (timings.value === 'After Food') {
+            backend_timing.value = 'after_food'
+        } else if (timings.value === 'Custom') {
+            backend_timing.value = 'custom'
+        } else {
+            warn('warn', 'The value for timings should be an option from the dropdown.', 'Retry again.')
+            return;
+        }
+
         const medicineToSend = {
-            "name": name.value,
-            "price": price.value,
-            "description": description.value ? description.value : '',
-            "manufacturer": manufacturer.value,
-            "sideEffects" : selectedSideEffects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
-            "allergens" : selectedAllergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
+            'name': name.value,
+            'price': price.value,
+            'description': description.value ? description.value : '',
+            'manufacturer': manufacturer.value,
+            'timings': timings.value,
+            'side_effects' : selected_side_effects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
+            'allergens' : selected_allergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
+            'timings': backend_timing.value,
+            'custom_timing_description': custom_timing_description.value
         }
         
-        if (selectedIngredients.value.length != 0) {
-            medicineToSend.ingredients = selectedIngredients.value.map(ingredient => ({ name: ingredient.name ? ingredient.name : ingredient }));
+        if (selected_ingredients.value.length != 0) {
+            medicineToSend.ingredients = selected_ingredients.value.map(ingredient => ({ name: ingredient.name ? ingredient.name : ingredient }));
         }
 
-        if (selectedCategories.value.length != 0){
+        if (selected_categories.value.length != 0){
             const categoriesArray = [];
 
-            for (let i = 0; i < categoriesCount.value; i++) {
+            for (let i = 0; i < categories_count.value; i++) {
                 categoriesArray[i] = {
-                    "name": selectedCategories.value[i].name ? selectedCategories.value[i].name : selectedCategories.value[i],
+                    "name": selected_categories.value[i].name ? selected_categories.value[i].name : selected_categories.value[i],
                     "usage_priority": (i + 1)
                 };
             }
@@ -145,11 +170,10 @@
         axios.post(`/${usertype}/addMedicines/`, requestToSend)
         .then( (response) => {
             warn('success', 'Successfully added medicine.', '')
-            
             // Reload the page
             setTimeout(() => {
                 window.location.reload();
-            }, 3000);
+            }, 1000);
         })  
         .catch( (error) => {
             warn('warn', 'Unsuccessful in adding medicine.', 'Please try again in some time.')
@@ -160,7 +184,7 @@
 <template>
     <Toast />
 
-    <div class="centered" v-if="isRegistered === 'true'">
+    <div class="centered" v-if="is_registered === 'true'">
         <h1 class="text-3xl font-bld m-3">Add Medicines</h1>
     </div>
 
@@ -176,47 +200,49 @@
                     <Textarea v-model="description" autoResize rows="5" cols="54" class="w-full" />
                     <label>Description</label>
                 </FloatLabel>
+                <Select v-model="timings" :options="timings_choices" placeholder="Timing for taking the medicine"/>
+                <InputText id="customTiming" placeholder="Custom Timing Description" v-model.trim="custom_timing_description" v-if="timings === 'Custom'" class="p-inputtext-sm w-full"/>
             </div>
 
             <div class="flex flex-col space-y-6">
                 <div class="flex flex-col space-y-4">
                     <label class="font-semibold">Ingredients</label>
-                    <div v-for="n in ingredientsCount" :key="n" class="flex items-center space-x-4">
-                        <AutoComplete :placeholder="`Ingredient ${n}`" v-model="selectedIngredients[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, ingredientsData)" class="w-full" />
+                    <div v-for="n in ingredients_count" :key="n" class="flex items-center space-x-4">
+                        <AutoComplete :placeholder="`Ingredient ${n}`" v-model="selected_ingredients[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, ingredients_data)" class="w-full" />
                     </div>
-                    <Button label="Add Ingredient" @click.prevent="ingredientsCount += 1" class="p-button-sm" />
+                    <Button label="Add Ingredient" @click.prevent="ingredients_count += 1" class="p-button-sm" />
                 </div>
 
                 <div class="flex flex-col space-y-4">
                     <label class="font-semibold">Allergens</label>
-                    <div v-for="n in allergensCount" :key="n" class="flex items-center space-x-4">
-                        <AutoComplete :placeholder="`Allergy ${n}*`" v-model="selectedAllergens[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, allergensData)" class="w-full" />
+                    <div v-for="n in allergens_count" :key="n" class="flex items-center space-x-4">
+                        <AutoComplete :placeholder="`Allergy ${n}*`" v-model="selected_allergens[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, allergens_data)" class="w-full" />
                     </div>
-                    <Button label="Add Allergy" @click.prevent="allergensCount += 1" class="p-button-sm" />
+                    <Button label="Add Allergy" @click.prevent="allergens_count += 1" class="p-button-sm" />
                 </div>
             </div>
 
             <div>
                 <div class="flex flex-col space-y-4">
                     <label class="font-semibold">Categories</label>
-                    <div v-for="n in categoriesCount" :key="n" class="flex items-center space-x-4">
-                        <AutoComplete :placeholder="`Use ${n}*`" v-model="selectedCategories[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, categoriesData)" class="w-full" />
+                    <div v-for="n in categories_count" :key="n" class="flex items-center space-x-4">
+                        <AutoComplete :placeholder="`Use ${n}*`" v-model="selected_categories[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, categories_data)" class="w-full" />
                     </div>
-                    <Button label="Add Use" @click.prevent="categoriesCount += 1" class="p-button-sm" />
+                    <Button label="Add Use" @click.prevent="categories_count += 1" class="p-button-sm" />
                 </div>
 
                 <div class="flex flex-col space-y-4">
                     <label class="font-semibold mt-4">Side Effects</label>
-                    <div v-for="n in sideEffectsCount" :key="n" class="flex items-center space-x-4">
-                        <AutoComplete :placeholder="`Side Effect ${n}*`" v-model="selectedSideEffects[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, sideEffectsData)" class="w-full" />
+                    <div v-for="n in side_effects_count" :key="n" class="flex items-center space-x-4">
+                        <AutoComplete :placeholder="`Side Effect ${n}*`" v-model="selected_side_effects[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, side_effects_data)" class="w-full" />
                     </div>
-                    <Button label="Add Side Effect" @click.prevent="sideEffectsCount += 1" class="p-button-sm" />
+                    <Button label="Add Side Effect" @click.prevent="side_effects_count += 1" class="p-button-sm" />
                 </div>
             </div>
         </div>
         <div class="flex justify-center mt-4">
-            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'true'"/>
-            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="isRegistered === 'false'" disabled/>
+            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="is_registered === 'true'"/>
+            <Button label="Submit" @click.prevent="submit" class="p-button-lg" v-if="is_registered === 'false'" disabled/>
         </div>
     </div>
 </template>

@@ -146,12 +146,12 @@ const routes = [
         component: FrontDeskSignin
       },
       {
-        path: 'addNewPatient',
+        path: 'AddNewPatient',
         name: 'AddNewPatient',
         component: AddNewPatient
       },
       {
-        path: 'addExistingPatient',
+        path: 'AddExistingPatient',
         name: 'AddExistingPatient',
         component: AddExistingPatient
       }

@@ -13,7 +13,7 @@
     const usertype = store.getters.getUserDetails['usertype']
     const usertype2 = capitalize(usertype)
 
-    const deletionDialog = ref();
+    const deletion_dialog = ref();
     const selected = ref()
     const data = ref([]);
     const length = ref(-1);
@@ -23,7 +23,7 @@
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.isRegistered === "true") {
+    if (store.state.is_registered === "true") {
         axios.get(`/${usertype}/getLabTests/`)
         .then( (response) => {
             data.value = response.data
@@ -38,11 +38,11 @@
     }
 
     const confirmDeletion = () => {      
-        deletionDialog.value = true;
+        deletion_dialog.value = true;
     }
 
     const sendDeleteRequest = () => {
-        deletionDialog.value = false;
+        deletion_dialog.value = false;
 
         let idArray = []
 
@@ -140,13 +140,13 @@
         <h1 class="text-3xl font-bold m-3">There are no lab tests registered in the system.</h1>
     </div>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to delete the selected lab tests?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
+            <Button label="No" icon="pi pi-times" text @click="deletion_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
         </template>
     </Dialog>

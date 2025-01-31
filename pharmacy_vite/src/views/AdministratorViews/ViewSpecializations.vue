@@ -12,23 +12,22 @@
 
     const usertype = store.getters.getUserDetails['usertype']
 
-    const deletionDialog = ref();
+    const deletion_dialog = ref();
     const selected = ref()
     const data = ref([]);
-    const length = ref(-1);
-    const editingRows = ref([]);
+    const editing_rows = ref([]);
 
-    const specializationName = ref([]);
+    const specialization_name = ref([]);
     
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.isRegistered === "true") {
+    if (store.state.is_registered === "true") {
         axios.get(`/administrator/getSpecializations/`)
         .then( (response) => {
             data.value = response.data
-            length.value = data.value.length
+            console.log(response.data)
         })
         .catch( (error) => {
             warn('warn', 'Log in using an admin account to access this page.', '')
@@ -39,11 +38,11 @@
     }
 
     const confirmDeletion = () => {      
-        deletionDialog.value = true;
+        deletion_dialog.value = true;
     }
 
     const sendDeleteRequest = () => {
-        deletionDialog.value = false;
+        deletion_dialog.value = false;
 
         let idArray = []
 
@@ -84,13 +83,13 @@
     }
 
     const submit = () => {
-        if (!specializationName.value) {
+        if (!specialization_name.value) {
             warn('warn', 'Specialization Name field should be filled with the name of the specialization.', '');
             return;
         }
 
         axios.post('/administrator/addSpecializations/', {
-            'specialization': specializationName.value
+            'specialization': specialization_name.value
         })
         .then( (response) => {
             warn('success', 'Succesfully added specialization.', '')
@@ -111,7 +110,7 @@
 
             <div class="flex flex-column" v-if="data.length > 0">
                 <div class="card">
-                    <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+                    <DataTable v-model:editingRows="editing_rows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                     resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
                         :pt="{
                             table: { style: 'min-width: 50rem' },
@@ -141,8 +140,7 @@
                 </div>
             </div>
             <div class="flex justify-center space-x-4 mt-8">
-                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
-                <Button label="Add Specialization" icon="pi pi-plus" severity="success" @click="$router.push({ name: 'AddSpecialization' })"/>  
+                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/> 
             </div>
         </div>
 
@@ -157,18 +155,18 @@
         <h1 class="text-xl font-bold mt-10">Add Specializations</h1>  
 
         <div class="flex flex-row mt-2">
-            <InputText id="name" placeholder="Specialization Name *" v-model.trim="specializationName"/>
+            <InputText id="name" placeholder="Specialization Name *" v-model.trim="specialization_name"/>
             <Button label="Submit" @click.prevent="submit" class="ml-2"/>
         </div>
     </div>
 
-    <Dialog v-model:visible="deletionDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
             <span>Are you sure you want to delete the selected specializations?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deletionDialog = false"/>
+            <Button label="No" icon="pi pi-times" text @click="deletion_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
         </template>
     </Dialog>

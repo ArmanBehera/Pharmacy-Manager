@@ -1,0 +1,32 @@
+"filename", "language", "vue", "JavaScript", "comment", "blank", "total"
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\helpers.js", "JavaScript", 0, 3, 0, 1, 4
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\router\index.js", "JavaScript", 0, 31, 0, 0, 31
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddExistingMedicine.vue", "vue", -106, 0, 0, -22, -128
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddLabTests.vue", "vue", -83, 0, 0, -15, -98
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\AddNewMedicine.vue", "vue", -213, 0, 0, -40, -253
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\HomePage.vue", "vue", -166, 0, 0, -31, -197
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\Index.vue", "vue", -232, 0, 0, -20, -252
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\Login.vue", "vue", -119, 0, 0, -24, -143
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\VerifyEmployees.vue", "vue", -114, 0, 0, -21, -135
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewEmployees.vue", "vue", -89, 0, 0, -19, -108
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewLabTests.vue", "vue", -127, 0, 0, -25, -152
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewMedicines.vue", "vue", -147, 0, 0, -29, -176
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdminViews\ViewSpecializations.vue", "vue", -145, 0, 0, -32, -177
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\AddExistingMedicine.vue", "vue", 106, 0, 0, 21, 127
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\AddLabTests.vue", "vue", 84, 0, 0, 15, 99
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\AddNewMedicine.vue", "vue", 210, 0, 0, 40, 250
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\HomePage.vue", "vue", 166, 0, 0, 31, 197
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\Index.vue", "vue", 232, 0, 0, 20, 252
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\Login.vue", "vue", 119, 0, 0, 24, 143
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\VerifyEmployees.vue", "vue", 114, 0, 0, 21, 135
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\ViewEmployees.vue", "vue", 89, 0, 0, 19, 108
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\ViewLabTests.vue", "vue", 128, 0, 0, 25, 153
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\ViewMedicines.vue", "vue", 149, 0, 0, 29, 178
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\AdministratorViews\ViewSpecializations.vue", "vue", 143, 0, 0, 32, 175
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\AddPrescription.vue", "vue", 32, 0, 0, 6, 38
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\DoctorViews\HomePage.vue", "vue", -1, 0, 0, 0, -1
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\AddExistingPatient.vue", "vue", 3, 0, 0, 0, 3
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\HomePage.vue", "vue", 131, 0, 0, 18, 149
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\FrontDeskViews\Index.vue", "vue", 38, 0, 0, 3, 41
+"c:\Users\Dell\Documents\IB\Computer Science\IA\Code\ArmanBehera_CSIA (old)\pharmacy_vite\src\views\PharmacyViews\HomePage.vue", "vue", 4, 0, 0, 3, 7
+"Total", "-", 206, 34, 0, 30, 270

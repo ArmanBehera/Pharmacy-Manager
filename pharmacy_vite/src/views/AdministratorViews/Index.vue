@@ -7,11 +7,11 @@
     import '../../styles/styles.css';
     
     const store = useStore();
-    const drawerVisible = ref(false);
-    const dropdownOpenEmployees = ref(false);
-    const dropdownOpenMedicines = ref(false);
-    const dropdownOpenLabTests = ref(false);
-    const dropdownOpenSpecializations = ref(false);
+    const drawer_visible = ref(false);
+    const dropdown_open_employees = ref(false);
+    const dropdown_open_medicines = ref(false);
+    const dropdown_open_lab_tests = ref(false);
+    const dropdown_open_specializations = ref(false);
 
     store.dispatch('initializeStore');
 
@@ -22,7 +22,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                drawerVisible.value = true;
+                drawer_visible.value = true;
             }
         },
         {
@@ -63,34 +63,32 @@
         }
     ]);
 
-    const loggedIn = computed(() => store.state.isRegistered === 'true');
-
-    
+    const logged_in = computed(() => store.state.is_registered === 'true');
 
     const toggleDropdownEmployees = () => {
-        dropdownOpenEmployees.value = !dropdownOpenEmployees.value;
+        dropdown_open_employees.value = !dropdown_open_employees.value;
     }
 
     const toggleDropdownMedicines = () => {
-        dropdownOpenMedicines.value = !dropdownOpenMedicines.value;
+        dropdown_open_medicines.value = !dropdown_open_medicines.value;
     }
 
     const toggleDropdownLabTests = () => {
-        dropdownOpenLabTests.value = !dropdownOpenLabTests.value
+        dropdown_open_lab_tests.value = !dropdown_open_lab_tests.value
     }
 
     const toggleDropdownSpecializations = () => {
-        dropdownOpenSpecializations.value = !dropdownOpenSpecializations.value
+        dropdown_open_specializations.value = !dropdown_open_specializations.value
     }
 
-    const redirect = (urlName) => {
-        router.push({ name: urlName})
-        drawerVisible.value = false
+    const redirect = (url_name) => {
+        router.push({ name: url_name})
+        drawer_visible.value = false
     }
 </script>
 
 <template>
-    <Drawer v-model:visible="drawerVisible">
+    <Drawer v-model:visible="drawer_visible">
         <template #container="{ closeCallback }">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-between px-3 py-4 shadow-md">
@@ -110,9 +108,9 @@
                             >
                                 <i class="pi pi-chart-line mr-2"></i>
                                 <span class="font-medium">Manage Employees</span>
-                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenEmployees }"></i>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdown_open_employees }"></i>
                             </a>
-                            <ul v-show="dropdownOpenEmployees" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                            <ul v-show="dropdown_open_employees" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
@@ -142,9 +140,9 @@
                             >
                                 <i class="pi pi-chart-line mr-4"></i>
                                 <span class="font-medium">Manage Medicines</span>
-                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenMedicines }"></i>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdown_open_medicines }"></i>
                             </a>
-                            <ul v-show="dropdownOpenMedicines" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                            <ul v-show="dropdown_open_medicines" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
@@ -183,9 +181,9 @@
                             >
                                 <i class="pi pi-chart-line mr-4"></i>
                                 <span class="font-medium">Manage Lab Tests</span>
-                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenLabTests }"></i>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdown_open_lab_tests }"></i>
                             </a>
-                            <ul v-show="dropdownOpenLabTests" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                            <ul v-show="dropdown_open_lab_tests" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
@@ -215,9 +213,9 @@
                             >
                                 <i class="pi pi-chart-line mr-4"></i>
                                 <span class="font-medium">Manage Specializations</span>
-                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownOpenSpecializations }"></i>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdown_open_specializations }"></i>
                             </a>
-                            <ul v-show="dropdownOpenSpecializations" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                            <ul v-show="dropdown_open_specializations" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
@@ -237,7 +235,7 @@
 
     <Menubar :model="items">
         <template #item="{ item, props }">
-            <a v-if="item.loggedIn == loggedIn || item.loggedOut == !loggedIn" :target="item.target" v-bind="props.action">
+            <a v-if="item.loggedIn == logged_in || item.loggedOut == !logged_in" :target="item.target" v-bind="props.action">
                 <span :class="item.icon" />
                 <span class="ml-2">{{ item.label }}</span>
             </a>

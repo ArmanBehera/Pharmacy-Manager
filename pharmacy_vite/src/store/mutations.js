@@ -3,37 +3,37 @@ export default {
         state.usertype = usertype;
     },
 
-    setIsRegistered(state, isRegistered) {
-        state.isRegistered = isRegistered;
+    setIsRegistered(state, is_registered) {
+        state.is_registered = is_registered;
     },
 
-    setFirstName(state, firstName) {
-        state.firstName = firstName;
+    setFirstName(state, first_name) {
+        state.first_name = first_name;
     },
 
-    setLastName(state, lastName) {
-        state.lastName = lastName
+    setLastName(state, last_name) {
+        state.last_name = last_name
     },
     
-    setRefreshToken(state, refresh) {
-        state.refreshToken = refresh
+    setRefreshToken(state, refresh_token) {
+        state.refresh_token = refresh_token
     },
 
-    setAccessToken(state, access) {
-        state.accessToken = access
+    setAccessToken(state, access_token) {
+        state.access_token = access_token
     },
 
-    setUserId(state, userId) {
-        state.userId = userId
+    setUserId(state, user_id) {
+        state.user_id = user_id
     },
 
     logout (state) {    
         state.usertype = '';
-        state.isRegistered = false;
-        state.accessToken = '';
-        state.refreshToken = '';
-        state.firstName = '';
-        state.lastName = '';
-        state.userId = '';
+        state.is_registered = false;
+        state.access_token = '';
+        state.refresh_token = '';
+        state.first_name = '';
+        state.last_name = '';
+        state.user_id = '';
     }
 }

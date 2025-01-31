@@ -9,8 +9,8 @@
     const store = useStore()
     store.dispatch('initializeStore')
     
-    if (store.state.isRegistered === "true") {  
-        const usertype = store.getters.getUserDetails['usertype']
+    if (store.state.is_registered === "true") {  
+        const usertype = store.state.usertype
         const url = '/' + usertype + '/logout/'
 
         axios.post(url, 
