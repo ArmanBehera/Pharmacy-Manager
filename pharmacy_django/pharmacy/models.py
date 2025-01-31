@@ -47,14 +47,23 @@ class Medicines(models.Model):
     '''
         Stores the medicines value
     '''
+
+    TIMING_CHOICES = [
+        ('before_food', 'before_food'),
+        ('after_food', 'after_food'),
+        ('custom', 'custom')
+    ]
+    
     name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
     price = models.FloatField(validators=[MinValueValidator(0.0)], verbose_name="Price", help_text="Price of the medicine", blank=False)
     description = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Description of the medicine")
     manufacturer = models.CharField(max_length=255, verbose_name="Manufacturer", help_text="Manufacturer of the medicine", blank=False)
     ingredients = models.ManyToManyField(Ingredients, verbose_name="Ingredients", help_text="Ingredients in the medicine", related_name="medicines")
     categories = models.ManyToManyField(Categories, verbose_name="Categories", help_text="Categories of the medicine", related_name="medicines", blank=False)
-    sideEffects = models.ManyToManyField(SideEffects, verbose_name="Side Effects", help_text="Possible side effects of the medicine", related_name="medicines", blank=False)
+    side_effects = models.ManyToManyField(SideEffects, verbose_name="Side Effects", help_text="Possible side effects of the medicine", related_name="medicines", blank=False)
     allergens = models.ManyToManyField(Allergens, verbose_name="Allergens", help_text="Patients with these allergies should avoid.", related_name="medicines", blank=False)
+    timings = models.CharField(max_length=11, choices=TIMING_CHOICES, verbose_name="Timing", blank=False)
+    custom_timing_description = models.TextField(blank=True, null=True, verbose_name="Description for Custom timing if selected")
 
     def __str__(self):
         return self.name
@@ -66,7 +75,7 @@ class Medicines(models.Model):
 
 class MedicineStock(models.Model):
 
-    medicine = models.ForeignKey(Medicines, verbose_name="Medicine Details", on_delete=models.PROTECT, related_name="Medicine_Stock", blank=False, null=False)
+    medicine = models.ForeignKey(Medicines, verbose_name="Medicine Details", on_delete=models.CASCADE, related_name="Medicine_Stock", blank=False, null=False)
     stock = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Stock", help_text="Stock quantity of the medicine", blank=False)
     expiration_date = models.DateField(verbose_name="Expiration Date", blank=False, help_text="Expiration date of the medicine")
 
@@ -85,3 +94,45 @@ class LabTests(models.Model):
 
     def __str__(self):
         return f"Test Name - {self.name}. Cost - {self.test_cost}"
+
+
+class UnlistedMedicine(models.Model):
+    '''
+        Model for medicines that are not available in the pharmacy
+    '''
+    DURATION_UNIT_CHOICES = [
+        ('Days', 'Days'),
+        ('Months', 'Months')
+    ]
+
+    TIMING_CHOICES = [
+        ('before_food', 'before_food'),
+        ('after_food', 'after_food'),
+        ('custom', 'custom')
+    ]
+
+    name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
+    frequency = models.IntegerField(validators=[MinValueValidator(1)], help_text="Number of times the medicine should be taken per day")
+    duration_value = models.IntegerField(validators=[MinValueValidator(1)], help_text="Duration value based on the selected unit")
+    duration_unit = models.CharField(max_length=6, choices=DURATION_UNIT_CHOICES, verbose_name="Duration Unit")
+    timings = models.CharField(max_length=11, choices=TIMING_CHOICES, verbose_name="Timing", blank=False)
+    custom_timing_description = models.TextField(blank=True, null=True, verbose_name="Description for Custom timing if selected")
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(frequency__gte=1),
+                name='check_valid_frequency_unlisted_medicines'
+            ),
+            models.CheckConstraint(
+                check=models.Q(duration_value__gte=1),
+                name='check_valid_duration_value_unlisted_medicines'
+            ),
+        ]
+
+
+class UnlistedLabTest(models.Model):
+    '''
+        Model for labtests that are not provided by the pharmacy 
+    '''
+    name = models.CharField(max_length=255, verbose_name="Test Name", blank=False)

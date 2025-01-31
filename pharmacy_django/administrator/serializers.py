@@ -26,8 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
     
          
     def validate_role(self, value):
-        if value not in ['Admin', 'Doctor', 'FrontDesk', 'Pharmacy']:
+        if value not in ['Administrator', 'Doctor', 'FrontDesk', 'Pharmacy']:
             raise exceptions.ValidationError(detail="Please enter a valid value for role.")
+        
         return value
         
     

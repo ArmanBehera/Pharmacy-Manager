@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from administrator.models import User
 from django.utils import timezone
-from pharmacy.models import Medicines, LabTests
+from pharmacy.models import Medicines, LabTests, UnlistedMedicine, UnlistedLabTest
 
 
 class SpecializationAvailable(models.Model):
@@ -33,12 +33,12 @@ class PatientUser(models.Model):
     first_name = models.CharField(max_length=100, blank=False, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
     age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)], blank=False, null=True)
-    genderChoices = (
+    GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
         ('Other', 'Other')
     )
-    gender = models.CharField(choices=genderChoices, max_length=6, blank=False, null=True)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=6, blank=False, null=True)
     
     primary_phone_number = models.CharField(max_length=15, blank=False, null=True)
     secondary_phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -69,12 +69,6 @@ class Appointment(models.Model):
 
 class PrescribedMedicine(models.Model):
 
-    TIMING_CHOICES = [
-        ('before_food', 'before_food'),
-        ('after_food', 'after_food'),
-        ('custom', 'custom')
-    ]
-
     DURATION_UNIT_CHOICES = [
         ('Days', 'Days'),
         ('Months', 'Months')
@@ -82,8 +76,6 @@ class PrescribedMedicine(models.Model):
 
     medicine = models.ForeignKey(Medicines, verbose_name="Medicine Details", on_delete=models.CASCADE, related_name="prescribed_medicine")
     frequency = models.IntegerField(validators=[MinValueValidator(1)], help_text="Number of times the medicine should be taken per day")
-    timings = models.CharField(max_length=11, choices=TIMING_CHOICES, verbose_name="Timing")
-    customTiming = models.TimeField(blank=True, null=True)
     duration_value = models.IntegerField(validators=[MinValueValidator(1)], help_text="Duration value based on the selected unit")
     duration_unit = models.CharField(max_length=6, choices=DURATION_UNIT_CHOICES, verbose_name="Duration Unit")
 
@@ -111,24 +103,26 @@ class PrescribedLabTest(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
     
-    labtest = models.ForeignKey(LabTests, verbose_name="Lab Test", on_delete=models.PROTECT, related_name="prescribed_lab_test")
+    lab_test = models.ForeignKey(LabTests, verbose_name="Lab Test", on_delete=models.PROTECT, related_name="prescribed_lab_test")
     test_date = models.DateField(verbose_name="Test Date")
     test_result = models.TextField(verbose_name="Test Result", blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending', verbose_name="Test Status") 
     attachment = models.FileField(upload_to='lab_tests/', verbose_name="Test Report", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.labtest} prescribed for {self.labtest.name} on {self.test_date}. Status: {self.status}."
+        return f"{self.lab_test} prescribed for {self.lab_test.name} on {self.test_date}. Status: {self.status}."
 
 
 class Prescription(models.Model):
     
     appointment = models.OneToOneField(Appointment, verbose_name="Appointment Details", on_delete=models.CASCADE, related_name='prescription')
-    medicines  = models.ManyToManyField(PrescribedMedicine, verbose_name="Medicines Prescribed", related_name='prescription', blank=True)
-    labtests = models.ManyToManyField(PrescribedLabTest, verbose_name="Prescribed Lab Tests", related_name='prescription', blank=True)
+    medicines  = models.ManyToManyField(PrescribedMedicine, verbose_name="Prescribed Medicines", related_name='prescription', blank=True)
+    unlisted_medicines = models.ManyToManyField(UnlistedMedicine, verbose_name= "Prescribed Unlisted Medicines", related_name='prescription', blank=True)
+    lab_tests = models.ManyToManyField(PrescribedLabTest, verbose_name="Prescribed Lab Tests", related_name='prescription', blank=True)
+    unlisted_lab_tests = models.ManyToManyField(UnlistedLabTest, verbose_name="Prescribed Unlisted Lab Tests", related_name='prescription', blank=True)
     additonal_information = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Additional Information for the patient")
-    digital_signature = models.ImageField(upload_to='signatures/', verbose_name="Digital Signature", blank=False, null=True, default=None)
+    #digital_signature = models.ImageField(upload_to='signatures/', verbose_name="Digital Signature", blank=False, null=True, default=None)
 
     def __str__(self):
-        user = self.appointment.patient.user
-        return f"Prescription for {user.first_name} {user.last_name}."
+        patient = self.appointment.patient
+        return f"Prescription for {patient.first_name} {patient.last_name}."

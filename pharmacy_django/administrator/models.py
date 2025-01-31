@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
         if gender not in ['Male', 'Female', 'Other']:
             raise ValueError('The valid values for gender can only be \'Male\', \'Female\' or \'Other\'')
         
-        if role not in ['Admin', 'Doctor', 'FrontDesk', 'Pharmacy']:
+        if role not in ['Administrator', 'Doctor', 'FrontDesk', 'Pharmacy']:
             raise ValueError('The role of the user is not valid.')
         
         user = self.model(
@@ -108,12 +108,12 @@ class User(AbstractUser):
     secondary_phone_number = models.CharField(max_length=15, blank=True)
     
     roleChoices = (
-        ('Admin', 'Admin'),
+        ('Administrator', 'Administrator'),
         ('Doctor', 'Doctor'),
         ('Pharmacy', 'Pharmacy'),
         ('FrontDesk', 'FrontDesk')
     )
-    role = models.CharField(choices=roleChoices, max_length=9, blank=False)
+    role = models.CharField(choices=roleChoices, max_length=13, blank=False)
     
     is_verified = models.BooleanField(default=False, blank=False)
     

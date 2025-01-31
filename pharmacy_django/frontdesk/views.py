@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import views, response, status, permissions, exceptions
 from administrator.serializers import UserSerializer
 from administrator import authentication
@@ -24,11 +23,10 @@ class SignIn(views.APIView):
         serializer = UserSerializer(data=request.data)
         
         if serializer.is_valid():
-            user = serializer.save()
-            
+            serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetPatients(views.APIView):
@@ -120,9 +118,7 @@ class AddNewPatient(views.APIView):
         except Exception:
             last_appointment_token = 0
 
-        doctor_id = request.data['doctor_id']
-
-        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, 'doctor': doctor_id})
+        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, 'doctor': doctor_id })
 
         if serializer.is_valid():
 
@@ -174,17 +170,17 @@ class NoShowUpdate(views.APIView):
     def post(self, request):
         # Refreshing the statuses of the patient who did not show up
         today = datetime.now().date()
-        scheduledAppointments = Appointment.objects.filter(status='Scheduled', date__lt=today)
+        scheduled_appointments = Appointment.objects.filter(status='Scheduled', date__lt=today)
 
         # Update their statuses
-        scheduledAppointments.update(status='No Show')
+        scheduled_appointments.update(status='No Show')
 
         doctor_id = request.data['doctor_id']
         doctor = DoctorUser.objects.get(id=doctor_id)
 
-        noShowAppointments = Appointment.objects.filter(status='No Show', doctor=doctor)
+        no_show_appointments = Appointment.objects.filter(status='No Show', doctor=doctor)
 
-        serializer = AppointmentSerializer(noShowAppointments, many=True)
+        serializer = AppointmentSerializer(no_show_appointments, many=True)
 
         return response.Response(serializer.data)
 

@@ -9,7 +9,7 @@ from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, Categ
 from administrator.serializers import UserSerializer
 from doctor.serializers import SpecializationSerializer
 
-from administrator import authentication
+from . import authentication
 
 from datetime import datetime
 
@@ -49,6 +49,9 @@ class EditProfile(views.APIView):
 
         serializer = UserSerializer(user, data=request.data)
 
+        if serializer.is_valid():
+            serializer.save()
+
         return response.Response("Successfully edited user profile.")
 
 
@@ -64,9 +67,9 @@ class VerifyEmployees(views.APIView):
     
     def get(self, request):
         
-        unverifiedEmployees = User.objects.filter(is_verified=False)
+        unverified_employees = User.objects.filter(is_verified=False)
 
-        return response.Response(UserSerializer(unverifiedEmployees, many=True).data)
+        return response.Response(UserSerializer(unverified_employees, many=True).data)
     
     def post(self, request):
         
@@ -134,7 +137,7 @@ class GetMedicines(views.APIView):
         When it's a get request, this API returns all the medicines available
     '''
     
-    authentication_classes = (authentication.CustomUserAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
     def get(self, request):
@@ -145,9 +148,9 @@ class GetMedicines(views.APIView):
 
     def post(self, request):
 
-        medicineStocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name'])
+        medicine_stocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name']).order_by('name')
 
-        return response.Response(MedicineStockSerializer(medicineStocks, many=True).data)
+        return response.Response(MedicineStockSerializer(medicine_stocks, many=True).data)
 
 
 class AddMedicines(views.APIView):
@@ -157,19 +160,19 @@ class AddMedicines(views.APIView):
         When it's a post request, it makes the necessary entries into the inter-dependent tables (like ingredients) and then makes the entry into the Medicines table.
     '''
     
-    authentication_classes = (authentication.CustomAdminAuthentication, authentication.CustomPharmacyAuthentication)
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
     def get(self, request):
         allergens = Allergens.objects.all()
         ingredients = Ingredients.objects.all()
-        sideEffects = SideEffects.objects.all()
+        side_effects = SideEffects.objects.all()
         categories = Categories.objects.all()
         
         resp = {
             'allergens': [],
             'ingredients': [],
-            'sideEffects': [],
+            'side_effects': [],
             'categories': []
         }
         
@@ -181,9 +184,9 @@ class AddMedicines(views.APIView):
             serialized = IngredientsSerializer(ingredient)
             resp['ingredients'].append(serialized.data)
             
-        for sideEffect in sideEffects:
-            serialized = SideEffectsSerializer(sideEffect)
-            resp['sideEffects'].append(serialized.data)
+        for side_effect in side_effects:
+            serialized = SideEffectsSerializer(side_effect)
+            resp['side_effects'].append(serialized.data)
             
         for category in categories:
             serialized = CategoriesSerializer(category)
@@ -197,7 +200,7 @@ class AddMedicines(views.APIView):
         serializer = MedicineStockSerializer(data=request.data)
 
         if serializer.is_valid():
-            medicineStock = serializer.save()
+            serializer.save()
 
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -210,7 +213,7 @@ class AddMedicineStock(views.APIView):
         In a successful post request, a new Medicine Stock objet is created
     '''
 
-    authentication_classes = (authentication.CustomUserAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -231,7 +234,7 @@ class DeleteMedicines(views.APIView):
         When it's a post request, deletes the medicines whose ids are submitted
     '''
 
-    authentication_classes = (authentication.CustomUserAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -239,13 +242,16 @@ class DeleteMedicines(views.APIView):
         try:
             for id in request.data['ids']:
             
-                medicine = Medicines.objects.get(id=id)
-                medicineStocks = MedicineStock.objects.filter(medicine=medicine)
+                medicine_stocks = MedicineStock.objects.filter(id=id)
                 
-                medicineStocks.delete()
-                medicine.delete()
+                for medicine_stock in medicine_stocks:
+
+                    medicine = medicine_stock.medicine
+                
+                    medicine_stock.delete()
+                    medicine.delete()
             
-            return response.Response({"message": "Medicine updated successfully."}, status=status.HTTP_200_OK)
+            return response.Response({"message": "Medicine deleted successfully."}, status=status.HTTP_200_OK)
             
         except Medicines.DoesNotExist:
             return response.Response({"error": "Medicine not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -264,9 +270,15 @@ class GetSpecializationAvailable(views.APIView):
 
     def get(self, request):
 
-        objects = SpecializationAvailable.objects.all()
+        specializations = SpecializationAvailable.objects.all()
 
-        return response.Response(SpecializationSerializer(objects,  many=True).data)
+        resp = []
+
+        for specialization in specializations:
+            number = DoctorUser.objects.filter(specialization=specialization).count()
+            resp.append({'specialization': specialization.specialization, 'number': number})
+
+        return response.Response(resp)
 
 
 class AddSpecializationAvailable(views.APIView):
@@ -326,12 +338,12 @@ class DeleteSpecializationAvailable(views.APIView):
         try:
             for id in request.data['ids']:
             
-                specializationAvailable = SpecializationAvailable.objects.get(id=id)
-                specializationAvailable.delete()
+                specialization_available = SpecializationAvailable.objects.get(id=id)
+                specialization_available.delete()
             
             return response.Response({"message": "Specialization deleted successfully."}, status=status.HTTP_200_OK)
             
-        except LabTests.DoesNotExist:
+        except SpecializationAvailable.DoesNotExist:
             return response.Response({"error": "SpecializationAvailable object not found."}, status=status.HTTP_404_NOT_FOUND)
         
         except Exception as e:
@@ -342,14 +354,14 @@ class GetLabTests(views.APIView):
     '''
         In a get request, all the labtests object available are returned
     '''
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
 
-        labTests = LabTests.objects.all()
+        lab_tests = LabTests.objects.all()
 
-        return response.Response(LabTestsSerializer(labTests, many=True).data)
+        return response.Response(LabTestsSerializer(lab_tests, many=True).data)
 
 
 class AddLabTests(views.APIView):
@@ -357,7 +369,7 @@ class AddLabTests(views.APIView):
         In a successful post request, an object of LabTest is made
     '''
 
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -365,11 +377,10 @@ class AddLabTests(views.APIView):
         serializer = LabTestsSerializer(data=request.data)
 
         if serializer.is_valid():
-            labTest = serializer.save()
-
+            serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EditLabTests(views.APIView):
@@ -377,13 +388,13 @@ class EditLabTests(views.APIView):
         In a successful post request, an already existing object of LabTest is update.
     '''
 
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
 
-        labtest = LabTests.objects.get(id=request.data['id'])
-        serializer = LabTestsSerializer(labtest, data=request.data)
+        lab_test = LabTests.objects.get(id=request.data['id'])
+        serializer = LabTestsSerializer(lab_test, data=request.data)
         if serializer.is_valid():
             serializer.save()
         else: 
@@ -398,7 +409,7 @@ class DeleteLabTests(views.APIView):
         In a post request, delete the labtests whose indexes are submitted in the authentication classes. 
     '''
 
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -406,8 +417,8 @@ class DeleteLabTests(views.APIView):
         try:
             for id in request.data['ids']:
             
-                labTest = LabTests.objects.get(id=id)
-                labTest.delete()
+                lab_test = LabTests.objects.get(id=id)
+                lab_test.delete()
             
             return response.Response({"message": "LabTest deleted successfully."}, status=status.HTTP_200_OK)
             

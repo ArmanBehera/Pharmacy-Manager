@@ -1,8 +1,11 @@
 from rest_framework import serializers
 
-from .models import DoctorUser, PatientUser, SpecializationAvailable, Appointment
+from .models import DoctorUser, PatientUser, SpecializationAvailable, Appointment, Prescription
 from administrator.models import User
+from pharmacy.models import Medicines, LabTests, UnlistedMedicine, UnlistedLabTest
+
 from administrator.serializers import UserSerializer
+from pharmacy.serializers import MedicinesSerializer, LabTestsSerializer, UnlistedMedicinesSerializer, UnlistedLabTestsSerializer
   
 class SpecializationSerializer(serializers.ModelSerializer):
     '''
@@ -106,3 +109,52 @@ class AppointmentSerializer(serializers.ModelSerializer):
         appointment = Appointment.objects.create(**validated_data)
 
         return appointment
+    
+
+class PrescriptionSerializer(serializers.ModelSerializer):
+
+    # For the commmented out code, just need to provide the ids
+    # appointment = AppointmentSerializer(required=True, many=False)
+    # medicines = MedicinesSerializer(required=False, many=True)
+    # labTests = LabTestsSerializer(required=False, many=True)
+    unlistedMedicines = UnlistedMedicinesSerializer(required=False, many=True)
+    unlistedLabTests = UnlistedLabTestsSerializer(required=False, many=True) 
+
+    class Meta:
+
+        model = Prescription
+        fields = '__all__'
+
+    def create(self, validated_data):
+        # Extract the appointment ID and fetch the actual object
+        appointment_data = validated_data.pop('appointment')
+        appointment = Appointment.objects.get(id=appointment_data)
+        
+        # Extract related fields safely
+        medicines_data = validated_data.pop('medicines', [])
+        lab_tests_data = validated_data.pop('labTests', [])
+        unlisted_medicines_data = validated_data.pop('unlistedMedicines', [])
+        unlisted_lab_tests_data = validated_data.pop('unlistedLabTests', [])
+
+        # Create the Prescription instance without M2M relationships
+        prescription = Prescription.objects.create(appointment=appointment, **validated_data)
+
+        # Assign Many-to-Many fields
+        if medicines_data:
+            medicines = Medicines.objects.filter(id__in=[m['id'] for m in medicines_data])
+            prescription.medicines.set(medicines)
+
+        if lab_tests_data:
+            lab_tests = LabTests.objects.filter(id__in=[lt['id'] for lt in lab_tests_data])
+            prescription.labtests.set(lab_tests)
+
+        if unlisted_medicines_data:
+            unlisted_medicines = UnlistedMedicine.objects.filter(id__in=[um['id'] for um in unlisted_medicines_data])
+            prescription.unlistedMedicines.set(unlisted_medicines)
+
+        if unlisted_lab_tests_data:
+            unlisted_lab_tests = UnlistedLabTest.objects.filter(id__in=[ult['id'] for ult in unlisted_lab_tests_data])
+            prescription.unlistedLabTests.set(unlisted_lab_tests)
+
+        return prescription
+

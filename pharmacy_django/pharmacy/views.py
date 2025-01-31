@@ -1,3 +1,37 @@
-from django.shortcuts import render
+from rest_framework import views, response, status, permissions, exceptions
+from administrator.serializers import UserSerializer
+from administrator import authentication
 
-# Create your views here.
+class SignIn(views.APIView):
+    '''
+        API view for frontdesk signin
+    '''
+    permission_classes = (permissions.AllowAny, )
+    def post(self, request):
+        '''
+        Only post methods are allowed for this endpoint.
+        The data posted is stored in User model.
+        '''
+        
+        if request.data['role'] != 'Pharmacy':
+            return response.Response('Failed to create pharmacy user. Role should be assigned pharmacy.')
+
+        serializer = UserSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class Logout(views.APIView):
+    '''
+        Logout view can only be accessed by authenticated users
+    '''
+    authentication_classes = (authentication.CustomAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+    
+    def post(self, request):
+        
+        return response.Response("Successfully logged out user.")
