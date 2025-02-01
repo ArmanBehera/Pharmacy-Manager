@@ -94,7 +94,7 @@ class MedicinesSerializer(serializers.ModelSerializer):
 
         if sideEffects_data:
             side_effects = [SideEffects.objects.get_or_create(**sideEffect_data)[0] for sideEffect_data in sideEffects_data]
-            medicine.sideEffects.set(side_effects)
+            medicine.side_effects.set(side_effects)
 
         if allergens_data:
             allergens = [Allergens.objects.get_or_create(**allergy_data)[0] for allergy_data in allergens_data]
@@ -123,7 +123,6 @@ class MedicineStockSerializer(serializers.ModelSerializer):
         # Create the Medicine instance
         medicine = Medicines.objects.create(**medicine_data)
 
-        # Use `.set()` to assign many-to-many fields
         if ingredients_data:
             ingredients = [Ingredients.objects.get_or_create(**ingredient_data)[0] for ingredient_data in ingredients_data]
             medicine.ingredients.set(ingredients)
@@ -134,7 +133,7 @@ class MedicineStockSerializer(serializers.ModelSerializer):
 
         if sideEffects_data:
             side_effects = [SideEffects.objects.get_or_create(**sideEffect_data)[0] for sideEffect_data in sideEffects_data]
-            medicine.sideEffects.set(side_effects)
+            medicine.side_effects.set(side_effects)
 
         if allergens_data:
             allergens = [Allergens.objects.get_or_create(**allergy_data)[0] for allergy_data in allergens_data]

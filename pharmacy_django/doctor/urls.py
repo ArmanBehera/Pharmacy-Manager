@@ -8,5 +8,7 @@ urlpatterns = [
     path('getAppointmentDetail/', views.GetAppointmentDetail.as_view(), name='getAppointmentDetail'),
     path('getMedicines/', views.GetMedicines.as_view(), name='getMedicines'),
     path('getLabTests/', views.GetLabTests.as_view(), name='getLabtests'),
-    path('addPrescription/', views.AddPrescription.as_view(), name='addPrescription')
+    path('addPrescription/', views.AddPrescription.as_view(), name='addPrescription'),
+    path('addPrescribedMedicines/', views.AddPrescribedMedicines.as_view(), name='addPrescribedMedicines'),
+    path('addPrescribedLabTests/', views.AddPrescribedLabTests.as_view(), name='addPrescribedLabTests')  
 ]

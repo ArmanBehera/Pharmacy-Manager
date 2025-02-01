@@ -49,7 +49,7 @@ class GetPatients(views.APIView):
             serializer = AppointmentSerializer(last_appointment)
 
             date = last_appointment.date
-            date = date.strftime("%d-%m-%Y") 
+            date = date.strftime("%d-%m-%Y")
 
             resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
 
@@ -110,7 +110,7 @@ class AddNewPatient(views.APIView):
 
     def post(self, request):
         # To add to the request: token_number: figure out the logic for that
-        doctor_id = request.data['doctor_id']
+        doctor_id = request.data['doctor']
         doctor = DoctorUser.objects.get(id=doctor_id)
         
         try:
@@ -118,7 +118,7 @@ class AddNewPatient(views.APIView):
         except Exception:
             last_appointment_token = 0
 
-        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1, 'doctor': doctor_id })
+        serializer = AppointmentSerializer(data={**request.data, 'token_assigned': last_appointment_token + 1 })
 
         if serializer.is_valid():
 
@@ -179,10 +179,8 @@ class NoShowUpdate(views.APIView):
         doctor = DoctorUser.objects.get(id=doctor_id)
 
         no_show_appointments = Appointment.objects.filter(status='No Show', doctor=doctor)
-
-        serializer = AppointmentSerializer(no_show_appointments, many=True)
-
-        return response.Response(serializer.data)
+        
+        return response.Response(AppointmentSerializer(no_show_appointments, many=True).data)
 
 
 class CancelAppointment(views.APIView):

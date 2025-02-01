@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import views, response, status, permissions, exceptions
 from administrator.models import User
-from .models import DoctorUser, SpecializationAvailable, PatientUser, Appointment
-from .serializers import DoctorSerializer, AppointmentSerializer, PrescriptionSerializer
+from .models import DoctorUser, SpecializationAvailable, PatientUser, Appointment, PrescribedMedicine, PrescribedLabTest
+from .serializers import DoctorSerializer, AppointmentSerializer, PrescriptionSerializer, PrescribedMedicinesSerializer, PrescribedLabTestsSerializer
 from administrator.serializers import UserSerializer
 from administrator import authentication
 import jwt
@@ -91,9 +91,9 @@ class GetLabTests(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
-        labTests = LabTests.objects.all()
+        lab_tests = LabTests.objects.all()
 
-        return response.Response(LabTestsSerializer(labTests, many=True).data)
+        return response.Response(LabTestsSerializer(lab_tests, many=True).data)
 
 
 class AddPrescription(views.APIView):
@@ -105,6 +105,17 @@ class AddPrescription(views.APIView):
 
     def post(self, request):
         
+        appointment_id = request.data['appointment']
+        appointment = Appointment.objects.get(id=appointment_id)
+
+        if appointment.status == 'Scheduled':
+            appointment.status = 'Completed'
+            appointment.save()
+        elif appointment.status == 'Completed':
+            return response.Response('Cannot rewrite prescription. Please book another appointment.', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return response.Response('Appointment is cancelled. Please rebook appointment in the frontdesk.', status=status.HTTP_400_BAD_REQUEST)
+
         serializer = PrescriptionSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -112,6 +123,41 @@ class AddPrescription(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddPrescribedMedicines(views.APIView):
+    '''
+        On a successsful post request, enables to add a prescribed medicine
+    '''
+
+    authentication_classes = (authentication.CustomDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        
+        serializer = PrescribedMedicinesSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddPrescribedLabTests(views.APIView):
+    '''
+        On a successsful post request, enables to add a prescribed lab test
+    '''
+
+    authentication_classes = (authentication.CustomDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        serializer = PrescribedLabTestsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Logout(views.APIView):

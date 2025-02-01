@@ -1,4 +1,4 @@
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 
 from .models import User
 
@@ -27,14 +27,14 @@ class UserSerializer(serializers.ModelSerializer):
          
     def validate_role(self, value):
         if value not in ['Administrator', 'Doctor', 'FrontDesk', 'Pharmacy']:
-            raise exceptions.ValidationError(detail="Please enter a valid value for role.")
+            raise serializers.ValidationError(detail="Please enter a valid value for role.")
         
         return value
         
     
     def validate_gender(self, value):
         if value not in ['Male', 'Female', 'Other']:
-            raise exceptions.ValidationError(detail="Gender of the user can only have three values: 'Male', 'Female' or 'Other'")
+            raise serializers.ValidationError(detail="Gender of the user can only have three values: 'Male', 'Female' or 'Other'")
         return value
 
 

@@ -122,4 +122,4 @@ class User(AbstractUser):
     USERNAME_FIELD = 'username'
         
     def __str__(self):
-        return f"Name: {self.username}"
+        return f"Name: {self.first_name} {self.last_name}, Role: {self.role}"

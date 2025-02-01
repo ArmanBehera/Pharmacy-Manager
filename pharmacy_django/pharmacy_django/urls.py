@@ -13,6 +13,7 @@ urlpatterns = [
     path('doctor/', include('doctor.urls')),
     path('administrator/', include('administrator.urls')),
     path('frontdesk/', include('frontdesk.urls')),
+    path('pharmacy/', include('pharmacy.urls')),
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.jwt'))
 ]

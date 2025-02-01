@@ -23,13 +23,21 @@ class SignIn(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
             
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class GetCompletedPatients(views.APIView):
+    '''
+        In a get request, returns all the patients for whom medicines are to be given
+    '''
+
+    def get(self, request):
+        pass
 
 class Logout(views.APIView):
     '''
         Logout view can only be accessed by authenticated users
     '''
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CustomUserAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
     def post(self, request):
