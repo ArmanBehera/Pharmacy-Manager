@@ -10,8 +10,6 @@
     const store = useStore();
     store.dispatch('initializeStore');
 
-    const usertype = store.getters.getUserDetails['usertype']
-
     const deletion_dialog = ref();
     const selected = ref()
     const data = ref([]);

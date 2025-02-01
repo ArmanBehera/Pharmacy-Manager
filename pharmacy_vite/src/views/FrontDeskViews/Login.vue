@@ -9,7 +9,7 @@
     const first_name = ref('');
     const last_name = ref('');
     const password = ref('');
-    const confirmPassword = ref('');
+    const confirm_password = ref('');
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -58,7 +58,7 @@
 
         let filled = true;
 
-        if (data.password !== confirmPassword.value){
+        if (data.password !== confirm_password.value){
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.")
             return;
         }
@@ -89,12 +89,12 @@
                 var username = `${data.first_name}${data.last_name}`;
                 store.dispatch('setLoginDetails', {
                     'usertype': 'frontdesk',
-                    'isRegistered': true,
-                    'refreshToken': response.data.refresh,
-                    'accessToken': response.data.access,
-                    'firstName': data.first_name,
-                    'lastName': data.last_name,
-                    'userId': response.data.user_id
+                    'is_registered': true,
+                    'refresh_token': response.data.refresh,
+                    'access_token': response.data.access,
+                    'first_name': data.first_name,
+                    'last_name': data.last_name,
+                    'user_id': response.data.user_id
                 });
                 router.push({ name: 'FrontDeskHomePage' })
             })
@@ -125,7 +125,7 @@
             </div>
             
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirmPassword"/>
+                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirm_password"/>
             </div>
 
             <Button label="Submit" @click.prevent="submit"/>

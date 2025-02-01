@@ -13,53 +13,53 @@
     const toast = useToast();
     const route = useRoute();
 
-    const appointmentDetails = ref();
+    const appointment_details = ref();
     const id =  route.query.id;
 
-    const firstName = ref('');
-    const lastName = ref('');
+    const first_name = ref('');
+    const last_name = ref('');
     const gender = ref('');
     const age = ref('');
 
-    const medicineCount = ref(1);
-    const medicinesData = ref([]);
-    const prescribedMedicines = ref([]);
-    const frequencyMedicines = ref([]);
-    const durationMedicines = ref([]);
-    const durationUnit = ref([]);
-    const durationUnitChoices = ref(['Days', 'Months'])
+    const medicine_count = ref(1);
+    const medicines_data = ref([]);
+    const prescribed_medicines = ref([]);
+    const frequency_medicines = ref([]);
+    const duration_medicines = ref([]);
+    const duration_unit = ref([]);
+    const duration_unit_choices = ref(['Days', 'Months'])
 
     const timings = ref([]);
-    const customTimingDescriptions = ref([]);
+    const custom_timing_descriptions = ref([]);
 
-    const timingsChoices = ref(['Before Food', 'After Food', 'Custom'])
+    const timings_choices = ref(['Before Food', 'After Food', 'Custom'])
 
-    const labTestCount = ref(1);
-    const labTestsData = ref([])
-    const prescribedLabTests = ref([]);
+    const lab_test_count = ref(1);
+    const lab_tests_data = ref([])
+    const prescribed_lab_tests = ref([]);
 
 
-    const unlistedIndexArrayMedicine = ref([])
-    const unlistedIndexArrayLabTests = ref([])
+    const unlisted_index_array_medicine = ref([])
+    const unlisted_index_array_lab_tests = ref([])
 
-    const additionalInformation = ref();
+    const additional_information = ref();
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    const isRegistered = ref(store.state.isRegistered)
+    const is_registered = ref(store.state.is_registered)
 
-    if (isRegistered.value === 'true') {
+    if (is_registered.value === 'true') {
         axios.post('/doctor/getAppointmentDetail/', {
             'id': id
         })
         .then( (response) => {
-            appointmentDetails.value = response.data;
-            firstName.value = appointmentDetails.value.patient.first_name 
-            lastName.value = appointmentDetails.value.patient.last_name
-            gender.value = appointmentDetails.value.patient.gender === 'Male'? 'M' : 'F'
-            age.value = appointmentDetails.value.patient.age 
+            appointment_details.value = response.data;
+            first_name.value = appointment_details.value.patient.first_name 
+            last_name.value = appointment_details.value.patient.last_name
+            gender.value = appointment_details.value.patient.gender === 'Male'? 'M' : 'F'
+            age.value = appointment_details.value.patient.age 
         })
         .catch( (error) => {
             warn('warn', 'Error getting appointment details for the patient.', 'Please check the status of the server or try reloading.')
@@ -67,7 +67,7 @@
 
         axios.get('/doctor/getMedicines/')
         .then( (response) => {
-            medicinesData.value = response.data
+            medicines_data.value = response.data
         })
         .catch( (error) => {
             warn('warn', 'Error getting medicines data.', 'Please check the status of the server or try reloading.')
@@ -75,7 +75,7 @@
 
         axios.get('/doctor/getLabTests/')
         .then( (response) => {
-            labTestsData.value = response.data
+            lab_tests_data.value = response.data
         })
         .catch( (error) => {
             warn('warn', 'Error getting lab tests data.', 'Please check the status of the server or try reloading.')
@@ -84,14 +84,14 @@
         warn('warn', 'Please log in to access this page.', '')
     }
 
-    const filteredArray = ref();
+    const filtered_array = ref();
 
-    const search = (event, fullArray) => {
+    const search = (event, full_array) => {
         setTimeout(() => {
             if (!event.query.trim().length) {
-                filteredArray.value = [...fullArray]
+                filtered_array.value = [...full_array]
             } else {
-                filteredArray.value = fullArray.filter((element) => {
+                filtered_array.value = full_array.filter((element) => {
                     return element.name.toLowerCase().startsWith(event.query.toLowerCase());
                 });
             }
@@ -101,26 +101,26 @@
     // Computed function to check if a specific medicine is unlisted
     const isUnlistedMedicine = (index) => {
         return computed(() => {
-            const selectedMedicine = prescribedMedicines.value[index];
-            return selectedMedicine && !medicinesData.value.some(medicine => medicine.name === selectedMedicine.name);
+            const selected_medicine = prescribed_medicines.value[index];
+            return selected_medicine && !medicines_data.value.some(medicine => medicine.name === selected_medicine.name);
         });
     };
 
     // Watch for changes in prescribedMedicines and update indexArrayMedicine
-    watch(prescribedMedicines, (newMedicines) => {
-        unlistedIndexArrayMedicine.value = newMedicines
+    watch(prescribed_medicines, (new_medicines) => {
+        unlisted_index_array_medicine.value = new_medicines
             .map((medicine, index) => ({
-                isUnlisted: medicine && !medicinesData.value.some(med => med.name === medicine.name),
+                isUnlisted: medicine && !medicines_data.value.some(med => med.name === medicine.name),
                 index,
             }))
             .filter(med => med.isUnlisted)
             .map(med => med.index);
     }, { deep: true });
 
-    watch(prescribedLabTests, (newLabTests) => {
-        unlistedIndexArrayLabTests.value = newLabTests
-            .map((labTest, index) => ({
-                isUnlisted: labTest && !labTestsData.value.some(lab => lab.name === labTest.name),
+    watch(prescribed_lab_tests, (new_lab_tests) => {
+        unlisted_index_array_lab_tests.value = new_lab_tests
+            .map((lab_test, index) => ({
+                isUnlisted: lab_test && !lab_tests_data.value.some(lab => lab.name === lab_test.name),
                 index,
             }))
             .filter(med => med.isUnlisted)
@@ -129,44 +129,61 @@
 
 
     const submit = () => {
-        const listedMedicines = ref([])
-        const listedLabTests = ref([])
+        const listed_medicines = ref([])
+        const listed_lab_tests = ref([])
 
-        const unlistedMedicines = ref([])
-        const unlistedLabTests = ref([])
+        const unlisted_medicines = ref([])
+        const unlisted_lab_tests = ref([])
 
         // Need to refactor timings and their choices
 
-        for (let i = 0; i < medicineCount.value; i++) {
-            if (unlistedIndexArrayMedicine.value.some(index => index === i)) {
-                unlistedMedicines.value.push({'medicine': prescribedMedicines.value[i], 'frequency': frequencyMedicines.value[i], 'duration': durationMedicines.value[i], 'durationUnit': durationUnit.value[i], 'timings': timings.value[i], 'customTimingDescription': customTimingDescriptions.value[i]})
+        for (let i = 0; i < medicine_count.value; i++) {
+            if (unlisted_index_array_medicine.value.some(index => index === i)) {
+                let timing2 = '';
+
+                if (timings.value[i] === 'After Food') {
+                    timing2 = 'after_food'
+                } else if (timings.value[i] === 'Before Food') {
+                    timing2 = 'before_food'
+                } else {
+                    timing2 = 'custom'
+                }
+
+                unlisted_medicines.value.push({'name': prescribed_medicines.value[i], 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i], 'timings': timing2, 'custom_timing_description': custom_timing_descriptions.value[i] ? custom_timing_descriptions.value[i] : ''})
             } else {
-                listedMedicines.value.push({'medicine': prescribedMedicines.value[i], 'frequency': frequencyMedicines.value[i], 'duration': durationMedicines.value[i], 'durationUnit': durationUnit.value[i]})
+                listed_medicines.value.push({'medicine': prescribed_medicines.value[i].id, 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i]})
             }
         }
 
-        for (let i = 0; i < labTestCount.value; i++) {
-            if (unlistedIndexArrayLabTests.value.some(index => index === i)) {
-                unlistedLabTests.value.push({'labTest': prescribedLabTests.value[i]});
+        for (let i = 0; i < lab_test_count.value; i++) {
+            if (unlisted_index_array_lab_tests.value.some(index => index === i)) {
+                unlisted_lab_tests.value.push({'name': prescribed_lab_tests.value[i]});
             } else {
-                listedLabTests.value.push(prescribedLabTests.value[i]);
+                listed_lab_tests.value.push({'lab_test': prescribed_lab_tests.value[i].id, 'status': 'Pending', 'test_date': null, 'test_result': null, 'attachment': null});
             }
         }
 
-        const prescriptionToSend = {
-            'appointmentId': appointmentDetails.value.id,
-            'medicines': listedMedicines.value,
-            'labTests': listedLabTests.value,
-            'unlistedMedicines': unlistedMedicines.value,
-            'unlistedLabTests': unlistedLabTests.value,
-            'additionalInformation': additionalInformation.value
+
+        // Id of the medicine, followed by the duration and the others
+        const prescription_to_send = {
+            'appointment': appointment_details.value.id,
+            'medicines': listed_medicines.value,
+            'lab_tests': listed_lab_tests.value,
+            'unlisted_medicines': unlisted_medicines.value,
+            'unlisted_lab_tests': unlisted_lab_tests.value,
+            'additional_information': additional_information.value
         }
+
+        console.log(prescription_to_send)
 
         axios.post('/doctor/addPrescription/', {
-            ...prescriptionToSend
+            ...prescription_to_send
         })
         .then( (response) => {
             warn('success', 'Successfully added prescription for the patient.', '')
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         })
         .catch( (error) => {
             warn('warn', 'Unsuccessful in adding prescription for the patient.', 'Please check the status of the server or try reloading.')
@@ -177,47 +194,47 @@
 <template>
     <Toast/>
 
-    <div class="centered" v-if="isRegistered === 'true'">
-        <h1 class="text-3xl font-bld m-3">Prescription for {{ firstName }} {{ lastName }} ({{ age }}{{ gender }})</h1>
+    <div class="centered" v-if="is_registered === 'true'">
+        <h1 class="text-3xl font-bld m-3">Prescription for {{ first_name }} {{ last_name }} ({{ age }}{{ gender }})</h1>
     </div>
 
 
-    <div class="container mx-auto flex flex-column" v-if="isRegistered === 'true'">
+    <div class="container mx-auto flex flex-column" v-if="is_registered === 'true'">
         <div class="flex flex-col space-y-4">
             <label class="text-2xl font-semibold">Medicines</label>
-            <div v-for="n in medicineCount" :key="n" class="flex flex-row items-center space-x-4">
-                <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribedMedicines[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, medicinesData )" class="w-full" />
-                <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequencyMedicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
-                <InputNumber id="duration" placeholder="Duration *" inputId="withoutgrouping" :useGrouping="false" v-model.number="durationMedicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
-                <Select v-model="durationUnit[n - 1]" :options="durationUnitChoices" placeholder="Unit *"/>
-                <Select v-model="timings[n - 1]" :options="timingsChoices" placeholder="Timing for taking the medicine *" v-if="isUnlistedMedicine(n - 1).value"/>
-                <Select v-model="timings[n - 1]" :options="timingsChoices" placeholder="Timing for taking the medicine" v-else disabled/>
-                <InputText v-model.trim="customTimingDescriptions[n - 1]" id="customTiming" placeholder="Custom Timing Description *" v-if="timings[n - 1] === 'Custom'" class="p-inputtext-sm w-full"/>
+            <div v-for="n in medicine_count" :key="n" class="flex flex-row items-center space-x-4">
+                <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribed_medicines[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, medicines_data )" class="w-full" />
+                <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full" fluid/>
+                <InputNumber id="duration" placeholder="Duration *" inputId="minmaxfraction" :minFractionDigits="1" :maxFractionDigits="2" :useGrouping="false" v-model.number="duration_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
+                <Select v-model="duration_unit[n - 1]" :options="duration_unit_choices" placeholder="Unit *"/>
+                <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine *" v-if="isUnlistedMedicine(n - 1).value"/>
+                <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine" v-else disabled/>
+                <InputText v-model.trim="custom_timing_descriptions[n - 1]" id="customTiming" placeholder="Custom Timing Description *" v-if="timings[n - 1] === 'Custom'" class="p-inputtext-sm w-full"/>
             </div>
             <div>
-                <Button label="Add Medicine" @click.prevent="medicineCount += 1"/>
-                <Button label="Delete Medicine" severity="danger" @click.prevent="medicineCount = medicineCount > 1 ? medicineCount - 1 : medicineCount" class="ml-4"/>
+                <Button label="Add Medicine" @click.prevent="medicine_count += 1"/>
+                <Button label="Delete Medicine" severity="danger" @click.prevent="medicine_count = medicine_count > 1 ? medicine_count - 1 : medicine_count" class="ml-4"/>
             </div>
         </div>
 
         <div class="flex flex-col space-y-4 mt-4">
             <label class="text-2xl font-semibold">Lab Tests</label>
-            <div v-for="n in labTestCount" :key="n" class="flex flex-row justify-content-center align-items-center space-x-4">
-                <AutoComplete :placeholder="`Lab Test ${n}`" v-model="prescribedLabTests[n - 1]" optionLabel="name" dropdown :suggestions="filteredArray" @complete="(event) => search(event, labTestsData )" class="w-full" />
+            <div v-for="n in lab_test_count" :key="n" class="flex flex-row justify-content-center align-items-center space-x-4">
+                <AutoComplete :placeholder="`Lab Test ${n}`" v-model="prescribed_lab_tests[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, lab_tests_data )" class="w-full" />
             </div>
             <div>
-                <Button label="Add Lab Test" @click.prevent="labTestCount += 1"/>
-                <Button label="Delete Lab Test" severity="danger" @click.prevent="labTestCount = labTestCount > 1 ? labTestCount - 1 : labTestCount" class="ml-4"/>
+                <Button label="Add Lab Test" @click.prevent="lab_test_count += 1"/>
+                <Button label="Delete Lab Test" severity="danger" @click.prevent="lab_test_count = lab_test_count > 1 ? lab_test_count - 1 : lab_test_count" class="ml-4"/>
             </div>
         </div>
 
         <div class="flex flex-col spaace-y-4 mt-4">
             <label class="text-2xl font-semibold">Additional Information</label>
-            <InputText v-model.trim="additionalInformation" id="additionalInformation" placeholder="Additional Information" class="mt-2 p-inputtext-sm w-full"/>
+            <InputText v-model.trim="additional_information" id="additionalInformation" placeholder="Additional Information" class="mt-2 p-inputtext-sm w-full"/>
         </div>
 
         <div class="flex justify-content-center align-items-center mt-4">
-            <Button severity="success" label="Submit" @click.prevent="submit" v-if="isRegistered === 'true'"/>
+            <Button severity="success" label="Submit" @click.prevent="submit" v-if="is_registered === 'true'"/>
             <Button severity="danger" label="Submit" disabled v-else/>
         </div>
     </div>

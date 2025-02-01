@@ -16,20 +16,20 @@
         toast.add({ severity: 'warn', summary: summary, detail: detailed, life: 3000 });
     }
 
-    const patientsData = ref([]);
-    const isLoaded = ref([false])
+    const patients_data = ref([]);
+    const is_loaded = ref([false])
 
-    if (store.state.isRegistered) {
+    if (store.state.is_registered === 'true') {
         axios.post('/doctor/getPatients/', {
-            'doctor_id': store.state.userId
+            'doctor_id': store.state.user_id
         })
         .then( (response) => {
-            patientsData.value = response.data.map(appointment => ({
+            patients_data.value = response.data.map(appointment => ({
                 ...appointment,
                 appointment_date: convertDateFormat(appointment.date), 
                 name: `${appointment.patient.first_name} ${appointment.patient.last_name}`
             }));
-            isLoaded.value[0] = true; 
+            is_loaded.value[0] = true; 
         })
         .catch( (error) => {
             warn("Error getting patients data.", "Please check the status of the server or try reloading.")
@@ -43,8 +43,8 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <DataTable v-if="isLoaded[0] && patientsData.length > 0" 
-                        :value="patientsData" 
+                    <DataTable v-if="is_loaded[0] && patients_data.length > 0" 
+                        :value="patients_data" 
                         removableSort 
                         :rows="3" 
                         paginator 
@@ -61,7 +61,7 @@
                         </Column>
                     </DataTable>
                     
-                    <div v-else-if="patientsData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+                    <div v-else-if="patients_data.length == 0 && is_loaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
                         There are no scheduled patients in the system.
                     </div>
 

@@ -10,7 +10,7 @@
     const store = useStore();
     store.dispatch('initializeStore');
 
-    const usertype = store.getters.getUserDetails['usertype']
+    const usertype = store.state.usertype
     const usertype2 = capitalize(usertype)
 
     const deletion_dialog = ref();

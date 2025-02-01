@@ -25,7 +25,7 @@
     const expiration_date = ref();
 
     const is_registered = ref(store.state.is_registered)
-    const usertype = store.getters.getUserDetails['usertype']
+    const usertype = store.state.usertype
 
     if (is_registered.value === 'true') {
         axios.get(`${usertype}/getMedicines/`)

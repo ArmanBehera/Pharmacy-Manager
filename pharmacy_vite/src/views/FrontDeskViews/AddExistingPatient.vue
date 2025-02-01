@@ -16,28 +16,28 @@
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    const patientsData = ref([]);
-    const doctorsData = ref([]);
-    const isLoaded = ref([false]);
-    const selectedPatient = ref();
+    const patients_data = ref([]);
+    const doctors_data = ref([]);
+    const is_loaded = ref([false]);
+    const selected_patient = ref();
     const first_name = ref('');
     const last_name = ref('');
     const gender = ref('');
     const selected_doctor = ref();
     const appointment_date = ref();
 
-    if (store.state.isRegistered) {
+    if (store.state.is_registered === 'true') {
         axios.post('/frontdesk/getPatients/', {
             'first_name': '',
             'last_name': '',
             'gender': ''
         })
         .then( (response) => {
-            patientsData.value = response.data.map(patient => ({
+            patients_data.value = response.data.map(patient => ({
                 ...patient,
                 name: `${patient.first_name} ${patient.last_name}`
             }));
-            isLoaded.value[0] = true;   
+            is_loaded.value[0] = true;   
         })
         .catch( (error) => {
             warn('warn', "Error getting patients data.", "Please check the status of the server or try reloading.")
@@ -45,7 +45,7 @@
 
         axios.get('/frontdesk/getDoctors/')
         .then( (response) => {
-            doctorsData.value = response.data.map(doctor => ({
+            doctors_data.value = response.data.map(doctor => ({
             ...doctor,
             label: `${doctor.name}: ${doctor.specialization}` // Combine name and specialization
         }));
@@ -69,7 +69,7 @@
             ...data
         })
         .then( (response) => {
-            patientsData.value = response.data.map(patient => ({
+            patients_data.value = response.data.map(patient => ({
                 ...patient,
                 name: `${patient.first_name} ${patient.last_name}`
             }));
@@ -81,10 +81,10 @@
 
     const submit = () => {
         const data = {
-            patient_id: selectedPatient.value.id,
-            doctor_id: selected_doctor.value.id,
-            date: format(new Date(appointment_date.value), 'yyyy-MM-dd'),
-            status: 'Scheduled'
+            'patient_id': selected_patient.value.id,
+            'doctor_id': selected_doctor.value.id,
+            'date': format(new Date(appointment_date.value), 'yyyy-MM-dd'),
+            'status': 'Scheduled'
         }
 
         if (!data.patient_id || !data.doctor_id || !data.date) {
@@ -123,7 +123,7 @@
     </div>
 
     <div class="card m-10">
-        <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem" v-model:selection="selectedPatient" >
+        <DataTable v-if="is_loaded[0] & patients_data.length > 0" :value="patients_data" datakey="id" removableSort :rows="3" paginator tableStyle="min-width: 22rem" v-model:selection="selected_patient" >
             <Column selectionMode="single" headerStyle="width: 3rem"></Column>
             <Column field="name" header="Name" style="width: 20%" sortable></Column>
             <Column field="age" header="Age" style="width: 20%" sortable></Column>
@@ -131,7 +131,7 @@
             <Column field="appointment_date" header="Last Appointment date" style="width: 20%" sortable></Column>
         </DataTable>
 
-        <div v-else-if="patientsData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+        <div v-else-if="patients_data.length == 0 && is_loaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
             There are no patients in this system.
         </div>
 
@@ -143,7 +143,7 @@
     <div class="top-container">
         <div class="container">
             <div class="sub-container">
-                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctorsData" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
+                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctors_data" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
                 <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
             </div>
 

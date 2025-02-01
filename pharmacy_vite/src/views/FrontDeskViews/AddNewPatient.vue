@@ -31,13 +31,13 @@
     const selected_doctor = ref();
     const appointment_date = ref();
 
-    const doctorsData = ref([]);
+    const doctors_data = ref([]);
 
-    if (store.state.isRegistered) {
+    if (store.state.is_registered === 'true') {
         
         axios.get('/frontdesk/getDoctors/')
         .then( (response) => {
-            doctorsData.value = response.data.map(doctor => ({
+            doctors_data.value = response.data.map(doctor => ({
             ...doctor,
             label: `${doctor.name}: ${doctor.specialization}` // Combine name and specialization
         }));
@@ -89,18 +89,17 @@
 
         if (filled) {
             axios.post('/frontdesk/addNewPatient/', {
-                patient: {
+                'patient': {
                     ...data
                 },
-                doctor_id: selected_doctor.value.id,
-                date: format(new Date(appointment_date.value), 'yyyy-MM-dd'),
-                status: 'Scheduled'
+                'doctor': selected_doctor.value.id,
+                'date': format(new Date(appointment_date.value), 'yyyy-MM-dd'),
+                'status': 'Scheduled'
             })
             .then( (response) => {
                 warn('success', `Token Number: ${response.data.token_assigned}`, 'Successfully added patient.')
             })  
             .catch( (error) => {
-                console.log(error)
                 warn('warn', 'Failed to add patient into the system.', 'Make sure all the fields are filled appropriately or try reloading this page.')
             })
         } else {
@@ -133,7 +132,7 @@
             </div>
 
             <div class="sub-container">
-                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctorsData" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
+                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctors_data" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
                 <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
             </div>
         </div>

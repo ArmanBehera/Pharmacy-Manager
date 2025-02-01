@@ -16,9 +16,7 @@
     const store = useStore();
     store.dispatch('initializeStore');
     const toast = useToast();
-
-    const is_registered = ref(store.state.isRegistered)
-
+    
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }

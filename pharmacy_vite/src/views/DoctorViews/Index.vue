@@ -7,7 +7,7 @@
     import '../../styles/styles.css';
     
     const store = useStore();
-    const drawerVisible = ref(false);
+    const drawer_visible = ref(false);
 
     store.dispatch('initializeStore');
 
@@ -18,7 +18,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                drawerVisible.value = true;
+                drawer_visible.value = true;
             }
         },
         {
@@ -68,16 +68,16 @@
         }
     ]);
 
-    const loggedIn = computed(() => store.state.isRegistered === 'true');
+    const logged_in = computed(() => store.state.is_registered === 'true');
 
     const redirect = (urlName) => {
         router.push({ name: urlName})
-        drawerVisible.value = false
+        drawer_visible.value = false
     }
 </script>
 
 <template>
-    <Drawer v-model:visible="drawerVisible">
+    <Drawer v-model:visible="drawer_visible">
         <template #container="{ closeCallback }">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-between px-3 py-4 shadow-md">
@@ -93,7 +93,7 @@
 
     <Menubar :model="items">
         <template #item="{ item, props }">
-            <a v-if="item.loggedIn == loggedIn || item.loggedOut == !loggedIn" :target="item.target" v-bind="props.action">
+            <a v-if="item.loggedIn == logged_in || item.loggedOut == !logged_in" :target="item.target" v-bind="props.action">
                 <span :class="item.icon" />
                 <span class="ml-2">{{ item.label }}</span>
             </a>

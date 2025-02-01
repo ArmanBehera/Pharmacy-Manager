@@ -40,14 +40,13 @@
     const custom_timing_description = ref('');
 
     const is_registered = ref(store.state.is_registered)
-    const usertype = store.getters.getUserDetails['usertype']
+    const usertype = store.state.usertype
     
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (is_registered.value === "true") { 
-        const usertype = store.getters.getUserDetails['usertype']
+    if (is_registered.value === "true") {
         axios.get(`/${usertype}/addMedicines/`)
         .then((response) => {
             allergens_data.value = response.data.allergens

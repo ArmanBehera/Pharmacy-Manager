@@ -7,8 +7,8 @@
     import '../../styles/styles.css';
     
     const store = useStore();
-    const drawerVisible = ref(false);
-    const dropdownAppointments = ref();
+    const drawer_visible = ref(false);
+    const dropdown_appointments = ref();
 
     store.dispatch('initializeStore');
 
@@ -19,7 +19,7 @@
             loggedIn: true,
             loggedOut: false,
             command: () => {
-                drawerVisible.value = true;
+                drawer_visible.value = true;
             }
         },
         {
@@ -69,20 +69,20 @@
         }
     ]);
 
-    const loggedIn = computed(() => store.state.isRegistered === 'true');
+    const logged_in = computed(() => store.state.is_registered === 'true');
 
     const toggleDropdownAppointments = () => {
-        dropdownAppointments.value = !dropdownAppointments.value
+        dropdown_appointments.value = !dropdown_appointments.value
     }
 
     const redirect = (urlName) => {
         router.push({ name: urlName})
-        drawerVisible.value = false
+        drawer_visible.value = false
     }
 </script>
 
 <template>
-    <Drawer v-model:visible="drawerVisible">
+    <Drawer v-model:visible="drawer_visible">
         <template #container="{ closeCallback }">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-between px-3 py-4 shadow-md">
@@ -102,9 +102,9 @@
                             >
                                 <i class="pi pi-chart-line mr-2"></i>
                                 <span class="font-medium">Manage Appointments</span>
-                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdownAppointments }"></i>
+                                <i class="pi pi-chevron-down ml-auto transform transition-transform duration-600" :class="{ 'rotate-180': dropdown_appointments }"></i>
                             </a>
-                            <ul v-show="dropdownAppointments" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                            <ul v-show="dropdown_appointments" class="list-none py-0 pl-4 pr-0 m-0 overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                 <li> 
                                     <a 
                                         class="flex items-center cursor-pointer p-4"
@@ -134,7 +134,7 @@
 
     <Menubar :model="items" class="mt-2 mr-4 ml-4">
         <template #item="{ item, props }">
-            <a v-if="item.loggedIn == loggedIn || item.loggedOut == !loggedIn" :target="item.target" v-bind="props.action">
+            <a v-if="item.loggedIn == logged_in || item.loggedOut == !logged_in" :target="item.target" v-bind="props.action">
                 <span :class="item.icon" />
                 <span class="ml-2">{{ item.label }}</span>
             </a>

@@ -9,7 +9,7 @@
     const first_name = ref('');
     const last_name = ref('');
     const password = ref('');
-    const confirmPassword = ref('');
+    const confirm_password = ref('');
     const registration_number = ref('');
 
     const store = useStore();
@@ -60,7 +60,7 @@
 
         let filled = true;
 
-        if (data.password !== confirmPassword.value){
+        if (data.password !== confirm_password.value){
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.")
             return;
         }
@@ -83,20 +83,20 @@
         else {
             axios.post("/api/v1/jwt/create/", {
                 
-                "username": `${data.first_name}${data.last_name}${data.registration_number}`,
-                "password": data.password,
+                'username': `${data.first_name}${data.last_name}${data.registration_number}`,
+                'password': data.password,
                 'role': 'Doctor'
             })
             .then( (response) => {
                 var username = `${data.first_name}${data.last_name}${data.registration_number}`;
                 store.dispatch('setLoginDetails', {
                     'usertype': 'doctor',
-                    'isRegistered': true,
-                    'refreshToken': response.data.refresh,
-                    'accessToken': response.data.access,
-                    'userId': response.data.user_id,
-                    'firstName': data.first_name,
-                    'lastName': data.last_name
+                    'is_registered': true,
+                    'refresh_token': response.data.refresh,
+                    'access_token': response.data.access,
+                    'user_id': response.data.user_id,
+                    'first_name': data.first_name,
+                    'last_name': data.last_name
                 });
 
                 console.log(response.data.user_id)
@@ -128,7 +128,7 @@
             </div>
             
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirmPassword"/>
+                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirm_password"/>
             </div>
 
             <div class="sub-container">

@@ -24,13 +24,12 @@
         }
     }   
 
-    const specializationsAvailable = ref([]);
+    const specializations_available = ref([]);
 
     onBeforeMount(() => {
         axios.get('administrator/getSpecializations/')
         .then( (response) => {
-            specializationsAvailable.value = response.data;
-            console.log(specializationsAvailable.value)
+            specializations_available.value = response.data;
         })
         .catch( (error) => {
             warn("Error getting specializations.")
@@ -52,10 +51,10 @@
     const secondary_phone_number = ref('');
     const email = ref('');
     const password = ref('');
-    const confirmPassword = ref('');
+    const confirm_password = ref('');
     const age = ref();
     const gender = ref('');
-    const genderChoices = ref([
+    const gender_choices = ref([
         {gender: 'Male'},
         {gender: 'Female'}, 
         {gender: 'Other'}
@@ -81,7 +80,7 @@
             specialization: specialization.value['id']
         };
 
-        if (data.password !== confirmPassword.value) {
+        if (data.password !== confirm_password.value) {
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.");
             return;
         }
@@ -182,12 +181,12 @@
             </div>
 
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Confirm Password*" v-model.trim="confirmPassword"/>
+                <CustomPassword class="elements" placeholder="Confirm Password*" v-model.trim="confirm_password"/>
             </div>
 
             <div class="sub-container">
                 <InputNumber class="elements" id="age" placeholder="Age*" inputId="withoutgrouping" :useGrouping="false" v-model.number="age" :min="0" :max="100" :allowEmpty="true"/>
-                <Select class="elements" id="gender" v-model.trim="gender" :options="genderChoices" optionLabel="gender" placeholder="Gender*" showClear/>
+                <Select class="elements" id="gender" v-model.trim="gender" :options="gender_choices" optionLabel="gender" placeholder="Gender*" showClear/>
             </div>
 
             <div class="sub-container">
@@ -196,7 +195,7 @@
             </div>
 
             <div class="sub-container">
-                <Select class="elements" id="specialization" v-model.trim="specialization" :options="specializationsAvailable" optionLabel="specialization" placeholder="Specialization*" showClear/>
+                <Select class="elements" id="specialization" v-model.trim="specialization" :options="specializations_available" optionLabel="specialization" placeholder="Specialization*" showClear/>
             </div>
 
             <div class="sub-container">

@@ -71,6 +71,8 @@
         .catch( (error) => {
             warn("warn", "Error getting specializations data.", "Please check the status of the server or try reloading.")
         })
+    } else { 
+        warn('warn', "Log in using an admin account to access this page.", '');
     }
 </script>
 

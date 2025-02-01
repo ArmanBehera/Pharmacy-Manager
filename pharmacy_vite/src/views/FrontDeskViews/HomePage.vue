@@ -8,15 +8,16 @@
     import { checkDate, convertDateFormat } from '../../helpers';
     import { format } from 'date-fns';
     
-    const patientsData = ref([]);
-    const doctorsData = ref([]);
-    const noShowPatientsData = ref([]);
-    const isLoaded = ref([false, false, false]);
+    const patients_data = ref([]);
+    const doctors_data = ref([]);
+    const no_show_patients_data = ref([]);
+    const is_loaded = ref([false, false, false]);
     
     // The below variables are for scheduling a new appointment for a patient
     const appointment_date = ref();
-    const selectedAppointment = ref();
-    const rebookAppointmentDialog = ref(false);
+    const selected_appointment = ref();
+    const rebook_appointment_dialog = ref(false);
+    const cancellation_dialog = ref(false);
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -27,20 +28,20 @@
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
     }
 
-    const selectedDoctorScheduled = ref();
-    const selectedDoctorNoShow = ref();
+    const selected_doctor_scheduled = ref();
+    const selected_doctor_no_show = ref();
 
-    const isRegistered = ref(store.state.isRegistered)
+    const is_registered = ref(store.state.is_registered)
 
     const getPatients = () => {
-        axios.post('/frontdesk/getPatientsForDoctor/', { doctor_id: selectedDoctorScheduled.value['id'] })
+        axios.post('/frontdesk/getPatientsForDoctor/', { doctor_id: selected_doctor_scheduled.value['id'] })
         .then( (response) => {
-            patientsData.value = response.data.map(appointment => ({
+            patients_data.value = response.data.map(appointment => ({
                 ...appointment,
                 'appointment_date': convertDateFormat(appointment.date), 
                 'name': `${appointment.patient.first_name} ${appointment.patient.last_name}`
             }));
-            isLoaded.value[0] = true;
+            is_loaded.value[0] = true;
         })
         .catch( (error) => {
             warn('warn', "Error getting patients data.", "Please check the status of the server or try reloading.")
@@ -49,16 +50,16 @@
 
     const getPatientsNoShow = () => {
         axios.post('/frontdesk/noShowUpdate/', {
-            'doctor_id': selectedDoctorNoShow.value['id']
+            'doctor_id': selected_doctor_no_show.value['id']
         })
         .then( (response) => {
-            noShowPatientsData.value = response.data.map(appointment => ({
+            no_show_patients_data.value = response.data.map(appointment => ({
                 ...appointment,
                 'appointment_date': convertDateFormat(appointment.date),
                 'name': `${appointment.patient.first_name} ${appointment.patient.last_name}`
             }));
 
-            isLoaded.value[2] = true;
+            is_loaded.value[2] = true;
         })
         .catch( (error) => {
             
@@ -66,26 +67,26 @@
         })
     }
 
-    if (isRegistered.value === 'true') {
+    if (is_registered.value === 'true') {
         // Gets all the doctors
         axios.get('/frontdesk/getDoctors/')
         .then( (response) => {
-            doctorsData.value = response.data.map(doctor => ({
+            doctors_data.value = response.data.map(doctor => ({
                 ...doctor,
                 label: `${doctor.name}: ${doctor.specialization}`
             }));
             
-            selectedDoctorScheduled.value = doctorsData.value[0]
-            selectedDoctorNoShow.value = doctorsData.value[0]
-            isLoaded.value[1] = true;
+            selected_doctor_scheduled.value = doctors_data.value[0]
+            selected_doctor_no_show.value = doctors_data.value[0]
+            is_loaded.value[1] = true;
         })
         .catch( (error) => {
             warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
         })
 
-        watch(selectedDoctorScheduled, (newVal, oldVal) => {
+        watch(selected_doctor_scheduled, (newVal, oldVal) => {
             try { 
-                if (typeof selectedDoctorScheduled.value == 'object') {
+                if (typeof selected_doctor_scheduled.value == 'object') {
                     getPatients();
                 }
             }
@@ -94,9 +95,9 @@
             }
         })
 
-        watch(selectedDoctorNoShow, (newVal, oldVal) => {
+        watch(selected_doctor_no_show, (newVal, oldVal) => {
             try { 
-                if (typeof selectedDoctorNoShow.value == 'object') {
+                if (typeof selected_doctor_no_show.value == 'object') {
                     getPatientsNoShow();
                 }
             }
@@ -110,17 +111,28 @@
         warn('warn', 'Please log in to access this page.', '')
     }
 
-    const filteredArrayScheduled = ref([]);
-    const filteredArrayNoShow = ref([]);
+    const filtered_array = ref([]);
+
+    const search = (event, fullArray) => {
+        setTimeout(() => {
+            const query = event.query.toLowerCase(); // User's searchScheduled input
+            // Filter the full array based on the query
+            const filtered = fullArray.filter(item =>
+                item.label.toLowerCase().includes(query)
+            );
+            // Update the reactive ref's value
+            filtered_array.value = filtered;
+        }, 50);
+    };
 
     const confirmNewAppointment = (id) => {      
-        rebookAppointmentDialog.value = true;
-        selectedAppointment.value = id;
+        rebook_appointment_dialog.value = true;
+        selected_appointment.value = id;
     }
 
     // For patients with 'no-show'
     const sendRebookAppointmentRequest = () => {
-        rebookAppointmentDialog.value = false;
+        rebook_appointment_dialog.value = false;
 
         if (!checkDate(appointment_date)) {
             warn('warn', 'Error with appointment date.', 'Make sure the date is filled and is today or after today.');
@@ -129,7 +141,7 @@
 
         axios.post('/frontdesk/rebookAppointment/', {
 
-            'id': selectedAppointment.value,
+            'id': selected_appointment.value,
             'date': format(new Date(appointment_date.value), 'yyyy-MM-dd')
         })
         .then( (response) => {
@@ -142,33 +154,18 @@
         })
     }
 
-    const searchScheduled = (event, fullArray) => {
-        setTimeout(() => {
-            const query = event.query.toLowerCase(); // User's searchScheduled input
-            // Filter the full array based on the query
-            const filtered = fullArray.filter(item =>
-                item.label.toLowerCase().includes(query)
-            );
-            // Update the reactive ref's value
-            filteredArrayScheduled.value = filtered;
-        }, 50);
-    };
+    const cancelled_patient_id = ref();
+    const cancelled_patient_name = ref();
 
-    const searchNoShow = (event, fullArray) => {
-        setTimeout(() => {
-            const query = event.query.toLowerCase(); // User's searchScheduled input
-            // Filter the full array based on the query
-            const filtered = fullArray.filter(item =>
-                item.label.toLowerCase().includes(query)
-            );
-            // Update the reactive ref's value
-            filteredArrayNoShow.value = filtered;
-        }, 50);
-    };
+    const preliminaryCancel = (id, name) => {
+        cancellation_dialog.value = true;
+        cancelled_patient_id.value = id;
+        cancelled_patient_name.value = name;
+    }
 
-    const cancel = (id) => {
+    const sendCancelRequest = () => {
         axios.post('frontdesk/cancelAppointment/', {
-            'id': id
+            'id': cancelled_patient_id.value
         })
         .then( (response) => {
             warn('success', 'Successfully cancelled appointment for patient', '')
@@ -182,13 +179,13 @@
 
 <template>
     <Toast/>
-    <div class="flex flex-row space-y-2" v-if="isRegistered === 'true'">
+    <div class="flex flex-row space-y-2" v-if="is_registered === 'true'">
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
                     <h1 class="text-l font-bld m-2">Scheduled Appointments</h1>
-                    <AutoComplete v-model="selectedDoctorScheduled" optionLabel="label" dropdown :suggestions="filteredArrayScheduled" @complete="(event) => searchScheduled(event, doctorsData)" class="w-full" forceSelection/>
-                    <DataTable v-if="isLoaded[0] & patientsData.length > 0" :value="patientsData" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
+                    <AutoComplete v-model="selected_doctor_scheduled" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
+                    <DataTable v-if="is_loaded[0] & patients_data.length > 0" :value="patients_data" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                         <Column field="name" header="Name" sortable></Column>
                         <Column field="token_assigned" header="Token" sortable></Column>
                         <Column field="appointment_date" header="Date" sortable></Column>
@@ -199,12 +196,12 @@
                         </Column>
                         <Column>
                             <template #body="slotProps">
-                                <Button severity="danger" label="Cancel Appointment" @click.prevent="cancel(slotProps.data.id)"></Button>
+                                <Button severity="danger" label="Cancel Appointment" @click.prevent="preliminaryCancel(slotProps.data.id, `${slotProps.data.name}`)"></Button>
                             </template>
                         </Column>
                     </DataTable>
 
-                    <div v-else-if="patientsData.length == 0 && isLoaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+                    <div v-else-if="patients_data.length == 0 && is_loaded[0]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
                         There are no scheduled patients for this doctor in the system.
                     </div>
 
@@ -223,8 +220,8 @@
         <div class="mb-4">
             <div class="card ml-5">
                 <h1 class="text-l font-bld m-2">No Show Appointments</h1>
-                <AutoComplete v-model="selectedDoctorNoShow" optionLabel="label" dropdown :suggestions="filteredArrayNoShow" @complete="(event) => searchNoShow(event, doctorsData)" class="w-full" forceSelection/>
-                <DataTable v-if="isLoaded[2] & noShowPatientsData.length > 0" :value="noShowPatientsData" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
+                <AutoComplete v-model="selected_doctor_no_show" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
+                <DataTable v-if="is_loaded[2] & no_show_patients_data.length > 0" :value="no_show_patients_data" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                     <Column field="name" header="Name" sortable></Column>
                     <Column field="token_assigned" header="Token" sortable></Column>
                     <Column field="appointment_date" header="Date" sortable></Column>
@@ -235,7 +232,7 @@
                     </Column>
                 </DataTable>
 
-                <div v-else-if="noShowPatientsData.length == 0 && isLoaded[2]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+                <div v-else-if="no_show_patients_data.length == 0 && is_loaded[2]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
                     There are no "No-Show" patients for this doctor in the system.
                 </div>
 
@@ -246,10 +243,21 @@
         </div>
     </div>
 
-    <Dialog v-model:visible="rebookAppointmentDialog" :style="{ width: '450px' }" header="Confirm">
+    <Dialog v-model:visible="rebook_appointment_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex flex-column align-items-center justify-content-center">
             <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
             <Button label="Submit" icon="pi pi-check" text @click="sendRebookAppointmentRequest" class="mt-4"/>
         </div>
+    </Dialog>
+
+    <Dialog v-model:visible="cancellation_dialog" :style="{ width: '450px' }" header="Confirm">
+        <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span>Are you sure you want to cancel the appointment for {{ cancelled_patient_name }}?</span>
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="cancellation_dialog = false"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendCancelRequest"/>
+        </template>
     </Dialog>
 </template>
