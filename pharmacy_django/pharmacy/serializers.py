@@ -1,5 +1,5 @@
 from rest_framework import serializers, exceptions
-from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock, LabTests, UnlistedMedicine, UnlistedLabTest
+from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
 
 class IngredientsSerializer(serializers.ModelSerializer):
     
@@ -61,7 +61,7 @@ class MedicinesSerializer(serializers.ModelSerializer):
     # Check how ingredients are saved when multiple ingredients are saved and also how many=True works
     ingredients = IngredientsSerializer(many=True, required = False)
     allergens = AllergensSerializer(many=True, required = False)
-    sideEffects = SideEffectsSerializer(many=True, required = False)
+    side_effects = SideEffectsSerializer(many=True, required = False)
     categories = CategoriesSerializer(many=True, required = False)
     
     class Meta:
@@ -73,34 +73,38 @@ class MedicinesSerializer(serializers.ModelSerializer):
         
         ingredients_data = validated_data.pop('ingredients', None)
         categories_data = validated_data.pop('categories', None)
-        sideEffects_data = validated_data.pop('sideEffects', None)
+        side_effects_data = validated_data.pop('side_effects', None)
         allergens_data = validated_data.pop('allergens', None)
 
         # Validation for required many-to-many fields
-        if not categories_data or not sideEffects_data or not allergens_data:
+        if not categories_data or not side_effects_data or not allergens_data:
             raise serializers.ValidationError("All required fields are not provided.")
+        
+        try:
+            # Create the medicine instance
+            medicine = Medicines.objects.create(**validated_data)
 
-        # Create the medicine instance
-        medicine = Medicines.objects.create(**validated_data)
+            if ingredients_data:
+                ingredients = [Ingredients.objects.get_or_create(**ingredient_data)[0] for ingredient_data in ingredients_data]
+                medicine.ingredients.set(ingredients)  # Use `.set()` for many-to-many field assignment
 
-        # Handle many-to-many relationships
-        if ingredients_data:
-            ingredients = [Ingredients.objects.get_or_create(**ingredient_data)[0] for ingredient_data in ingredients_data]
-            medicine.ingredients.set(ingredients)  # Use `.set()` for many-to-many field assignment
+            if categories_data:
+                categories = [Categories.objects.get_or_create(**category_data)[0] for category_data in categories_data]
+                medicine.categories.set(categories)
 
-        if categories_data:
-            categories = [Categories.objects.get_or_create(**category_data)[0] for category_data in categories_data]
-            medicine.categories.set(categories)
+            if side_effects_data:
+                side_effects = [SideEffects.objects.get_or_create(**side_effect_data)[0] for side_effect_data in side_effects_data]
+                medicine.side_effects.set(side_effects)
 
-        if sideEffects_data:
-            side_effects = [SideEffects.objects.get_or_create(**sideEffect_data)[0] for sideEffect_data in sideEffects_data]
-            medicine.side_effects.set(side_effects)
+            if allergens_data:
+                allergens = [Allergens.objects.get_or_create(**allergy_data)[0] for allergy_data in allergens_data]
+                medicine.allergens.set(allergens)
 
-        if allergens_data:
-            allergens = [Allergens.objects.get_or_create(**allergy_data)[0] for allergy_data in allergens_data]
-            medicine.allergens.set(allergens)
-
-        return medicine
+            return medicine
+        
+        except Exception as e:
+            medicine.delete()
+            raise serializers.ValidationError({'error': f'Failed to create medicine. {e}'})
     
 
 class MedicineStockSerializer(serializers.ModelSerializer):
@@ -117,7 +121,7 @@ class MedicineStockSerializer(serializers.ModelSerializer):
         # Extract and handle many-to-many fields from medicine data
         ingredients_data = medicine_data.pop('ingredients', [])
         categories_data = medicine_data.pop('categories', [])
-        sideEffects_data = medicine_data.pop('sideEffects', [])
+        side_effects_data = medicine_data.pop('side_effects', [])
         allergens_data = medicine_data.pop('allergens', [])
         
         # Create the Medicine instance
@@ -131,8 +135,8 @@ class MedicineStockSerializer(serializers.ModelSerializer):
             categories = [Categories.objects.get_or_create(**category_data)[0] for category_data in categories_data]
             medicine.categories.set(categories)
 
-        if sideEffects_data:
-            side_effects = [SideEffects.objects.get_or_create(**sideEffect_data)[0] for sideEffect_data in sideEffects_data]
+        if side_effects_data:
+            side_effects = [SideEffects.objects.get_or_create(**side_effect_data)[0] for side_effect_data in side_effects_data]
             medicine.side_effects.set(side_effects)
 
         if allergens_data:
@@ -162,7 +166,7 @@ class UnlistedMedicinesSerializer(serializers.ModelSerializer):
 
     class Meta:
 
-        model = UnlistedMedicine
+        model = UnlistedPrescribedMedicines
         fields = '__all__'
     
 
@@ -170,5 +174,5 @@ class UnlistedLabTestsSerializer(serializers.ModelSerializer):
 
     class Meta:
 
-        model = UnlistedLabTest
+        model = UnlistedPrescribedLabTests
         fields = '__all__'

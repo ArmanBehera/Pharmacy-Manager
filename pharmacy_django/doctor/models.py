@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from administrator.models import User
 from django.utils import timezone
-from pharmacy.models import Medicines, LabTests, UnlistedMedicine, UnlistedLabTest
+from pharmacy.models import Medicines, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
 
 
 class SpecializationAvailable(models.Model):
@@ -74,10 +74,17 @@ class PrescribedMedicine(models.Model):
         ('Months', 'Months')
     ]
 
+    MEDICINES_STATUS_CHOICES = [
+        ('Prescribed', 'Prescribed'),
+        ('Dispensed', 'Dispensed'),
+        ('Not Available', 'Not Available')
+    ]
+
     medicine = models.ForeignKey(Medicines, verbose_name="Medicine Details", on_delete=models.CASCADE, related_name="prescribed_medicine")
     frequency = models.IntegerField(validators=[MinValueValidator(1)], help_text="Number of times the medicine should be taken per day")
     duration_value = models.FloatField(validators=[MinValueValidator(1)], help_text="Duration value based on the selected unit")
     duration_unit = models.CharField(max_length=6, choices=DURATION_UNIT_CHOICES, verbose_name="Duration Unit")
+    status = models.CharField(max_length=13, choices=MEDICINES_STATUS_CHOICES, default='Prescribed', verbose_name="Medicine Status", blank=False, null=False)
 
     class Meta:
         constraints = [
@@ -97,16 +104,18 @@ class PrescribedMedicine(models.Model):
 
 class PrescribedLabTest(models.Model):
     
-    STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled'),
+    LAB_TESTS_STATUS_CHOICES = [
+        ('Prescribed', 'Prescribed'),
+        ('Sample Collected', 'Sample Collected'),
+        ('Report Collected', 'Report Collected'),
+        ('Patient Informed', 'Patient Informed')
     ]
-    
+
     lab_test = models.ForeignKey(LabTests, verbose_name="Lab Test", on_delete=models.PROTECT, related_name="prescribed_lab_test")
     test_date = models.DateField(verbose_name="Test Date", blank=True, null=True)
     test_result = models.TextField(verbose_name="Test Result", blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending', verbose_name="Test Status") 
+    status = models.CharField(max_length=16, choices=LAB_TESTS_STATUS_CHOICES, default='Prescribed', verbose_name="Lab Test Status") 
+    sample_tracking_code = models.CharField(max_length=255, blank=True, null=True)
     attachment = models.FileField(upload_to='lab_tests/', verbose_name="Test Report", blank=True, null=True)
 
     def __str__(self):
@@ -114,21 +123,13 @@ class PrescribedLabTest(models.Model):
 
 
 class Prescription(models.Model):
-    
-    MEDICINES_STATUS_CHOICES = [
-        ('Prescribed', 'Prescribed'),
-        ('Dispensed', 'Dispensed')
-    ]
 
     appointment = models.OneToOneField(Appointment, verbose_name="Appointment Details", on_delete=models.CASCADE, related_name='prescription')
     medicines  = models.ManyToManyField(PrescribedMedicine, verbose_name="Prescribed Medicines", related_name='prescription', blank=True)
-    unlisted_medicines = models.ManyToManyField(UnlistedMedicine, verbose_name= "Prescribed Unlisted Medicines", related_name='prescription', blank=True)
+    unlisted_medicines = models.ManyToManyField(UnlistedPrescribedMedicines, verbose_name= "Prescribed Unlisted Medicines", related_name='prescription', blank=True)
     lab_tests = models.ManyToManyField(PrescribedLabTest, verbose_name="Prescribed Lab Tests", related_name='prescription', blank=True)
-    unlisted_lab_tests = models.ManyToManyField(UnlistedLabTest, verbose_name="Prescribed Unlisted Lab Tests", related_name='prescription', blank=True)
+    unlisted_lab_tests = models.ManyToManyField(UnlistedPrescribedLabTests, verbose_name="Prescribed Unlisted Lab Tests", related_name='prescription', blank=True)
     additonal_information = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Additional Information for the patient")
-    
-    medicines_status = models.CharField()
-    lab_tests_status = models.CharField()
 
     def __str__(self):
         patient = self.appointment.patient

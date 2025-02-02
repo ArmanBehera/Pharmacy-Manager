@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.db.models import Count
 from rest_framework import views, response, status, permissions, exceptions
 
 from administrator.models import User
@@ -142,15 +142,48 @@ class GetMedicines(views.APIView):
     
     def get(self, request):
         
-        medicines = MedicineStock.objects.all()
-
-        return response.Response(MedicineStockSerializer(medicines, many=True).data)
-
-    def post(self, request):
-
-        medicine_stocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name']).order_by('name')
+        medicine_stocks = MedicineStock.objects.all().order_by('medicine__name')
 
         return response.Response(MedicineStockSerializer(medicine_stocks, many=True).data)
+    
+    def post(self, request):
+
+        medicine_stocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name']).order_by('medicine__name')
+
+        return response.Response(MedicineStockSerializer(medicine_stocks, many=True).data)
+
+
+class GetUniqueMedicines(views.APIView):
+    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request):
+        
+        medicine_stocks = MedicineStock.objects.all()  # Fetch all medicine stocks
+
+        unique_medicines = []
+        seen_medicine_names = set()
+
+        for stock in medicine_stocks:
+            if stock.medicine.name not in seen_medicine_names:
+                unique_medicines.append(MedicineStockSerializer(stock).data)
+                seen_medicine_names.add(stock.medicine.name)  # Track seen names
+
+        return response.Response(unique_medicines, status=status.HTTP_202_ACCEPTED)
+    
+    def post(self, request):
+
+        medicine_stocks = MedicineStock.objects.filter(medicine__name__icontains=request.data['name'])
+
+        unique_medicines = []
+        seen_medicine_names = set()
+
+        for stock in medicine_stocks:
+            if stock.medicine.name not in seen_medicine_names:
+                unique_medicines.append(MedicineStockSerializer(stock).data)
+                seen_medicine_names.add(stock.medicine.name)  # Track seen names
+
+        return response.Response(unique_medicines, status=status.HTTP_202_ACCEPTED)
 
 
 class AddMedicines(views.APIView):
@@ -276,6 +309,18 @@ class GetSpecializationAvailable(views.APIView):
 
         for specialization in specializations:
             number = DoctorUser.objects.filter(specialization=specialization).count()
+            resp.append({'id': specialization.id, 'specialization': specialization.specialization, 'number': number})
+
+        return response.Response(resp)
+
+    def post(self, request):
+
+        specializations = SpecializationAvailable.objects.filter(specialization__icontains=request.data['name'])
+
+        resp = []
+
+        for specialization in specializations:
+            number = DoctorUser.objects.filter(specialization=specialization).count()
             resp.append({'specialization': specialization.specialization, 'number': number})
 
         return response.Response(resp)
@@ -295,7 +340,7 @@ class AddSpecializationAvailable(views.APIView):
         serializer = SpecializationSerializer(data=request.data)
 
         if serializer.is_valid():
-            specialization = serializer.save()
+            serializer.save()
 
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -360,6 +405,12 @@ class GetLabTests(views.APIView):
     def get(self, request):
 
         lab_tests = LabTests.objects.all()
+
+        return response.Response(LabTestsSerializer(lab_tests, many=True).data)
+    
+    def post(self, request):
+
+        lab_tests = LabTests.objects.filter(name__icontains=request.data['name'])
 
         return response.Response(LabTestsSerializer(lab_tests, many=True).data)
 

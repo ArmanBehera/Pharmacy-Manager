@@ -9,6 +9,7 @@ urlpatterns = [
     path('getEmployees/', views.GetEmployees.as_view(), name='getEmployees'),
     path('deleteEmployees/', views.DeleteEmployees.as_view(), name='deleteEmployees'),
     path('getMedicines/', views.GetMedicines.as_view(), name='getMedicines'),
+    path('getUniqueMedicines/', views.GetUniqueMedicines.as_view(), name="getUniqueMedicines"),
     path('addMedicines/', views.AddMedicines.as_view(), name='addMedicines'),
     path('addMedicineStock/', views.AddMedicineStock.as_view(), name='addMedicineStock'),
     path('deleteMedicines/', views.DeleteMedicines.as_view(), name='deleteMedicines'),

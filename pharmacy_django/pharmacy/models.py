@@ -49,9 +49,9 @@ class Medicines(models.Model):
     '''
 
     TIMING_CHOICES = [
-        ('before_food', 'before_food'),
-        ('after_food', 'after_food'),
-        ('custom', 'custom')
+        ('Before Food', 'Before Food'),
+        ('After Food', 'After Food'),
+        ('Custom', 'Custom')
     ]
     
     name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
@@ -96,7 +96,7 @@ class LabTests(models.Model):
         return f"Test Name - {self.name}. Cost - {self.test_cost}"
 
 
-class UnlistedMedicine(models.Model):
+class UnlistedPrescribedMedicines(models.Model):
     '''
         Model for medicines that are not available in the pharmacy
     '''
@@ -106,9 +106,9 @@ class UnlistedMedicine(models.Model):
     ]
 
     TIMING_CHOICES = [
-        ('before_food', 'before_food'),
-        ('after_food', 'after_food'),
-        ('custom', 'custom')
+        ('Before Food', 'Before Food'),
+        ('After Food', 'After Food'),
+        ('Custom', 'Custom')
     ]
 
     name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
@@ -131,7 +131,7 @@ class UnlistedMedicine(models.Model):
         ]
 
 
-class UnlistedLabTest(models.Model):
+class UnlistedPrescribedLabTests(models.Model):
     '''
         Model for labtests that are not provided by the pharmacy 
     '''

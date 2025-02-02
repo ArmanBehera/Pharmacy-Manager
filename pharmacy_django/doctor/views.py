@@ -16,6 +16,7 @@ class SignIn(views.APIView):
         API view for doctor signin
     '''
     permission_classes = (permissions.AllowAny, )
+    
     def post(self, request):
         '''
         Only post methods are allowed for this endpoint.

@@ -2,7 +2,7 @@ from rest_framework import serializers, exceptions
 
 from .models import DoctorUser, PatientUser, SpecializationAvailable, Appointment, Prescription, PrescribedMedicine, PrescribedLabTest
 from administrator.models import User
-from pharmacy.models import Medicines, LabTests, UnlistedMedicine, UnlistedLabTest
+from pharmacy.models import Medicines, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
 
 from administrator.serializers import UserSerializer
 from pharmacy.serializers import MedicinesSerializer, LabTestsSerializer, UnlistedMedicinesSerializer, UnlistedLabTestsSerializer
@@ -107,76 +107,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
         appointment = Appointment.objects.create(**validated_data)
 
         return appointment
-'''
-class PrescriptionSerializer(serializers.ModelSerializer):
-    medicines = serializers.ListField(child=serializers.DictField(), required=False)
-    lab_tests = serializers.PrimaryKeyRelatedField(queryset=PrescribedLabTest.objects.all(), many=True, required=False)
-    unlisted_medicines = UnlistedMedicinesSerializer(required=False, many=True)
-    unlisted_lab_tests = UnlistedLabTestsSerializer(required=False, many=True) 
-
-    class Meta:
-        model = Prescription
-        fields = '__all__'
-
-    def create(self, validated_data):
-        try:
-            # 🔹 Extract appointment ID
-            appointment = validated_data.pop('appointment', None)
-            if not appointment:
-                raise serializers.ValidationError({'appointment': 'This field is required.'})
-            
-            # 🔹 Extract related fields
-            medicines_data = validated_data.pop('medicines', [])
-            lab_tests_data = validated_data.pop('lab_tests', [])
-            unlisted_medicines_data = validated_data.pop('unlisted_medicines', [])
-            unlisted_lab_tests_data = validated_data.pop('unlisted_lab_tests', [])
-
-            # 🔹 Create Prescription instance
-            prescription = Prescription.objects.create(appointment=appointment, **validated_data)
-
-            # 🔹 Handle Medicines
-            prescribed_medicines = []
-            for medicine_data in medicines_data:
-                medicine_id = medicine_data.get("id")
-                if not medicine_id:
-                    raise serializers.ValidationError({'medicines': 'Each medicine must have an ID.'})
-                
-                medicine_instance = Medicines.objects.get(id=medicine_id)  
-                
-                prescribed_medicine = PrescribedMedicine.objects.create(
-                    medicine=medicine_instance,
-                    frequency=medicine_data.get("frequency"),
-                    duration_value=medicine_data.get("duration_value"),
-                    duration_unit=medicine_data.get("duration_unit")
-                )
-                prescribed_medicines.append(prescribed_medicine)
-
-            if prescribed_medicines:
-                prescription.medicines.set(prescribed_medicines)
-
-            # 🔹 Handle Lab Tests (FIXED)
-            if lab_tests_data:
-                lab_tests_instances = PrescribedLabTest.objects.filter(id__in=lab_tests_data)  # Convert IDs to objects
-                prescription.lab_tests.set(lab_tests_instances)
-
-            # 🔹 Handle Unlisted Medicines
-            unlisted_medicines = [UnlistedMedicine.objects.create(**um_data) for um_data in unlisted_medicines_data]
-            if unlisted_medicines:
-                prescription.unlisted_medicines.set(unlisted_medicines)
-
-            # 🔹 Handle Unlisted Lab Tests
-            unlisted_lab_tests = [UnlistedLabTest.objects.create(**ult_data) for ult_data in unlisted_lab_tests_data]
-            if unlisted_lab_tests:
-                prescription.unlisted_lab_tests.set(unlisted_lab_tests)
-
-            return prescription
-
-        except Exception as e:
-            print("Error:", str(e))  # Debugging log
-            prescription.delete()  # Rollback changes
-            raise serializers.ValidationError({'error': 'Failed to create Prescription. See logs for details.'})
-'''
-
 
 class PrescribedMedicinesSerializer(serializers.ModelSerializer):
 
@@ -213,27 +143,27 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         unlisted_medicines_data = validated_data.pop('unlisted_medicines', [])
         unlisted_lab_tests_data = validated_data.pop('unlisted_lab_tests', [])
 
-        prescription = Prescription.objects.create(**validated_data)
+        try:
+            prescription = Prescription.objects.create(**validated_data)
 
-        if prescribed_medicines_data:
-            prescribed_medicines = [PrescribedMedicine.objects.create(**prescribed_medicine_data) for prescribed_medicine_data in prescribed_medicines_data]
-            prescription.medicines.set(prescribed_medicines)
+            if prescribed_medicines_data:
+                prescribed_medicines = [PrescribedMedicine.objects.create(**prescribed_medicine_data) for prescribed_medicine_data in prescribed_medicines_data]
+                prescription.medicines.set(prescribed_medicines)
+            
+            if prescribed_lab_tests_data:
+                prescribed_lab_test = [PrescribedLabTest.objects.create(**prescribed_lab_test_data) for prescribed_lab_test_data in prescribed_lab_tests_data]
+                prescription.lab_tests.set(prescribed_lab_test)
+
+            if unlisted_medicines_data:
+                unlisted_medicines = [UnlistedPrescribedMedicines.objects.create(**unlisted_medicine_data) for unlisted_medicine_data in unlisted_medicines_data]
+                prescription.unlisted_medicines.set(unlisted_medicines)
+
+            if unlisted_lab_tests_data:
+                unlisted_lab_tests = [UnlistedPrescribedLabTests.objects.create(**unlisted_lab_test_data) for unlisted_lab_test_data in unlisted_lab_tests_data]
+                prescription.unlisted_lab_tests.set(unlisted_lab_tests)
+
+            return prescription
         
-        if prescribed_lab_tests_data:
-            prescribed_lab_test = [PrescribedLabTest.objects.create(**prescribed_lab_test_data) for prescribed_lab_test_data in prescribed_lab_tests_data]
-            prescription.lab_tests.set(prescribed_lab_test)
-
-        if unlisted_medicines_data:
-            unlisted_medicines = [UnlistedMedicine.objects.create(**unlisted_medicine_data) for unlisted_medicine_data in unlisted_medicines_data]
-            prescription.unlisted_medicines.set(unlisted_medicines)
-
-        if unlisted_lab_tests_data:
-            unlisted_lab_tests = [UnlistedLabTest.objects.create(**unlisted_lab_test_data) for unlisted_lab_test_data in unlisted_lab_tests_data]
-            prescription.unlisted_lab_tests.set(unlisted_lab_tests)
-
-        return prescription
-        '''
         except Exception as e:
             prescription.delete()  # Rollback changes
             raise serializers.ValidationError({'error': f'Failed to create Prescription. {e}'})
-        '''
