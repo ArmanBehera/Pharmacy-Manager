@@ -6,6 +6,10 @@
     import router from '../../router' 
     import { useToast } from 'primevue/usetoast';
     import { onMounted, onBeforeUnmount } from 'vue';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+    store.dispatch('logout')
 
     const toast = useToast();
 
@@ -75,7 +79,7 @@
             gender: gender.value['gender'],
             consultation_fee: parseInt(consultation_fee.value),
             registration_number: registration_number.value,
-            secondary_phone_number: secondary_phone_number.value,
+            secondary_phone_number: secondary_phone_number.value ? secondary_phone_number.value : '0',
             experience: experience.value,
             specialization: specialization.value['id']
         };
@@ -88,10 +92,6 @@
         if (data.experience > data.age) {
             warn("Experience > Age", "Your experience in the field cannot be greater than your age.");
             return;
-        }
-
-        if (data.secondary_phone_number === ''){
-            data.secondary_phone_number = "0"
         }
 
         if (data.experience === undefined){
@@ -140,10 +140,10 @@
                     "is_active": true,
                     "is_superuser": false
                 },
-                specialization: data.specialization,
-                consultation_fee: data.consultation_fee,
-                experience: data.experience,
-                registration_number: data.registration_number
+                "specialization": data.specialization,
+                "consultation_fee": data.consultation_fee,
+                "experience": data.experience,
+                "registration_number": data.registration_number
             })
             .then( (response) => {
                 router.push({ name: 'DoctorLogin' })

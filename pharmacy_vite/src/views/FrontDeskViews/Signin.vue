@@ -6,6 +6,10 @@
     import router from '../../router' 
     import { useToast } from 'primevue/usetoast';
     import { onMounted, onBeforeUnmount } from 'vue';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+    store.dispatch('logout')
 
     const toast = useToast();
 
@@ -50,23 +54,19 @@
 
     const submit = () => {
         let data = {
-            first_name: first_name.value,
-            last_name: last_name.value,
-            primary_phone_number: primary_phone_number.value,
-            email: email.value,
-            password: password.value,
-            age: age.value,
-            gender: gender.value['gender'],
-            secondary_phone_number: secondary_phone_number.value,
+            'first_name': first_name.value,
+            'last_name': last_name.value,
+            'primary_phone_number': primary_phone_number.value,
+            'email': email.value,
+            'password': password.value,
+            'age': age.value,
+            'gender': gender.value['gender'],
+            'secondary_phone_number': secondary_phone_number.value? secondary_phone_number.value : '0',
         };
 
         if (data.password !== confirm_password.value) {
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.");
             return;
-        }
-
-        if (data.secondary_phone_number === ''){
-            data.secondary_phone_number = "0"
         }
 
         var filled = true;

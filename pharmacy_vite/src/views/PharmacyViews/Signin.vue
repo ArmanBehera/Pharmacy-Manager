@@ -6,6 +6,10 @@
     import router from '../../router' 
     import { useToast } from 'primevue/usetoast';
     import { onMounted, onBeforeUnmount } from 'vue';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+    store.dispatch('logout')
 
     const toast = useToast();
 
@@ -57,7 +61,7 @@
             password: password.value,
             age: age.value,
             gender: gender.value['gender'],
-            secondary_phone_number: secondary_phone_number.value,
+            secondary_phone_number: secondary_phone_number.value ? secondary_phone_number.value : '0',
         };
 
         if (data.password !== confirm_password.value) {

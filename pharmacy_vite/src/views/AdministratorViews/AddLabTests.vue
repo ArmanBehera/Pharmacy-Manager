@@ -31,9 +31,9 @@
             'name': name.value,
             'test_cost': price.value,
             'provider': provider.value,
-            'description': description.value,
+            'description': description.value ? description.value : '',
             'sample_required': sample_required.value,
-            'pre_test_requirements': pre_test_requirements.value
+            'pre_test_requirements': pre_test_requirements.value ? pre_test_requirements.value : ''
         }
 
         for (const key in data) {
@@ -89,7 +89,7 @@
                 
                 <FloatLabel class="mt-4">
                     <Textarea v-model="pre_test_requirements" autoResize rows="5" cols="54" class="w-full" />
-                    <label>Pre-Test Requirements *</label>
+                    <label>Pre-Test Requirements</label>
                 </FloatLabel>
             </div>
         </div>

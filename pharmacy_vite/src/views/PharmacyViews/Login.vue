@@ -12,7 +12,7 @@
     const confirm_password = ref('');
 
     const store = useStore();
-    store.dispatch('initializeStore');
+    store.dispatch('logout');
 
     const toast = useToast();
 

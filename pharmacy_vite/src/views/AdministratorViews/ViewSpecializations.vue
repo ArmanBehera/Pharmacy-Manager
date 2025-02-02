@@ -11,25 +11,29 @@
     store.dispatch('initializeStore');
 
     const deletion_dialog = ref();
-    const selected = ref()
-    const data = ref([]);
+    const selected_rows = ref([])
+    const specialization_data = ref([]);
     const editing_rows = ref([]);
 
-    const specialization_name = ref([]);
-    
+    const add_specialization_name = ref([]);
+    const search_specialization_name = ref([]);
+
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.is_registered === "true") {
+    const getSpecializationsWithoutFilter = () => {
         axios.get(`/administrator/getSpecializations/`)
         .then( (response) => {
-            data.value = response.data
-            console.log(response.data)
+            specialization_data.value = response.data
         })
         .catch( (error) => {
             warn('warn', 'Log in using an admin account to access this page.', '')
         })
+    }
+
+    if (store.state.is_registered === "true") {
+        getSpecializationsWithoutFilter();
     }
     else {
         warn('warn', 'Log in using an admin account to access this page.', '')
@@ -44,14 +48,14 @@
 
         let idArray = []
 
-        for (let i = 0; i < selected.value.length; i++) {
-            idArray.push(selected.value[i]['id'])
+        for (let i = 0; i < selected_rows.value.length; i++) {
+            idArray.push(selected_rows.value[i]['id'])
         }
 
         axios.post('/administrator/deleteSpecializations/', { ids: idArray })
         .then( (response) => {
-            data.value = data.value.filter(val => !selected.value.includes(val));
-            selected.value = null;
+            specialization_data.value = specialization_data.value.filter(val => !selected_rows.value.includes(val));
+            selected_rows.value = [];
 
             warn('success', 'Successfully deleted specializations!', '');
         })
@@ -64,13 +68,13 @@
         let { newData, index } = event;
 
         // Updating the local instance
-        data.value[index] = newData;
+        specialization_data.value[index] = newData;
 
-        console.log(data.value[index])
+        console.log(specialization_data.value[index])
         
         // Sending a request to the backend to update the instance. 
         axios.post('/administrator/editSpecializations/', {
-            ...data.value[index]
+            ...specialization_data.value[index]
         })
         .then( (response) => {
             warn('success', 'Successfully edited specializations.', '')
@@ -81,34 +85,58 @@
     }
 
     const submit = () => {
-        if (!specialization_name.value) {
+        if (!add_specialization_name.value) {
             warn('warn', 'Specialization Name field should be filled with the name of the specialization.', '');
             return;
         }
 
         axios.post('/administrator/addSpecializations/', {
-            'specialization': specialization_name.value
+            'specialization': add_specialization_name.value
         })
         .then( (response) => {
             warn('success', 'Succesfully added specialization.', '')
+            getSpecializationsWithoutFilter();
         })
         .catch( (error) => {
             warn('warn', 'Unsuccessful in adding specialization', '')
+        })
+    }
+
+    const search = () => {
+        if (!search_specialization_name.value) {
+            getSpecializationsWithoutFilter();
+            return;
+        }
+
+        axios.post(`/administrator/getSpecializations/`, {
+            'name': search_specialization_name.value
+        })
+        .then( (response) => {
+            specialization_data.value = response.data
+        })
+        .catch( (error) =>{
+            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
         })
     }
 </script>
 
 <template>
     <Toast />
-    <div class="top-container flex flex-column justify-content-center align-items-center mt-4" v-if="data.length >= 0">
+
+    <div class="flex flex-row align-items-center justify-content-center mt-4">
+        <InputText class="elements" id="lab-test-name" placeholder="Specialization Name" v-model.trim="search_specialization_name"/>
+        <Button id="search" label="Search" @click.prevent="search"/>
+    </div>
+
+    <div class="top-container flex flex-column justify-content-center align-items-center mt-4" v-if="specialization_data.length >= 0">
         <div class="container">
             <div class="centered">
                 <h1 class="text-3xl font-bold m-3">View Specializations</h1>    
             </div>
 
-            <div class="flex flex-column" v-if="data.length > 0">
+            <div class="flex flex-column" v-if="specialization_data.length > 0">
                 <div class="card">
-                    <DataTable v-model:editingRows="editing_rows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+                    <DataTable v-model:editingRows="editing_rows" v-model:selection="selected_rows" :value="specialization_data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                     resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
                         :pt="{
                             table: { style: 'min-width: 50rem' },
@@ -137,23 +165,24 @@
                     </DataTable>
                 </div>
             </div>
+
+            <div v-else>
+                <h1 class="centered mt-3">There are no specializations registered in the system.</h1>
+            </div>
+
             <div class="flex justify-center space-x-4 mt-8">
-                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/> 
+                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected_rows || !selected_rows.length" v-if="specialization_data.length > 0"/> 
             </div>
         </div>
-
-        
     </div>
 
-    <div v-else>
-        <h1 class="text-3xl font-bold m-3">There are no specializations registered in the system.</h1>
-    </div>
+    
         
     <div class="flex flex-column align-items-center justify-content-center">
         <h1 class="text-xl font-bold mt-10">Add Specializations</h1>  
 
         <div class="flex flex-row mt-2">
-            <InputText id="name" placeholder="Specialization Name *" v-model.trim="specialization_name"/>
+            <InputText id="name" placeholder="Specialization Name *" v-model.trim="add_specialization_name"/>
             <Button label="Submit" @click.prevent="submit" class="ml-2"/>
         </div>
     </div>
@@ -168,6 +197,4 @@
             <Button label="Yes" icon="pi pi-check" text @click="sendDeleteRequest"/>
         </template>
     </Dialog>
-
-
 </template>

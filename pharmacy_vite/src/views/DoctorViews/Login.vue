@@ -13,7 +13,7 @@
     const registration_number = ref('');
 
     const store = useStore();
-    store.dispatch('initializeStore');
+    store.dispatch('logout');
 
     const toast = useToast();
 
@@ -119,20 +119,20 @@
     <div class="top-container">
         <div class="container">
             <div class="sub-container">
-                <InputText class="elements" id="first-name" placeholder="First Name" v-model.trim="first_name"/>
-                <InputText class="elements" id="last-name" placeholder="Last Name" v-model.trim="last_name"/>
+                <InputText class="elements" id="first-name" placeholder="First Name *" v-model.trim="first_name"/>
+                <InputText class="elements" id="last-name" placeholder="Last Name *" v-model.trim="last_name"/>
             </div>
 
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Password" v-model.trim="password"/>
+                <CustomPassword class="elements" placeholder="Password *" v-model.trim="password"/>
             </div>
             
             <div class="sub-container">
-                <CustomPassword class="elements" placeholder="Confirm Password" v-model.trim="confirm_password"/>
+                <CustomPassword class="elements" placeholder="Confirm Password *" v-model.trim="confirm_password"/>
             </div>
 
             <div class="sub-container">
-                <InputText class="elements" id="registration" placeholder="Doctor Registration Number" v-model.trim="registration_number"/>
+                <InputText class="elements" id="registration" placeholder="Doctor Registration Number *" v-model.trim="registration_number"/>
             </div>
 
             <Button label="Submit" @click.prevent="submit"/>

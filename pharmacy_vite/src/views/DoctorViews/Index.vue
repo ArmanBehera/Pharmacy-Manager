@@ -7,20 +7,9 @@
     import '../../styles/styles.css';
     
     const store = useStore();
-    const drawer_visible = ref(false);
-
     store.dispatch('initializeStore');
 
     const items = ref([
-        {
-            label: '',
-            icon: 'pi pi-bars',
-            loggedIn: true,
-            loggedOut: false,
-            command: () => {
-                drawer_visible.value = true;
-            }
-        },
         {
             label: 'Home',
             icon: 'pi pi-home',
@@ -77,20 +66,6 @@
 </script>
 
 <template>
-    <Drawer v-model:visible="drawer_visible">
-        <template #container="{ closeCallback }">
-            <div class="flex flex-col h-full">
-                <div class="flex items-center justify-between px-3 py-4 shadow-md">
-                    <div class="inline-flex items-center gap-4">
-                        <img src="../../assets/Pharmacy.png" alt="Pharmacy Logo" class="h-10 w-10" />
-                        <h1 class="font-bold text-2xl text-primary">Doctor</h1>
-                    </div>
-                    <Button type="button" @click="closeCallback" icon="pi pi-times" rounded outlined></Button>
-                </div>
-            </div>
-        </template>
-    </Drawer>
-
     <Menubar :model="items">
         <template #item="{ item, props }">
             <a v-if="item.loggedIn == logged_in || item.loggedOut == !logged_in" :target="item.target" v-bind="props.action">

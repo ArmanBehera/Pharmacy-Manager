@@ -135,34 +135,54 @@
         const unlisted_medicines = ref([])
         const unlisted_lab_tests = ref([])
 
-        // Need to refactor timings and their choices
-
+    
         for (let i = 0; i < medicine_count.value; i++) {
-            if (unlisted_index_array_medicine.value.some(index => index === i)) {
-                let timing2 = '';
-
-                if (timings.value[i] === 'After Food') {
-                    timing2 = 'after_food'
-                } else if (timings.value[i] === 'Before Food') {
-                    timing2 = 'before_food'
+            if (prescribed_medicines.value[i] && frequency_medicines.value[i] && duration_medicines.value[i] && duration_unit.value[i]) {
+                if (unlisted_index_array_medicine.value.some(index => index === i)) {
+                    if (timings.value[i]) {
+                        if (timings.value[i] === 'Custom') {
+                            if (!custom_timing_descriptions.value[i]) {
+                                warn('warn', 'Medicines assigned with custom timing need to have a description.', '')
+                                return;
+                            }
+                        }
+                        unlisted_medicines.value.push({'name': prescribed_medicines.value[i], 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i], 'timings': timings.value[i], 'custom_timing_description': custom_timing_descriptions.value[i] ? custom_timing_descriptions.value[i] : ''})
+                    } else {
+                        warn('warn', 'Assign timing for consumption of medicine.', '')
+                        return;
+                    }
                 } else {
-                    timing2 = 'custom'
+                    listed_medicines.value.push({'medicine': prescribed_medicines.value[i].id, 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i], 'status': 'Prescribed'})
                 }
-
-                unlisted_medicines.value.push({'name': prescribed_medicines.value[i], 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i], 'timings': timing2, 'custom_timing_description': custom_timing_descriptions.value[i] ? custom_timing_descriptions.value[i] : ''})
             } else {
-                listed_medicines.value.push({'medicine': prescribed_medicines.value[i].id, 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i]})
+                if (prescribed_medicines.value.length !== 0) {
+                    warn('warn', 'Fill up all the fields for all prescribed medicines.', '');
+                    return;
+                }
             }
         }
-
+        
+        // Make similar checks for lab tests
         for (let i = 0; i < lab_test_count.value; i++) {
-            if (unlisted_index_array_lab_tests.value.some(index => index === i)) {
-                unlisted_lab_tests.value.push({'name': prescribed_lab_tests.value[i]});
+            console.log(prescribed_lab_tests.value[i])
+            if (prescribed_lab_tests.value[i]){
+                if (unlisted_index_array_lab_tests.value.some(index => index === i)) {
+                    unlisted_lab_tests.value.push({'name': prescribed_lab_tests.value[i]});
+                } else {
+                    listed_lab_tests.value.push({'lab_test': prescribed_lab_tests.value[i].id, 'test_date': null, 'test_result': null, 'attachment': null, 'status': 'Prescribed', 'sample_tracking_code': null});
+                }
             } else {
-                listed_lab_tests.value.push({'lab_test': prescribed_lab_tests.value[i].id, 'status': 'Pending', 'test_date': null, 'test_result': null, 'attachment': null});
+                if (prescribed_lab_tests.value.length !== 0) {
+                    warn('warn', 'Fill in the name for the lab tests.', '');
+                    return;
+                }
             }
         }
 
+        if (listed_medicines.value.length === 0 && listed_lab_tests.value.length === 0 && unlisted_medicines.value.length === 0 && unlisted_lab_tests.value.length === 0 && !additional_information.value) {
+            warn('warn', 'Please fill in at least one of the fields to make a valid prescription.', '');
+            return;
+        }
 
         // Id of the medicine, followed by the duration and the others
         const prescription_to_send = {
@@ -171,11 +191,9 @@
             'lab_tests': listed_lab_tests.value,
             'unlisted_medicines': unlisted_medicines.value,
             'unlisted_lab_tests': unlisted_lab_tests.value,
-            'additional_information': additional_information.value
+            'additional_information': additional_information.value ? additional_information.value : '' 
         }
-
-        console.log(prescription_to_send)
-
+        
         axios.post('/doctor/addPrescription/', {
             ...prescription_to_send
         })
@@ -204,7 +222,7 @@
             <label class="text-2xl font-semibold">Medicines</label>
             <div v-for="n in medicine_count" :key="n" class="flex flex-row items-center space-x-4">
                 <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribed_medicines[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, medicines_data )" class="w-full" />
-                <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full" fluid/>
+                <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
                 <InputNumber id="duration" placeholder="Duration *" inputId="minmaxfraction" :minFractionDigits="1" :maxFractionDigits="2" :useGrouping="false" v-model.number="duration_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
                 <Select v-model="duration_unit[n - 1]" :options="duration_unit_choices" placeholder="Unit *"/>
                 <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine *" v-if="isUnlistedMedicine(n - 1).value"/>

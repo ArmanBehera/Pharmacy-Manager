@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { useStore } from 'vuex';
     import axios from '../../axios';
     import { useToast } from 'primevue/usetoast';
@@ -15,64 +15,73 @@
     const usertype2 = capitalize(usertype);
 
     const deletion_dialog = ref();
-    const selected = ref()
-    const data = ref([]);
+    const selected_rows = ref()
+    const medicines_data = ref([]);
     const length = ref(-1);
-    const editing_rows = ref([]);
+    const search_medicine_name = ref();
     
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.is_registered === "true") {
+    const getMedicineWithoutFilter = () => {
         axios.get(`/${usertype}/getMedicines/`)
         .then( (response) => {
-            data.value = response.data
-            length.value = data.value.length
-            console.log(data.value)
+            medicines_data.value = response.data
+            length.value = medicines_data.value.length
+            console.log(medicines_data.value)
         })
         .catch( (error) => {
             warn('warn', 'Log in using an admin account to access this page.', '')
         })
     }
+
+    if (store.state.is_registered === "true") {
+        getMedicineWithoutFilter();
+    }
     else {
         warn('warn', 'Log in using an admin account to access this page.', '')
     }
+
+    watch(selected_rows, (new_rows) => {
+        
+    })
 
     const confirmDeletion = () => {      
         deletion_dialog.value = true;
     }
 
-    const onRowEditSave = (event) => {
-        let { newData, index } = event;
+    const search = () => {
+        if (!search_medicine_name.value) {
+            getMedicineWithoutFilter();
+            return;
+        }
 
-        data.value[index] = newData;
-
-        axios.post(`/${usertype}/editMedicines/`, {
-             "id": newData.id,
-             "name": newData.name,
-             "manufacturer": newData.manufacturer,
-             "expiration_date": newData.expiration_date,
-             "price": newData.price,
-             "stock": newData.stock,
-             "description": newData.description
-        });
-    };
+        axios.post(`/${usertype}/getMedicines/`, {
+            'name': search_medicine_name.value
+        })
+        .then( (response) => {
+            medicines_data.value = response.data
+        })
+        .catch( (error) =>{
+            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+        })
+    }
 
     const sendRequest = () => {
         deletion_dialog.value = false;
 
         let idArray = []
 
-        for (let i = 0; i < selected.value.length; i++) {
-            idArray.push(selected.value[i]['id'])
+        for (let i = 0; i < selected_rows.value.length; i++) {
+            idArray.push(selected_rows.value[i]['id'])
         }
 
         axios.post('/administrator/deleteMedicines/', { ids: idArray })
         .then( (response) => {
             
-            data.value = data.value.filter(val => !selected.value.includes(val));
-            selected.value = null;
+            medicines_data.value = medicines_data.value.filter(val => !selected_rows.value.includes(val));
+            selected_rows.value = null;
 
             warn('success', 'Successfully deleted medicines!', '');
         })
@@ -84,77 +93,41 @@
 
 <template>
     <Toast />
-    <div class="top-container mt-4" v-if="data.length >= 0">
+
+    <div class="flex flex-row align-items-center justify-content-center mt-4">
+        <InputText class="elements" id="medicine-name" placeholder="Medicine Name" v-model.trim="search_medicine_name"/>
+        <Button id="search" label="Search" @click.prevent="search"/>
+    </div>
+
+    <div class="top-container mt-4" v-if="medicines_data.length >= 0">
         <div class="container">
             <div class="centered">
                 <h1 class="text-3xl font-bold m-3">View Medicines</h1>    
             </div>
 
-            <div v-if="data.length > 0">
+            <div v-if="medicines_data.length > 0">
                 <div class="card">
-                    <DataTable :value="data" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
-                     v-model:selection="selected"
-                     paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-                     v-model:editingRows="editing_rows" @row-edit-save="onRowEditSave" editMode="row" dataKey="id"
-                     groupRowsBy="medicine.name" rowGroupMode="rowspan"
-                        :pt="{
-                            table: { style: 'min-width: 50rem' },
-                            column: {
-                                bodycell: ({ state }) => ({
-                                    style:  state['d_editing'] && 'padding-top: 0.75rem; padding-bottom: 0.75rem'
-                                })
-                            }
-                        }" 
+                    <DataTable :value="medicines_data" tableStyle="min-width: 50rem" class="p-datatable-sm" sortable
+                        v-model:selection="selected_rows"
+                        paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+                        groupRowsBy="medicine.name" rowGroupMode="rowspan"
                     >
                         <Column selectionMode="multiple" style="width: 5rem"></Column>
-
-                        <Column field="medicine.name" header="Name">
-                            <template #editor="{ data, field }">
-                                <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
-                            </template>
-                        </Column>
-
-                        <Column field="stock" header="Stock">
-                            <template #editor="{ data, field }">
-                                <InputNumber v-model.number="data[field]" :min="0" disabled class="w-full p-inputnumber-sm" />
-                            </template>
-                        </Column>
-
-                        <Column field="medicine.price" header="Price">
-                            <template #editor="{ data, field }">
-                                <InputNumber v-model.number="data[field]" :min="0" class="w-full p-inputnumber-sm" />
-                            </template>
-                        </Column>
-                        
-                        <Column field="medicine.manufacturer" header="Manufacturer">
-                            <template #editor="{ data, field }">
-                                <InputText v-model="data[field]" class="w-full p-inputtext-sm" />
-                            </template>
-                        </Column>
-
-                        <Column field="expiration_date" header="Expiration Date">
-                            <template #editor="{ data, field }">
-                                <DatePicker v-model="data[field]" dateFormat="dd/mm/yy" disabled placeholder="Expiration Date" class="p-datepicker-sm w-full" />
-                            </template>
-                        </Column>
-
-                        <Column field="medicine.description" header="Description">
-                            <template #editor="{ data, field }">
-                                <InputText v-model="data['field']" class="w-full p-inputtext-sm" :style="{ minWidth: '20rem' }"/>
-                            </template>
-                        </Column>
-
-                        <Column :rowEditor="true" :style="{ minWidth: '8rem' }" bodyStyle="text-align:center"></Column>
+                        <Column field="medicine.name" header="Name"/>
+                        <Column field="stock" header="Stock"/>
+                        <Column field="medicine.price" header="Price"/>
+                        <Column field="medicine.manufacturer" header="Manufacturer"/>
+                        <Column field="expiration_date" header="Expiration Date"/>
                     </DataTable>
                 </div>
             </div>
 
-            <div class="centered" v-if="data.length == 0">
+            <div class="centered" v-if="medicines_data.length == 0">
                 <h1 class="text-l font-bold m-2">There are no medicines registered in the system.</h1>
             </div>
 
             <div class="flex justify-center space-x-4 mt-8">
-                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
+                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected_rows || !selected_rows.length" v-if="medicines_data.length > 0"/>
                 <Button label="Add New Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddNewMedicine` })"/> 
                 <Button label="Add Stock for Existing Medicine" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddExistingMedicine` })"/> 
             </div>

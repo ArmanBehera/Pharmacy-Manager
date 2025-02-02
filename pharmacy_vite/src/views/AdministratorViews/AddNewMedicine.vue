@@ -52,7 +52,7 @@
             allergens_data.value = response.data.allergens
             ingredients_data.value = response.data.ingredients
             categories_data.value = response.data.categories
-            side_effects_data.value = response.data.sideEffects
+            side_effects_data.value = response.data.side_effects
         })
         .catch((error) => {
             warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
@@ -115,19 +115,6 @@
             return;
         }
 
-        const backend_timing = ref();
-
-        if (timings.value === 'Before Food') {
-            backend_timing.value = 'before_food'
-        } else if (timings.value === 'After Food') {
-            backend_timing.value = 'after_food'
-        } else if (timings.value === 'Custom') {
-            backend_timing.value = 'custom'
-        } else {
-            warn('warn', 'The value for timings should be an option from the dropdown.', 'Retry again.')
-            return;
-        }
-
         const medicineToSend = {
             'name': name.value,
             'price': price.value,
@@ -136,12 +123,14 @@
             'timings': timings.value,
             'side_effects' : selected_side_effects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
             'allergens' : selected_allergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
-            'timings': backend_timing.value,
+            'timings': timings.value,
             'custom_timing_description': custom_timing_description.value
         }
         
         if (selected_ingredients.value.length != 0) {
             medicineToSend.ingredients = selected_ingredients.value.map(ingredient => ({ name: ingredient.name ? ingredient.name : ingredient }));
+        } else {
+            medicineToSend.ingredients = []
         }
 
         if (selected_categories.value.length != 0){
@@ -199,8 +188,8 @@
                     <Textarea v-model="description" autoResize rows="5" cols="54" class="w-full" />
                     <label>Description</label>
                 </FloatLabel>
-                <Select v-model="timings" :options="timings_choices" placeholder="Timing for taking the medicine"/>
-                <InputText id="customTiming" placeholder="Custom Timing Description" v-model.trim="custom_timing_description" v-if="timings === 'Custom'" class="p-inputtext-sm w-full"/>
+                <Select v-model="timings" :options="timings_choices" placeholder="Timing for taking the medicine *"/>
+                <InputText id="customTiming" placeholder="Custom Timing Description *" v-model.trim="custom_timing_description" v-if="timings === 'Custom'" class="p-inputtext-sm w-full"/>
             </div>
 
             <div class="flex flex-col space-y-6">

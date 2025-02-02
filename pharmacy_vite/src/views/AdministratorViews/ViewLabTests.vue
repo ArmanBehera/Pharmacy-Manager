@@ -14,24 +14,30 @@
     const usertype2 = capitalize(usertype)
 
     const deletion_dialog = ref();
-    const selected = ref()
-    const data = ref([]);
+    const selected_rows = ref()
+    const lab_tests_data = ref([]);
     const length = ref(-1);
-    const editingRows = ref([]);
+    const editing_rows = ref([]);
     
+    const search_lab_test_name = ref();
+
     const warn = (warn, summary, detailed) => {
         toast.add({ severity: warn, summary: summary, detail: detailed, life: 3000 });
     }
 
-    if (store.state.is_registered === "true") {
+    const getLabTestWithoutFilter = () => {
         axios.get(`/${usertype}/getLabTests/`)
         .then( (response) => {
-            data.value = response.data
-            length.value = data.value.length
+            lab_tests_data.value = response.data
+            length.value = lab_tests_data.value.length
         })
         .catch( (error) => {
             warn('warn', 'Log in using an admin account to access this page.', '')
         })
+    }
+
+    if (store.state.is_registered === "true") {
+        getLabTestWithoutFilter();
     }
     else {
         warn('warn', 'Log in using an admin account to access this page.', '')
@@ -46,14 +52,14 @@
 
         let idArray = []
 
-        for (let i = 0; i < selected.value.length; i++) {
-            idArray.push(selected.value[i]['id'])
+        for (let i = 0; i < selected_rows.value.length; i++) {
+            idArray.push(selected_rows.value[i]['id'])
         }
 
         axios.post(`/${usertype}/deleteLabTests/`, { ids: idArray })
         .then( (response) => {
-            data.value = data.value.filter(val => !selected.value.includes(val));
-            selected.value = null;
+            lab_tests_data.value = lab_tests_data.value.filter(val => !selected_rows.value.includes(val));
+            selected_rows.value = null;
 
             warn('success', 'Successfully deleted lab tests!', '');
         })
@@ -66,13 +72,13 @@
         let { newData, index } = event;
 
         // Updating the local instance
-        data.value[index] = newData;
+        lab_tests_data.value[index] = newData;
 
-        console.log(data.value[index])
+        console.log(lab_tests_data.value[index])
         
         // Sending a request to the backend to update the instance. 
         axios.post('/administrator/editLabTests/', {
-            ...data.value[index]
+            ...lab_tests_data.value[index]
         })
         .then( (response) => {
             warn('success', 'Successfully edited lab tests.', '')
@@ -81,19 +87,42 @@
             warn('warn', 'Unsuccessful in editing lab tests.', 'Please try again.')
         })  
     }
+
+    const search = () => {
+        if (!search_lab_test_name.value) {
+            getLabTestWithoutFilter();
+            return;
+        }
+
+        axios.post(`/${usertype}/getLabTests/`, {
+            'name': search_lab_test_name.value
+        })
+        .then( (response) => {
+            lab_tests_data.value = response.data
+        })
+        .catch( (error) =>{
+            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+        })
+    }
 </script>
 
 <template>
     <Toast />
-    <div class="top-container mt-4" v-if="data.length >= 0">
+
+    <div class="flex flex-row align-items-center justify-content-center mt-4">
+        <InputText class="elements" id="lab-test-name" placeholder="Lab Test Name" v-model.trim="search_lab_test_name"/>
+        <Button id="search" label="Search" @click.prevent="search"/>
+    </div>
+
+    <div class="top-container mt-4" v-if="lab_tests_data.length >= 0">
         <div class="container">
             <div class="centered">
                 <h1 class="text-3xl font-bold m-3">View Lab Tests</h1>    
             </div>
 
-            <div class="flex flex-column" v-if="data.length > 0">
+            <div class="flex flex-column" v-if="lab_tests_data.length > 0">
                 <div class="card">
-                    <DataTable v-model:editingRows="editingRows" v-model:selection="selected" :value="data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+                    <DataTable v-model:editingRows="editing_rows" v-model:selection="selected_rows" :value="lab_tests_data" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                     resizableColumns columnResizeMode="fit" tableStyle="min-width: 50rem" class="p-datatable-sm" 
                         :pt="{
                             table: { style: 'min-width: 50rem' },
@@ -128,17 +157,19 @@
                     </DataTable>
                 </div>
             </div>
+
+            <div v-else>
+                <h1 class="centered font-bold m-3">There are no lab tests registered in the system.</h1>
+            </div>
+
             <div class="flex justify-center space-x-4 mt-8">
-                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected || !selected.length" v-if="data.length > 0"/>
+                <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeletion" :disabled="!selected_rows || !selected_rows.length" v-if="lab_tests_data.length > 0"/>
                 <Button label="Add Lab Tests" icon="pi pi-plus" severity="success" @click="$router.push({ name: `${usertype2}AddLabTests` })"/>  
             </div>
         </div>
     </div>
 
-
-    <div v-else>
-        <h1 class="text-3xl font-bold m-3">There are no lab tests registered in the system.</h1>
-    </div>
+    
 
     <Dialog v-model:visible="deletion_dialog" :style="{ width: '450px' }" header="Confirm">
         <div class="flex items-center gap-4">

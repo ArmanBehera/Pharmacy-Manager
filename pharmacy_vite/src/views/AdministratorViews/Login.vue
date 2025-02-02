@@ -13,9 +13,9 @@
     const confirm_password = ref('');
 
     const store = useStore();
-    const toast = useToast();
+    store.dispatch('logout')
 
-    store.dispatch('initializeStore');
+    const toast = useToast();
 
     const visibility = ref(true);
 

@@ -28,7 +28,7 @@
     const usertype = store.state.usertype
 
     if (is_registered.value === 'true') {
-        axios.get(`${usertype}/getMedicines/`)
+        axios.get(`${usertype}/getUniqueMedicines/`)
         .then( (response) => {
             medicines_data.value = response.data
             is_loaded.value[0] = true
@@ -47,7 +47,7 @@
             return;
         }
 
-        axios.post(`/${usertype}/getMedicines/`, {
+        axios.post(`/${usertype}/getUniqueMedicines/`, {
             'name': medicine_name.value
         })
         .then( (response) => {

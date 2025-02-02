@@ -52,12 +52,12 @@
     const submit = () => {
 
         let data = {
-            first_name: first_name.value,
-            last_name: last_name.value,
-            primary_phone_number: primary_phone_number.value,
-            age: age.value,
-            gender: gender.value['gender'],
-            secondary_phone_number: secondary_phone_number.value,
+            'first_name': first_name.value,
+            'last_name': last_name.value,
+            'primary_phone_number': primary_phone_number.value,
+            'age': age.value,
+            'gender': gender.value['gender'],
+            'secondary_phone_number': secondary_phone_number.value ? secondary_phone_number.value : '0',
         };
 
         var filled = true;

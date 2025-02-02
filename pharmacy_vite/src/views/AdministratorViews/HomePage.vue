@@ -182,7 +182,7 @@
                     </DataTable>
 
                     <div v-else-if="is_loaded[4] & specializations_data.length == 0" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
-                        There are no medicines in this system.
+                        There are no specializations in this system.
                     </div>
 
                     <div class="centered" v-else>
