@@ -134,7 +134,7 @@ class CustomFrontDeskAuthentication(authentication.BaseAuthentication):
         return (user, None)
 
 
-class CombinedFrontDeskAndAdminAuthentication(authentication.BaseAuthentication):
+class CombinedPharmacyAndAdminAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         
@@ -156,6 +156,33 @@ class CombinedFrontDeskAndAdminAuthentication(authentication.BaseAuthentication)
 
         # Perform additional checks for admin privileges.
         if user.role != 'Administrator' and user.role != 'Pharmacy':
+            raise exceptions.PermissionDenied("Unauthorized access.")
+
+        # Return the authenticated user and None for token (custom behavior).
+        return (user, None)
+    
+
+class CombinedPharmacyAndDoctorAuthentication(authentication.BaseAuthentication):
+    def authenticate(self, request):
+        
+        JWT_authenticator = JWTAuthentication()
+
+        try:
+            # Attempt to authenticate using the JWT authenticator.
+            response = JWT_authenticator.authenticate(request)
+        except exceptions.AuthenticationFailed:
+            # If the token is invalid, gracefully return None (no authentication).
+            return None
+
+        if response is not None:
+            # Unpack the response if authentication is successful.
+            user, token = response
+        else:
+            # No token provided; allow unauthenticated access if permission allows it.
+            return None
+
+        # Perform additional checks for admin privileges.
+        if user.role != 'Doctor' and user.role != 'Pharmacy':
             raise exceptions.PermissionDenied("Unauthorized access.")
 
         # Return the authenticated user and None for token (custom behavior).

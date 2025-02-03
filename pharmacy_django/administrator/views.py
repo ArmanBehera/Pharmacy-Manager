@@ -137,7 +137,7 @@ class GetMedicines(views.APIView):
         When it's a get request, this API returns all the medicines available
     '''
     
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
     def get(self, request):
@@ -154,7 +154,7 @@ class GetMedicines(views.APIView):
 
 
 class GetUniqueMedicines(views.APIView):
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
@@ -193,7 +193,7 @@ class AddMedicines(views.APIView):
         When it's a post request, it makes the necessary entries into the inter-dependent tables (like ingredients) and then makes the entry into the Medicines table.
     '''
     
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
     
     def get(self, request):
@@ -246,7 +246,7 @@ class AddMedicineStock(views.APIView):
         In a successful post request, a new Medicine Stock objet is created
     '''
 
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -267,7 +267,7 @@ class DeleteMedicines(views.APIView):
         When it's a post request, deletes the medicines whose ids are submitted
     '''
 
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -399,7 +399,7 @@ class GetLabTests(views.APIView):
     '''
         In a get request, all the labtests object available are returned
     '''
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
@@ -420,7 +420,7 @@ class AddLabTests(views.APIView):
         In a successful post request, an object of LabTest is made
     '''
 
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -439,7 +439,7 @@ class EditLabTests(views.APIView):
         In a successful post request, an already existing object of LabTest is update.
     '''
 
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -460,7 +460,7 @@ class DeleteLabTests(views.APIView):
         In a post request, delete the labtests whose indexes are submitted in the authentication classes. 
     '''
 
-    authentication_classes = (authentication.CombinedFrontDeskAndAdminAuthentication, )
+    authentication_classes = (authentication.CombinedPharmacyAndAdminAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):

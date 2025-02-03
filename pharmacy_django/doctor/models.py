@@ -2,8 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from administrator.models import User
 from django.utils import timezone
-from pharmacy.models import Medicines, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
-
+from pharmacy.models import Medicines, LabTests
 
 class SpecializationAvailable(models.Model):
     '''
@@ -62,7 +61,8 @@ class Appointment(models.Model):
     date = models.DateField(default=timezone.now, verbose_name="Appointment Date")
     token_assigned = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=True, verbose_name="Token Assigned")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled', verbose_name="Status")
-    
+    previous_appointment = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='appointments', verbose_name='Previous Appointment')
+
     def __str__(self):
         return f"Appointment with Dr. {self.doctor} for {self.patient} on {self.date}. Token Number: {self.token_assigned}"
 
@@ -122,6 +122,49 @@ class PrescribedLabTest(models.Model):
         return f"{self.lab_test} prescribed for {self.lab_test.name} on {self.test_date}. Status: {self.status}."
 
 
+
+class UnlistedPrescribedMedicines(models.Model):
+    '''
+        Model for medicines that are not available in the pharmacy
+    '''
+    DURATION_UNIT_CHOICES = [
+        ('Days', 'Days'),
+        ('Months', 'Months')
+    ]
+
+    TIMING_CHOICES = [
+        ('Before Food', 'Before Food'),
+        ('After Food', 'After Food'),
+        ('Custom', 'Custom')
+    ]
+
+    name = models.CharField(max_length=255, verbose_name="Medicine Name", help_text="Name of the medicine", blank=False, unique=True)
+    frequency = models.IntegerField(validators=[MinValueValidator(1)], help_text="Number of times the medicine should be taken per day")
+    duration_value = models.IntegerField(validators=[MinValueValidator(1)], help_text="Duration value based on the selected unit")
+    duration_unit = models.CharField(max_length=6, choices=DURATION_UNIT_CHOICES, verbose_name="Duration Unit")
+    timings = models.CharField(max_length=11, choices=TIMING_CHOICES, verbose_name="Timing", blank=False)
+    custom_timing_description = models.TextField(blank=True, null=True, verbose_name="Description for Custom timing if selected")
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(frequency__gte=1),
+                name='check_valid_frequency_unlisted_medicines'
+            ),
+            models.CheckConstraint(
+                check=models.Q(duration_value__gte=1),
+                name='check_valid_duration_value_unlisted_medicines'
+            ),
+        ]
+
+
+class UnlistedPrescribedLabTests(models.Model):
+    '''
+        Model for labtests that are not provided by the pharmacy 
+    '''
+    name = models.CharField(max_length=255, verbose_name="Test Name", blank=False)
+
+
 class Prescription(models.Model):
 
     appointment = models.OneToOneField(Appointment, verbose_name="Appointment Details", on_delete=models.CASCADE, related_name='prescription')
@@ -130,6 +173,9 @@ class Prescription(models.Model):
     lab_tests = models.ManyToManyField(PrescribedLabTest, verbose_name="Prescribed Lab Tests", related_name='prescription', blank=True)
     unlisted_lab_tests = models.ManyToManyField(UnlistedPrescribedLabTests, verbose_name="Prescribed Unlisted Lab Tests", related_name='prescription', blank=True)
     additonal_information = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Additional Information for the patient")
+    created_at = models.DateTimeField(auto_now_add=True) 
+    medicines_fulfilled = models.BooleanField(default=False, blank=False, help_text="Indicates whether all prescribed medicines (both listed and unlisted) have been dispensed or the patient has been informed about any unavailability.")
+    lab_tests_completed = models.BooleanField(default=False, blank=False, help_text="Indicates whether all prescribed lab tests (both listed and unlisted) have been completed (samples collected) or the patient has been informed about any unavailability.")
 
     def __str__(self):
         patient = self.appointment.patient

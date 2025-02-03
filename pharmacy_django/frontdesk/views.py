@@ -13,8 +13,8 @@ class SignIn(views.APIView):
     permission_classes = (permissions.AllowAny, )
     def post(self, request):
         '''
-        Only post methods are allowed for this endpoint.
-        The data posted is stored in User model.
+            Only post methods are allowed for this endpoint.
+            The data posted is stored in User model.
         '''
         
         if request.data['role'] != 'FrontDesk':
@@ -44,15 +44,16 @@ class GetPatients(views.APIView):
         resp = []
 
         for patient in patients:
-            
-            last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
-            serializer = AppointmentSerializer(last_appointment)
+            try:
+                last_appointment = Appointment.objects.filter(patient=patient).order_by('-date').first()
+                serializer = AppointmentSerializer(last_appointment)
 
-            date = last_appointment.date
-            date = date.strftime("%d-%m-%Y")
+                date = last_appointment.date
+                date = date.strftime("%d-%m-%Y")
 
-            resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
-
+                resp.append({'id': serializer.data['patient']['id'], 'first_name': serializer.data['patient']['first_name'],'last_name': serializer.data['patient']['last_name'], 'gender': serializer.data['patient']['gender'], 'token_assigned': serializer.data['token_assigned'], 'appointment_date': datetime.strptime(serializer.data['date'], "%Y-%m-%d").strftime("%d-%m-%Y"), 'age': serializer.data['patient']['age']})
+            except: 
+                continue
         return response.Response(resp)
 
 
@@ -85,7 +86,7 @@ class GetDoctors(views.APIView):
 
     def get(self, request):
         
-        doctors = DoctorUser.objects.all()
+        doctors = DoctorUser.objects.filter(user__is_verified=True)
 
         resp = []
 
@@ -132,8 +133,8 @@ class AddExistingPatient(views.APIView):
     '''
         Post View is used to create an appointment for an existing patient
     '''
-    #authentication_classes = (authentication.CustomFrontDeskAuthentication, )
-    #permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
 
@@ -141,7 +142,18 @@ class AddExistingPatient(views.APIView):
         patient = PatientUser.objects.get(id=patient_id)
 
         doctor_id = request.data['doctor_id']
-        doctor = DoctorUser.objects.get(id=doctor_id)
+
+        print()
+        print(doctor_id)
+        print()
+
+        if doctor_id == -1:
+            previous_appointment_id = request.data['previous_appointment_id']
+            previous_appointment = Appointment.objects.get(id=previous_appointment_id)
+            doctor = previous_appointment.doctor
+        else:
+            previous_appointment = None
+            doctor = DoctorUser.objects.get(id=doctor_id)
     
         try:
             last_appointment_token = Appointment.objects.filter(doctor=doctor, date=request.data['date']).order_by('-token_assigned').first().token_assigned
@@ -154,7 +166,7 @@ class AddExistingPatient(views.APIView):
         except ValueError:
             return response.Response('Unable to make an appointment.')
 
-        appointment = Appointment.objects.create(patient=patient, doctor=doctor, date=date, token_assigned=last_appointment_token + 1, status=request.data['status'])
+        appointment = Appointment.objects.create(patient=patient, doctor=doctor, date=date, token_assigned=last_appointment_token + 1, previous_appointment=previous_appointment, status=request.data['status'])
         appointment.save()
 
         return response.Response({ 'token': appointment.token_assigned })   
@@ -210,7 +222,7 @@ class RebookAppointment(views.APIView):
     '''
         On a successful request, changes the status of a 'no-show' appointment to a 'scheduled' appointment
     '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
+    authentication_classes = (authentication.CustomFrontDeskAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -238,7 +250,28 @@ class RebookAppointment(views.APIView):
             return response.Response('Failed to change appointment status for the patient', status=status.HTTP_400_BAD_REQUEST)
         
         return response.Response('Successfully changed appointment status for the patient.', status=status.HTTP_200_OK)
-    
+
+
+class GetPreviousAppointments(views.APIView):
+    '''
+        On a successful post request, returns the previous appointments for a patient
+    '''
+    #authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    #permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        
+        patient_id = request.data['id']
+        patient = PatientUser.objects.get(id=patient_id)
+
+        appointments = Appointment.objects.filter(patient=patient)
+        resp = []
+
+        for appointment in appointments:
+            resp.append({'appointment_id': appointment.id, 'doctor_name': f'{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}', 'doctor_id': appointment.doctor.id, 'appointment_date': appointment.date})
+
+        return response.Response(resp, status=status.HTTP_202_ACCEPTED)
+
 
 class Logout(views.APIView):
     '''

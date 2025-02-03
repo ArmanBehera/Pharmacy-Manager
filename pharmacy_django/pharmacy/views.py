@@ -1,6 +1,16 @@
 from rest_framework import views, response, status, permissions, exceptions
+
+
 from administrator.serializers import UserSerializer
 from administrator import authentication
+
+from doctor.models import DoctorUser, Prescription, PrescribedLabTest, Appointment
+from doctor.serializers import PrescriptionSerializer, AppointmentSerializer
+
+from .models import LabTests
+from .serializers import LabTestsSerializer
+
+from django.utils import timezone
 
 class SignIn(views.APIView):
     '''
@@ -25,13 +35,30 @@ class SignIn(views.APIView):
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetCompletedPatients(views.APIView):
+class GetDoctors(views.APIView):
     '''
-        In a get request, returns all the patients for whom medicines are to be given
+        Get view is used to retun all the doctors
     '''
+    authentication_classes = (authentication.CustomPharmacyAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
-        pass
+        
+        doctors = DoctorUser.objects.filter(user__is_verified=True)
+
+        resp = []
+
+        for doctor in doctors:
+            doctor_data = {}
+
+            doctor_data['id'] = doctor.id
+            doctor_data['name'] = f'{doctor.user.first_name} {doctor.user.last_name}'
+            doctor_data['specialization'] = str(doctor.specialization)
+
+            resp.append(doctor_data)
+
+        return response.Response(resp)
+
 
 class Logout(views.APIView):
     '''

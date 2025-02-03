@@ -1,5 +1,7 @@
 from rest_framework import serializers, exceptions
-from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
+from .models import Ingredients, Categories, SideEffects, Allergens, Medicines, MedicineStock, LabTests
+
+from doctor.models import UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
 
 class IngredientsSerializer(serializers.ModelSerializer):
     
@@ -159,20 +161,4 @@ class LabTestsSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = LabTests
-        fields = '__all__'
-
-
-class UnlistedMedicinesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-
-        model = UnlistedPrescribedMedicines
-        fields = '__all__'
-    
-
-class UnlistedLabTestsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-
-        model = UnlistedPrescribedLabTests
         fields = '__all__'

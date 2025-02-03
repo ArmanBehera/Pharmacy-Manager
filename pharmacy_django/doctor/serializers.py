@@ -2,10 +2,12 @@ from rest_framework import serializers, exceptions
 
 from .models import DoctorUser, PatientUser, SpecializationAvailable, Appointment, Prescription, PrescribedMedicine, PrescribedLabTest
 from administrator.models import User
-from pharmacy.models import Medicines, LabTests, UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
+from pharmacy.models import Medicines, LabTests
 
 from administrator.serializers import UserSerializer
-from pharmacy.serializers import MedicinesSerializer, LabTestsSerializer, UnlistedMedicinesSerializer, UnlistedLabTestsSerializer
+from pharmacy.serializers import MedicinesSerializer, LabTestsSerializer
+
+from doctor.models import UnlistedPrescribedMedicines, UnlistedPrescribedLabTests
   
 class SpecializationSerializer(serializers.ModelSerializer):
     '''
@@ -79,7 +81,23 @@ class PatientSerializer(serializers.ModelSerializer):
         if value not in ['Male', 'Female', 'Other']:
             raise serializers.ValidationError(detail="Gender of the user can only have three values: 'Male', 'Female' or 'Other'")
         return value
+
+
+
+class UnlistedMedicinesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = UnlistedPrescribedMedicines
+        fields = '__all__'
     
+
+class UnlistedLabTestsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = UnlistedPrescribedLabTests
+        fields = '__all__'
 
 class AppointmentSerializer(serializers.ModelSerializer):
     '''
@@ -135,7 +153,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model =  Prescription
-        fields = '__all__'
+        exclude = ['created_at']
 
     def create(self, validated_data):
         prescribed_medicines_data = validated_data.pop('medicines', [])
