@@ -183,7 +183,7 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Scheduled Appointments</h1>
+                    <h1 class="text-l font-bold m-2">Scheduled Appointments</h1>
                     <AutoComplete v-model="selected_doctor_scheduled" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
                     <DataTable v-if="is_loaded[0] & patients_data.length > 0" :value="patients_data" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                         <Column field="name" header="Name" sortable></Column>
@@ -219,7 +219,7 @@
 
         <div class="mb-4">
             <div class="card ml-5">
-                <h1 class="text-l font-bld m-2">No Show Appointments</h1>
+                <h1 class="text-l font-bold m-2">No Show Appointments</h1>
                 <AutoComplete v-model="selected_doctor_no_show" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
                 <DataTable v-if="is_loaded[2] & no_show_patients_data.length > 0" :value="no_show_patients_data" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
                     <Column field="name" header="Name" sortable></Column>

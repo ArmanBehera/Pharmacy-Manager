@@ -173,7 +173,7 @@
     <Toast />
 
     <div class="centered" v-if="is_registered === 'true'">
-        <h1 class="text-3xl font-bld m-3">Add Medicines</h1>
+        <h1 class="text-3xl font-bold m-3">Add Medicines</h1>
     </div>
 
     <div class="container mx-auto p-6 bg-grey shadow-md rounded-lg">
@@ -181,7 +181,7 @@
             <div class="flex flex-col space-y-4">
                 <InputText id="name" placeholder="Name *" v-model.trim="name" class="p-inputtext-sm w-full"/>
                 <InputNumber id="stock" placeholder="Stock *" inputId="withoutgrouping" :useGrouping="false" v-model.number="stock" :min="0" class="p-inputnumber-sm w-full"/>
-                <InputNumber id="price" placeholder="Price *" inputId="currency-india" mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" v-model.number="price" :min="0" class="p-inputnumber-sm w-full"/>
+                <InputNumber id="price" placeholder="Price per unit*" inputId="currency-india" mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" v-model.number="price" :min="0" class="p-inputnumber-sm w-full"/>
                 <InputText id="manufacturer" placeholder="Manufacturer *" v-model.trim="manufacturer" class="p-inputtext-sm w-full"/>
                 <DatePicker v-model="expiration_date" dateFormat="dd/mm/yy" placeholder="Expiration Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
                 <FloatLabel class="mt-4">

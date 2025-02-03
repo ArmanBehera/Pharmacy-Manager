@@ -66,7 +66,7 @@
     <Toast />
 
     <div class="centered">
-        <h1 class="text-3xl font-bld m-3">Add Lab Tests</h1>
+        <h1 class="text-3xl font-bold m-3">Add Lab Tests</h1>
     </div>
 
     <div class="flex flex-row align-items-center justify-content-center">

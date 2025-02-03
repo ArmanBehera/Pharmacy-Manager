@@ -8,6 +8,7 @@ import DoctorHomePage from '../views/DoctorViews/HomePage.vue'
 import DoctorSignin from '../views/DoctorViews/Signin.vue'
 import DoctorLogin from '../views/DoctorViews/Login.vue'
 import AddPrescription from '../views/DoctorViews/AddPrescription.vue'
+import ViewPrescription from '../views/DoctorViews/ViewPrescription.vue'
 
 import Administrator from '../views/AdministratorViews/Index.vue'
 import AdministratorHomePage from '../views/AdministratorViews/HomePage.vue'
@@ -32,6 +33,9 @@ import Pharmacy from '../views/PharmacyViews/Index.vue'
 import PharmacySignin from '../views/PharmacyViews/Signin.vue'
 import PharmacyLogin from '../views/PharmacyViews/Login.vue'
 import PharmacyHomePage from '../views/PharmacyViews/HomePage.vue'
+import UpdateLabTest from '../views/PharmacyViews/UpdateLabTest.vue'
+import DispenseMedicines from '../views/PharmacyViews/DispenseMedicines.vue'
+import { compareAsc } from 'date-fns'
 
 const routes = [
   {
@@ -67,6 +71,11 @@ const routes = [
         path: 'AddPrescription',
         name: 'AddPrescription',
         component: AddPrescription
+      },
+      {
+        path: 'ViewPrescription',
+        name: 'ViewPrescription',
+        component: ViewPrescription
       }
     ]
   },
@@ -200,6 +209,16 @@ const routes = [
         path: 'AddExistingMedicine',
         name: 'PharmacyAddExistingMedicine',
         component: AddExistingMedicine
+      },
+      {
+        path: 'UpdateLabTest',
+        name: 'UpdateLabTest',
+        component: UpdateLabTest
+      },
+      {
+        path: 'DispenseMedicines',
+        name: 'DispenseMedicines',
+        component: DispenseMedicines
       }
     ]
   }

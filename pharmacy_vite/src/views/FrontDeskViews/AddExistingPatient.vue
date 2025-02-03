@@ -2,10 +2,11 @@
     import '../../styles/styles.css';
     import axios from '../../axios';
     import { useStore } from 'vuex';
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import { checkDate } from '../../helpers';
-    import { format } from 'date-fns';
+    import { format, previousSaturday } from 'date-fns';
+    import { convertDateFormat } from '../../helpers';
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -25,6 +26,10 @@
     const gender = ref('');
     const selected_doctor = ref();
     const appointment_date = ref();
+
+    const previous_appointment = ref(false);
+    const previous_appointments_data = ref(false);
+    const selected_previous_appointment = ref();
 
     if (store.state.is_registered === 'true') {
         axios.post('/frontdesk/getPatients/', {
@@ -80,15 +85,18 @@
     }
 
     const submit = () => {
-        const data = {
-            'patient_id': selected_patient.value.id,
-            'doctor_id': selected_doctor.value.id,
-            'date': format(new Date(appointment_date.value), 'yyyy-MM-dd'),
-            'status': 'Scheduled'
-        }
-
-        if (!data.patient_id || !data.doctor_id || !data.date) {
-            warn('warn', 'All values must be filled.', '')
+        let data = {}
+        
+        try {
+            data = {
+                'patient_id': selected_patient.value.id,
+                'doctor_id': !(previous_appointment.value) ? selected_doctor.value.id : -1,
+                'date': format(new Date(appointment_date.value), 'yyyy-MM-dd'),
+                'status': 'Scheduled',
+                'previous_appointment_id': (previous_appointment.value) ? selected_previous_appointment.value : null
+            }
+        } catch (error) {
+            warn('warn', 'Some of the values are not filled.', 'Please fill in all the required values.');
             return;
         }
 
@@ -102,11 +110,42 @@
         })
         .then( (response) => {
             warn('success', 'Successfully made appointment.', `Token assigned to: ${response.data.token}`)
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         })
         .catch( (error) => {
             warn('warn', 'Unsuccessful in making appointment.', 'Please check the status of the server or try reloading.')
         })
     }
+
+    const getPreviousAppointments = () => {
+        axios.post('/frontdesk/getPreviousAppointments/', {
+            'id': selected_patient.value.id
+        })
+        .then( (response) => {
+            previous_appointments_data.value = response.data.map(appointment => ({
+                ...appointment,
+                label: `${appointment.doctor_name}: ${convertDateFormat(appointment.appointment_date)}`
+            }))
+        })
+        .catch( (error) => {
+            warn('warn', 'Failure to access previous appointments of patients.' + error, '')
+        })
+    }
+
+    watch(previous_appointment, (newVal, oldVal) => {
+        if (newVal === true) {
+            getPreviousAppointments();
+        }
+    });
+
+    watch(selected_patient, (newVal, oldVal) => {
+        if (previous_appointment.value === true) {
+            getPreviousAppointments();
+        }
+    });
 </script>
 
 <template>
@@ -142,11 +181,15 @@
 
     <div class="top-container">
         <div class="container">
-            <div class="sub-container">
-                <Select class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctors_data" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
-                <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
+            <div class="sub-container flex flex-row align-items-center justify-content-center">
+                <label for="previous-appointment">Is this a follow-up of previous appointment? </label>
+                <Checkbox v-model="previous_appointment" id="previous-appointment" binary class="mr-4" :disabled="!selected_patient"/>
+                <Select v-if="!previous_appointment" class="elements" id="doctorChoice" v-model.trim="selected_doctor" :options="doctors_data" optionLabel="label" placeholder="Doctor Assigned*" showClear/>
+                <Select v-if="previous_appointment" class="elements" placeholder="Previous Appointment *" v-model.trim="selected_previous_appointment" :options="previous_appointments_data" optionValue="appointment_id" optionLabel="label" showClear/>
+                <DatePicker v-model="appointment_date" dateFormat="dd/mm/yy" placeholder="New Appointment Date *" class="p-datepicker-sm w-full" showIcon fluid iconDisplay="input"/>
+                
             </div>
-
+            
             <Button id="submit" label="Submit" @click.prevent="submit"/>
         </div>
     </div>

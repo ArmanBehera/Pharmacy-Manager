@@ -42,11 +42,7 @@
     else {
         warn('warn', 'Log in using an admin account to access this page.', '')
     }
-
-    watch(selected_rows, (new_rows) => {
-        
-    })
-
+    
     const confirmDeletion = () => {      
         deletion_dialog.value = true;
     }

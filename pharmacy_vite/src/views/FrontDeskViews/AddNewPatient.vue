@@ -94,10 +94,15 @@
                 },
                 'doctor': selected_doctor.value.id,
                 'date': format(new Date(appointment_date.value), 'yyyy-MM-dd'),
-                'status': 'Scheduled'
+                'status': 'Scheduled',
+                'previous_appointment_id': null
             })
             .then( (response) => {
                 warn('success', `Token Number: ${response.data.token_assigned}`, 'Successfully added patient.')
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
             })  
             .catch( (error) => {
                 warn('warn', 'Failed to add patient into the system.', 'Make sure all the fields are filled appropriately or try reloading this page.')

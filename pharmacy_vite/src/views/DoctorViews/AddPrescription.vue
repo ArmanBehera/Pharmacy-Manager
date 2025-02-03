@@ -16,8 +16,7 @@
     const appointment_details = ref();
     const id =  route.query.id;
 
-    const first_name = ref('');
-    const last_name = ref('');
+    const name = ref('');
     const gender = ref('');
     const age = ref('');
 
@@ -38,11 +37,12 @@
     const lab_tests_data = ref([])
     const prescribed_lab_tests = ref([]);
 
-
     const unlisted_index_array_medicine = ref([])
     const unlisted_index_array_lab_tests = ref([])
 
     const additional_information = ref();
+
+    const is_previous_prescription_present = ref(false);
 
     const warn = (severity, summary, detailed) => {
         toast.add({ severity: severity, summary: summary, detail: detailed, life: 3000 });
@@ -56,8 +56,10 @@
         })
         .then( (response) => {
             appointment_details.value = response.data;
-            first_name.value = appointment_details.value.patient.first_name 
-            last_name.value = appointment_details.value.patient.last_name
+            console.log(appointment_details.value)
+            is_previous_prescription_present.value = appointment_details.value.previous_appointment ? true : false;
+
+            name.value = `${appointment_details.value.patient.first_name} ${appointment_details.value.patient.last_name}`
             gender.value = appointment_details.value.patient.gender === 'Male'? 'M' : 'F'
             age.value = appointment_details.value.patient.age 
         })
@@ -184,6 +186,17 @@
             return;
         }
 
+        const medicines_fulfilled = ref(false);
+        const lab_tests_completed = ref(false);
+
+        if (listed_medicines.value.length === 0 && unlisted_medicines.value.length === 0) {
+            medicines_fulfilled.value = true;
+        }
+
+        if (listed_lab_tests.value.length === 0 && unlisted_lab_tests.value.length === 0) {
+            lab_tests_completed.value = true;
+        }
+
         // Id of the medicine, followed by the duration and the others
         const prescription_to_send = {
             'appointment': appointment_details.value.id,
@@ -191,7 +204,9 @@
             'lab_tests': listed_lab_tests.value,
             'unlisted_medicines': unlisted_medicines.value,
             'unlisted_lab_tests': unlisted_lab_tests.value,
-            'additional_information': additional_information.value ? additional_information.value : '' 
+            'additional_information': additional_information.value ? additional_information.value : '',
+            'medicines_fulfilled': medicines_fulfilled.value,
+            'lab_tests_completed': lab_tests_completed.value
         }
         
         axios.post('/doctor/addPrescription/', {
@@ -213,13 +228,13 @@
     <Toast/>
 
     <div class="centered" v-if="is_registered === 'true'">
-        <h1 class="text-3xl font-bld m-3">Prescription for {{ first_name }} {{ last_name }} ({{ age }}{{ gender }})</h1>
+        <h1 class="text-3xl font-bld m-3">Prescription for {{ name }} ({{ age }}{{ gender }})</h1>
     </div>
 
 
     <div class="container mx-auto flex flex-column" v-if="is_registered === 'true'">
         <div class="flex flex-col space-y-4">
-            <label class="text-2xl font-semibold">Medicines</label>
+            <label class="text-xl font-semibold">Medicines</label>
             <div v-for="n in medicine_count" :key="n" class="flex flex-row items-center space-x-4">
                 <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribed_medicines[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, medicines_data )" class="w-full" />
                 <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
@@ -236,7 +251,7 @@
         </div>
 
         <div class="flex flex-col space-y-4 mt-4">
-            <label class="text-2xl font-semibold">Lab Tests</label>
+            <label class="text-xl font-semibold">Lab Tests</label>
             <div v-for="n in lab_test_count" :key="n" class="flex flex-row justify-content-center align-items-center space-x-4">
                 <AutoComplete :placeholder="`Lab Test ${n}`" v-model="prescribed_lab_tests[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, lab_tests_data )" class="w-full" />
             </div>
@@ -247,8 +262,14 @@
         </div>
 
         <div class="flex flex-col spaace-y-4 mt-4">
-            <label class="text-2xl font-semibold">Additional Information</label>
+            <label class="text-xl font-semibold">Additional Information</label>
             <InputText v-model.trim="additional_information" id="additionalInformation" placeholder="Additional Information" class="mt-2 p-inputtext-sm w-full"/>
+        </div>
+
+        <div class="flex flex-col spaace-y-4 mt-4">
+            <label class="text-xl font-semibold">Previous Prescriptions</label>
+            <router-link v-if="is_previous_prescription_present" class="underline" :to="{ name: 'ViewPrescription', query: { id: appointment_details.previous_appointment } }">Link to Previous Prescription</router-link>
+            <label v-else>There are no previous prescriptions.</label>
         </div>
 
         <div class="flex justify-content-center align-items-center mt-4">

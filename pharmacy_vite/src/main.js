@@ -28,6 +28,8 @@ import Textarea from 'primevue/textarea';
 import AutoComplete from 'primevue/autocomplete';
 import Carousel from 'primevue/carousel';
 import ProgressSpinner from 'primevue/progressspinner';
+import FileUpload from 'primevue/fileupload';
+import Checkbox from 'primevue/checkbox';
 
 // Importing Custom components
 import CustomPassword from './components/CustomPassword.vue';
@@ -72,6 +74,8 @@ app.component('Textarea', Textarea);
 app.component('AutoComplete', AutoComplete);
 app.component('Carousel', Carousel);
 app.component('ProgressSpinner', ProgressSpinner);
+app.component('FileUpload', FileUpload);
+app.component('Checkbox', Checkbox)
 
 app.component('CustomPassword', CustomPassword);
 

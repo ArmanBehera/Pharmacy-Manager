@@ -82,7 +82,7 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Employees</h1>
+                    <h1 class="text-l font-bold m-2">Employees</h1>
                     <DataTable v-if="is_loaded[0] & employees_data.length > 0" :value="employees_data" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
@@ -104,7 +104,7 @@
 
             <div>
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Verify Employees</h1>
+                    <h1 class="text-l font-bold m-2">Verify Employees</h1>
                     <DataTable v-if="is_loaded[1] & unverified_users_data.length > 0" :value="unverified_users_data" removableSort :rows="2" paginator tableStyle="min-width: 22rem">
                         <Column field="first_name" header="First Name" style="width: 20%" sortable></Column>
                         <Column field="last_name" header="Last Name" style="width: 20%" sortable></Column>
@@ -128,7 +128,7 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Medicines</h1>
+                    <h1 class="text-l font-bold m-2">Medicines</h1>
                     <DataTable v-if="is_loaded[2] & medicine_inventory_data.length > 0" :value="medicine_inventory_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                         <Column field="medicine.name" header="Name" style="width: 30%" sortable></Column>
                         <Column field="stock" header="Stock" style="width: 30%" sortable></Column>
@@ -151,7 +151,7 @@
 
             <div>
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Lab Tests</h1>
+                    <h1 class="text-l font-bold m-2">Lab Tests</h1>
                     <DataTable v-if="is_loaded[3] & lab_tests_data.length > 0" :value="lab_tests_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                         <Column field="name" header="Name"/>
                         <Column field="provider" header="Provider"/>
@@ -175,7 +175,7 @@
         <div class="flex flex-column">
             <div class="mb-4">
                 <div class="card ml-5">
-                    <h1 class="text-l font-bld m-2">Specializations</h1>
+                    <h1 class="text-l font-bold m-2">Specializations</h1>
                     <DataTable v-if="is_loaded[4] & specializations_data.length > 0" :value="specializations_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                         <Column field="specialization" header="Specialization" style="width: 30%" sortable></Column>
                         <Column field="number" header="Number of doctors" style="width: 70%" sortable></Column>
