@@ -162,6 +162,17 @@ class AddPrescribedLabTests(views.APIView):
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GetMedicinesDetailsForID(views.APIView):
+    
+    authentication_classes = (authentication.CombinedPharmacyAndDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        medicine = PrescribedMedicine.objects.get(id=request.data['id']).medicine
+
+        return response.Response(MedicinesSerializer(medicine).data, status=status.HTTP_202_ACCEPTED)
+
 
 class GetLabTestsDetailsForID(views.APIView):
     
@@ -172,7 +183,7 @@ class GetLabTestsDetailsForID(views.APIView):
         
         lab_test = PrescribedLabTest.objects.get(id=request.data['id']).lab_test
 
-        return response.Response(LabTestsSerializer(lab_test).data)
+        return response.Response(LabTestsSerializer(lab_test).data, status=status.HTTP_202_ACCEPTED)
 
 
 
@@ -192,7 +203,6 @@ class GetAppointmentDetail(views.APIView):
 
         return response.Response(AppointmentSerializer(appointment).data)
 
-
 class GetCompletedPrescriptions(views.APIView):
     '''
         In a get request, returns all the patients for whom medicines are to be given
@@ -202,21 +212,18 @@ class GetCompletedPrescriptions(views.APIView):
 
     def post(self, request):
 
-        print()
-        print(request.data['prescription_id'])
-        print()
-
-        if request.data.get('doctor_id'):  # Check if 'doctor_id' exists
+        if request.data.get('doctor_id'):
             today = timezone.now().date()
 
             doctor_id = request.data['doctor_id']
             doctor = DoctorUser.objects.get(id=doctor_id)
 
             resp = []
-
-            if request.data.get('code') == 1:  # Use .get() to prevent KeyError
+            
+            # Returns the medicines
+            if request.data.get('code') == 1:
                 prescriptions = Prescription.objects.filter(
-                    medicines_fulfilled=False, created_at__date=today, appointment__doctor=doctor
+                    medicines_fulfilled=False, appointment__doctor=doctor
                 )
 
                 for prescription in prescriptions:
@@ -227,9 +234,10 @@ class GetCompletedPrescriptions(views.APIView):
                         'created_at': prescription.created_at.time().strftime('%H:%M:%S')
                     })
 
-            elif request.data.get('code') == 2:  # Use .get() to prevent KeyError
+            # Returns the lab tests
+            elif request.data.get('code') == 2:
                 prescriptions = Prescription.objects.filter(
-                    lab_tests_completed=False, created_at__date=today, appointment__doctor=doctor
+                    lab_tests_completed=False, appointment__doctor=doctor
                 )
 
                 for prescription in prescriptions:
@@ -241,13 +249,11 @@ class GetCompletedPrescriptions(views.APIView):
                     })
 
             return response.Response(resp, status=status.HTTP_202_ACCEPTED)
-
+        
+        # Returns the details of one prescription
         elif request.data.get('prescription_id'):  # Check if 'prescription_id' exists
-            today = timezone.now().date()
-            prescription = Prescription.objects.get(id=request.data['prescription_id'])
 
-            if prescription.created_at.date() != today:
-                return response.Response('Denied to access this prescription.', status=status.HTTP_400_BAD_REQUEST)
+            prescription = Prescription.objects.get(id=request.data['prescription_id'])
 
             return response.Response(PrescriptionSerializer(prescription).data)
 
@@ -277,6 +283,36 @@ class GetPrescriptionID(views.APIView):
         except Prescription.DoesNotExist:
             return response.Response('Could not find prescription for this appointment id.', status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class UpdatePrescription(views.APIView):
+    '''
+        On a successful post request, partially update the prescription    
+    '''
+    authentication_classes = (authentication.CombinedPharmacyAndDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        data = request.data.copy()  # Create a mutable copy of request.data
+        prescription_id = data.pop('id', None)  # Remove 'id' safely
+
+        if not prescription_id:
+            return response.Response({'error': 'Prescription ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            prescription = Prescription.objects.get(id=prescription_id)
+        except Prescription.DoesNotExist:
+            return response.Response({'error': 'Prescription not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PrescriptionSerializer(prescription, data=data, partial=True)  # Pass modified data
+
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)    
+
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 class Logout(views.APIView):
     '''

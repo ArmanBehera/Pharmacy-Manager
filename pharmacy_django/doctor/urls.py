@@ -13,6 +13,8 @@ urlpatterns = [
     path('addPrescribedLabTests/', views.AddPrescribedLabTests.as_view(), name='addPrescribedLabTests'),
     path('getAppointmentDetail/', views.GetAppointmentDetail.as_view(), name='getAppointmentDetail'),
     path('getLabTestsDetailsForID/', views.GetLabTestsDetailsForID.as_view(), name='getLabTestsDetailsForID'),
+    path('getMedicinesDetailsForID/', views.GetMedicinesDetailsForID.as_view(), name='getMedicinesDetailsForID'),
     path('getCompletedPrescriptions/', views.GetCompletedPrescriptions.as_view(), name='getCompletedPrescriptions'),
-    path('getPrescriptionID/', views.GetPrescriptionID.as_view(), name='getPrescriptionID')
+    path('getPrescriptionID/', views.GetPrescriptionID.as_view(), name='getPrescriptionID'),
+    path('updatePrescription/', views.UpdatePrescription.as_view(), name='updatePrescription')
 ]

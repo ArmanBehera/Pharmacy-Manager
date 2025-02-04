@@ -116,6 +116,7 @@ class PrescribedLabTest(models.Model):
     test_result = models.TextField(verbose_name="Test Result", blank=True, null=True)
     status = models.CharField(max_length=16, choices=LAB_TESTS_STATUS_CHOICES, default='Prescribed', verbose_name="Lab Test Status") 
     sample_tracking_code = models.CharField(max_length=255, blank=True, null=True)
+    report_code = models.CharField(max_length=255, blank=True, null=True)
     attachment = models.FileField(upload_to='lab_tests/', verbose_name="Test Report", blank=True, null=True)
 
     def __str__(self):

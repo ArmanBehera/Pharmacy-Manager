@@ -271,7 +271,7 @@ class GetPreviousAppointments(views.APIView):
             resp.append({'appointment_id': appointment.id, 'doctor_name': f'{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}', 'doctor_id': appointment.doctor.id, 'appointment_date': appointment.date})
 
         return response.Response(resp, status=status.HTTP_202_ACCEPTED)
-
+    
 
 class Logout(views.APIView):
     '''
