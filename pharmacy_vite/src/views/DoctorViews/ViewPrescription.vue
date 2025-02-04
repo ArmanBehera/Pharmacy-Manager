@@ -22,7 +22,7 @@
     const prescription_details = ref(null);
     const lab_tests_data = ref([]); 
     const medicines_data = ref([]);
-    const appointment_details = ref(null);
+    const appointment_details = ref();
 
     const name = ref('');
     const gender = ref('');
@@ -71,7 +71,7 @@
 
                     is_previous_prescription_present.value = appointment_details.value.previous_appointment ? true : false;
                 })
-                .catch(() => warn('warn', 'Error getting appointment details.', error));
+                .catch((error) => warn('warn', 'Error getting appointment details.', error));
 
                 // Get lab test details using Promise.all
                 const lab_test_requests = prescription_details.value.lab_tests.map(test => 
@@ -83,7 +83,7 @@
                         lab_tests_data.value = responses.map(res => res.data);
                         is_loaded.value[2] = true;
                     })
-                    .catch(() => warn('warn', 'Error getting lab test details.', error));
+                    .catch((error) => warn('warn', 'Error getting lab test details.', error));
 
                 const medicine_requests = prescription_details.value.medicines.map(medicine =>
                     axios.post('/doctor/getMedicinesDetailsForID/', { id: medicine.id })
@@ -95,10 +95,14 @@
                         console.log(medicines_data.value)
                         is_loaded.value[3] = true;
                     })
+                    .catch((error) => warn('warn', 'Error getting medicines details.', error));
             })
             .catch( (error) => {
                 warn('warn', 'Error getting prescription details.', error);
             });
+        })
+        .catch( (error) => {
+            warn('warn', 'Error getting prescription id from the appointment id.', error)
         })
     }
 

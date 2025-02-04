@@ -158,7 +158,7 @@
                         return;
                     }
                 } else {
-                    listed_medicines.value.push({'medicine': prescribed_medicines.value[i].id, 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i], 'status': 'Prescribed'})
+                    listed_medicines.value.push({'medicine': prescribed_medicines.value[i].id, 'frequency': frequency_medicines.value[i], 'duration_value': duration_medicines.value[i], 'duration_unit': duration_unit.value[i]})
                 }
             } else {
                 if (prescribed_medicines.value.length !== 0) {

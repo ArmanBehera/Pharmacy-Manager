@@ -11,11 +11,10 @@
     
     if (store.state.is_registered === "true") {  
         const usertype = store.state.usertype
-        const url = '/' + usertype + '/logout/'
 
-        axios.post(url, 
+        axios.post('/logout/', 
         { 
-            "logout" : true,
+            "refresh_token": localStorage.getItem('refresh_token')
         }, 
         {
             withCredentials: true

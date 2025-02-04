@@ -68,7 +68,7 @@ instance.interceptors.response.use(
             const usertype = localStorage.getItem('usertype');
             localStorage.setItem('usertype', '');
             localStorage.setItem('is_registered', false);
-            localStorage.setItem('refresh-token', '');
+            localStorage.setItem('refresh_token', '');
             localStorage.setItem('access_token', '');
             localStorage.setItem('first_name', '');
             localStorage.setItem('last_name', '');

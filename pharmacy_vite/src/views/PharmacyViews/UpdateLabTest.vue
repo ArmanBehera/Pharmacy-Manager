@@ -99,52 +99,57 @@
 
 
 </script>
-
 <template>
     <Toast />
 
-    <div class="centered" v-if="is_registered === 'true'">
-        <h1 class="text-3xl font-bold m-3">Prescription for {{ name }} ({{ age }}{{ gender }})</h1>
-    </div>
+    <div class="flex flex-col items-center p-6">
+        <h1 v-if="is_registered === 'true'" class="text-3xl font-bold text-center mb-6">
+            Prescription for {{ name }} ({{ age }}{{ gender }})
+        </h1>
 
-    <div class="flex flex-column ml-5 mr-5" v-if="are_all_requests_made">
-        <Divider type="solid" align="left">
-            <h1 class="text-l font-bold">Available Lab Tests</h1>
-        </Divider>
+        <div v-if="are_all_requests_made" class="w-full max-w-4xl p-6 shadow-lg rounded-lg">
+            <!-- Available Lab Tests -->
+            <Divider type="solid" align="left">
+                <h1 class="text-xl font-semibold text-gray-700">Available Lab Tests</h1>
+            </Divider>
 
-        <div v-if="listed_lab_tests_length > 0">
-            <div v-for="(test, index) in lab_tests_data" :key="test.id" class="ml-5 mr-5 space-y-4">
-                <div class="flex flex-row space-x-6 mt-4">
-                    <h1 class="text-l font-bold">{{ test?.name }}</h1>
-                    <h1 class="text-l font-bold">Sample Required: {{ test?.sample_required }}</h1>
-                    <h1 class="text-l font-bold">Provider: {{ test?.provider }}</h1>
+            <div v-if="listed_lab_tests_length > 0" class="space-y-6">
+                <div v-for="(test, index) in lab_tests_data" :key="test.id" class="bg-gray-100 p-4 rounded-lg shadow">
+                    <div class="flex flex-wrap justify-between items-center mb-4">
+                        <h1 class="text-lg font-semibold text-gray-800">{{ test?.name }}</h1>
+                        <h1 class="text-sm text-gray-600">Sample Required: {{ test?.sample_required }}</h1>
+                        <h1 class="text-sm text-gray-600">Provider: {{ test?.provider }}</h1>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <InputText v-model.trim="sample_tracking_codes[index]" placeholder="Sample Tracking Code" class="p-inputtext-sm w-full p-2 border rounded-md" />
+                        <InputText v-model.trim="report_codes[index]" placeholder="Report Code" class="p-inputtext-sm w-full p-2 border rounded-md"/>
+                        <Select class="w-full p-2 border rounded-md" v-model.trim="status[index]" :options="status_choices" placeholder="Status *" showClear />
+                    </div>
                 </div>
-
-                <div class="flex flex-row space-x-4">
-                    <InputText v-model.trim="sample_tracking_codes[index]" placeholder="Sample Tracking Code" class="p-inputtext-sm w-full" />
-                    <InputText v-model.trim="report_codes[index]" placeholder="Report Code" class="p-inputtext-sm w-full"/>
-                    <Select class="elements" v-model.trim="status[index]" :options="status_choices" placeholder="Status *" showClear />
-                </div>
-                <Divider />
             </div>
-        </div>
 
-        <Divider type="solid" align="left">
-            <h1 class="text-l font-bold">Unavailable Lab Tests</h1>
-        </Divider>
+            <!-- Unavailable Lab Tests -->
+            <Divider type="solid" align="left">
+                <h1 class="text-xl font-semibold text-gray-700">Unavailable Lab Tests</h1>
+            </Divider>
 
-        <div v-if="unlisted_lab_tests_length > 0">
-            <ul>
-                <li v-for="test in prescription_details?.unlisted_lab_tests" :key="test.id" class="ml-4">
-                    {{ test?.name }}
-                </li>
-            </ul>
+            <div v-if="unlisted_lab_tests_length > 0" class="bg-gray-100 p-4 rounded-lg shadow">
+                <ul class="list-disc pl-5">
+                    <li v-for="test in prescription_details?.unlisted_lab_tests" :key="test.id">
+                        {{ test?.name }}
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Lab Tests Completion Checkbox -->
+            <div class="flex items-center mt-6">
+                <label for="lab-tests-completed" class="text-gray-700">Are all lab tests completed?</label>
+                <Checkbox v-model="lab_tests_completed" id="lab-tests-completed" binary class="ml-2 mt-1"/>
+            </div>
+            
+            <!-- Submit Button -->
+            <Button id="submit" label="Submit" @click.prevent="submit" class="mt-6 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"/>
         </div>
-        <div class="flex flex-row m-4">
-            <label for="lab-tests-completed">Are all lab tests completed?</label>
-            <Checkbox v-model="lab_tests_completed" id="lab-tests-completed" binary class="ml-2 mt-1"/>
-        </div>
-        
-        <Button id="submit" label="Submit" @click.prevent="submit"/>
     </div>
 </template>
