@@ -26,8 +26,11 @@
     const age = ref('');
 
     const status = ref([]);
-    const status_choices = ['Prescribed', 'Sample Collected', 'Report Collected', 'Patient Informed'];
-    const sample_tracking_code = ref([]);
+    const status_choices = ['Sample Collected', 'Report Collected', 'Patient Informed'];
+    const sample_tracking_codes = ref([]);
+    const report_codes = ref([]);
+
+    const lab_tests_completed = ref(false);
 
     const unlisted_lab_tests_length = ref(0);
     const listed_lab_tests_length = ref(0);
@@ -57,7 +60,7 @@
                 gender.value = appointment_details.value.patient.gender === 'Male' ? 'M' : 'F';
                 age.value = appointment_details.value.patient.age;
             })
-            .catch(() => warn('warn', 'Error getting appointment details.', 'Please try again.'));
+            .catch( (error) => warn('warn', 'Error getting appointment details.', error));
 
             // Get lab test details using Promise.all
             const labTestRequests = prescription_details.value.lab_tests.map(test => 
@@ -69,7 +72,7 @@
                     lab_tests_data.value = responses.map(res => res.data);
                     is_loaded.value[2] = true;
                 })
-                .catch(() => warn('warn', 'Error getting lab test details.', 'Please try again.'));
+                .catch( (error) => warn('warn', 'Error getting lab test details.', error));
         })
         .catch(error => {
             warn('warn', 'Error getting prescription details.', error);
@@ -79,8 +82,22 @@
     }
     
     const submit = () => {
-        
+        axios.post('/pharmacy/updateLabTests/', {
+            'id': prescription_details.value.lab_tests?.map(test => test.id) || [],
+            'sample_tracking_code': sample_tracking_codes.value,
+            'status': status.value,
+            'report_code': report_codes.value
+        })
+
+        if (lab_tests_completed.value !== prescription_details.value.lab_tests_completed) {
+            axios.post('/pharmacy/updatePrescription/', {
+                'id': prescription_id,
+                'lab_tests_completed': lab_tests_completed.value
+            })
+        }
     }
+
+
 </script>
 
 <template>
@@ -104,7 +121,8 @@
                 </div>
 
                 <div class="flex flex-row space-x-4">
-                    <InputText v-model.trim="sample_tracking_code[index]" placeholder="Sample Tracking Code" class="p-inputtext-sm w-full" />
+                    <InputText v-model.trim="sample_tracking_codes[index]" placeholder="Sample Tracking Code" class="p-inputtext-sm w-full" />
+                    <InputText v-model.trim="report_codes[index]" placeholder="Report Code" class="p-inputtext-sm w-full"/>
                     <Select class="elements" v-model.trim="status[index]" :options="status_choices" placeholder="Status *" showClear />
                 </div>
                 <Divider />
@@ -122,7 +140,11 @@
                 </li>
             </ul>
         </div>
-
+        <div class="flex flex-row m-4">
+            <label for="lab-tests-completed">Are all lab tests completed?</label>
+            <Checkbox v-model="lab_tests_completed" id="lab-tests-completed" binary class="ml-2 mt-1"/>
+        </div>
+        
         <Button id="submit" label="Submit" @click.prevent="submit"/>
     </div>
 </template>

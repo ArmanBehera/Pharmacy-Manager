@@ -28,7 +28,7 @@
             length.value = data.value.length
         })
         .catch( (error) => {
-            warn('warn', "Log in using an admin account to access this page.", '');
+            warn('warn', "Log in using an admin account to access this page.", error);
         })
     }
     else {
@@ -66,9 +66,9 @@
         })
         .catch( (error) => {
             if (code == 0){
-                toast.add({severity:'warn', summary: 'Unsuccesful in verifying users.', message: 'Please try again.', life:3000});
+                warn('warn', 'Unsuccesful in verifying users.', error)
             } else {
-                toast.add({severity:'warn', summary: 'Unsuccesful in deleting users.', message: 'Please try again.', life:3000});
+                warn('warn', 'Unsuccesful in deleting users.', error)
             }
         })
     }

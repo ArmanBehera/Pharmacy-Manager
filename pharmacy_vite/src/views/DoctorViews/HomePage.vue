@@ -32,7 +32,7 @@
             is_loaded.value[0] = true; 
         })
         .catch( (error) => {
-            warn("Error getting patients data.", "Please check the status of the server or try reloading.")
+            warn("Error getting patients data.", error)
         })
     }
 </script>

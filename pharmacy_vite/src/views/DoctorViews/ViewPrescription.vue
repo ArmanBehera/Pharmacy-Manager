@@ -2,7 +2,7 @@
     import '../../styles/styles.css';
     import axios from '../../axios';
     import { useStore } from 'vuex';
-    import { ref, computed } from 'vue';
+    import { ref, computed, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import { useRoute } from 'vue-router';
     import { convertDateFormat } from '../../helpers';
@@ -17,10 +17,11 @@
     };
 
     const route = useRoute();
-    const appointment_id = route.query.id;
+    const appointment_id = ref(route.query.id);
 
     const prescription_details = ref(null);
     const lab_tests_data = ref([]); 
+    const medicines_data = ref([]);
     const appointment_details = ref(null);
 
     const name = ref('');
@@ -34,13 +35,14 @@
     const listed_medicines_length = ref(0);
 
     // Track API requests
-    const is_loaded = ref([false, false, false]);
+    const is_loaded = ref([false, false, false, false]);
     const are_all_requests_made = computed(() => is_loaded.value.every(status => status));
 
-    if (is_registered.value === 'true') {
+    const is_previous_prescription_present = ref(false);
 
+    const fetch_data = () => {
         axios.post('/doctor/getPrescriptionID/', {
-            'appointment_id': appointment_id
+            'appointment_id': appointment_id.value
         })    
         .then( (response) => {
             const prescription_id = response.data
@@ -51,7 +53,6 @@
             .then(response => {
                 is_loaded.value[0] = true;
                 prescription_details.value = response.data;
-                console.log(prescription_details.value)
 
                 unlisted_lab_tests_length.value = prescription_details.value.unlisted_lab_tests.length;
                 listed_lab_tests_length.value = prescription_details.value.lab_tests.length;
@@ -67,67 +68,122 @@
                     name.value = `${appointment_details.value.patient.first_name} ${appointment_details.value.patient.last_name}`;
                     gender.value = appointment_details.value.patient.gender === 'Male' ? 'M' : 'F';
                     age.value = appointment_details.value.patient.age;
+
+                    is_previous_prescription_present.value = appointment_details.value.previous_appointment ? true : false;
                 })
-                .catch(() => warn('warn', 'Error getting appointment details.', 'Please try again.'));
+                .catch(() => warn('warn', 'Error getting appointment details.', error));
 
                 // Get lab test details using Promise.all
-                const labTestRequests = prescription_details.value.lab_tests.map(test => 
+                const lab_test_requests = prescription_details.value.lab_tests.map(test => 
                     axios.post('/doctor/getLabTestsDetailsForID/', { id: test.id })
                 );
 
-                Promise.all(labTestRequests)
+                Promise.all(lab_test_requests)
                     .then(responses => {
                         lab_tests_data.value = responses.map(res => res.data);
-                        console.log(lab_tests_data.value)
                         is_loaded.value[2] = true;
                     })
-                    .catch(() => warn('warn', 'Error getting lab test details.', 'Please try again.'));
+                    .catch(() => warn('warn', 'Error getting lab test details.', error));
+
+                const medicine_requests = prescription_details.value.medicines.map(medicine =>
+                    axios.post('/doctor/getMedicinesDetailsForID/', { id: medicine.id })
+                );
+
+                Promise.all(medicine_requests)
+                    .then(responses => {
+                        medicines_data.value = responses.map(res => res.data)
+                        console.log(medicines_data.value)
+                        is_loaded.value[3] = true;
+                    })
             })
             .catch( (error) => {
                 warn('warn', 'Error getting prescription details.', error);
             });
         })
+    }
+
+    if (is_registered.value === 'true') {
+        fetch_data();
     } else {
         warn('warn', 'Please log in to access this page.', '');
     }
     
-    const submit = () => {
-        
-    }
+    watch(
+    () => route.query, 
+    (newQuery, oldQuery) => {
+        if (newQuery !== oldQuery) {
+            window.location.reload();
+        }
+    }, 
+    { deep: true }
+    );
+
 </script>
 
 <template>
     <Toast />
 
-    <div class="centered" v-if="is_registered === 'true'">
-        <h1 class="text-3xl font-bold m-3">Prescription for {{ name }} ({{ age }}{{ gender }})</h1>
+    <div v-if="is_registered === 'true'" class="flex flex-col items-center text-center p-6">
+        <h1 class="text-3xl font-bold">Prescription for {{ name }} ({{ age }}{{ gender }})</h1>
     </div>
 
-    <div class="flex flex-column ml-5 mr-5" v-if="are_all_requests_made">
-        <Divider type="solid" align="left">
-            <h1 class="text-l font-bold">Medicines</h1>
-        </Divider>
-        
-        <Divider type="solid" align="left">
-            <h1 class="text-l font-bold">Lab Tests</h1>
-        </Divider>
+    <div v-if="are_all_requests_made" class="max-w-2xl mx-auto p-6 shadow-lg rounded-lg">
+        <div>
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4">Medicines</h2>
+            <div v-if="listed_medicines_length > 0">
+                <ul class="list-disc list-inside space-y-2">
+                    <li v-for="n in listed_medicines_length" :key="n">
+                        <span class="font-medium">{{ medicines_data[n - 1].name }}</span> - 
+                        {{ prescription_details.medicines[n - 1].frequency }}x a day for 
+                        {{ prescription_details.medicines[n - 1].duration_value }} 
+                        {{ prescription_details.medicines[n - 1].duration_unit }}
+                    </li>
+                </ul>
+            </div>
 
-        <div v-if="listed_lab_tests_length > 0">
-            <ul>
-                <li v-for="test in lab_tests_data" :key="id" class="ml-4">
-                    {{ test.name }}
-                </li>
-            </ul>
+            <div v-if="unlisted_medicines_length > 0" class="mt-4">
+                <ul class="list-disc list-inside space-y-2">
+                    <li v-for="n in unlisted_medicines_length" :key="n">
+                        <span class="font-medium">{{ prescription_details.unlisted_medicines[n - 1].name }}</span> - 
+                        {{ prescription_details.unlisted_medicines[n - 1].frequency }}x a day for 
+                        {{ prescription_details.unlisted_medicines[n - 1].duration_value }} 
+                        {{ prescription_details.unlisted_medicines[n - 1].duration_unit }}
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div v-if="unlisted_lab_tests_length > 0">
-            <ul>
-                <li v-for="test in prescription_details?.unlisted_lab_tests" :key="test.id" class="ml-4">
-                    {{ test?.name }}
-                </li>
-            </ul>
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4">Lab Tests</h2>
+            <div v-if="listed_lab_tests_length > 0">
+                <ul class="list-disc list-inside space-y-2">
+                    <li v-for="n in listed_lab_tests_length" :key="n">
+                        <span class="font-medium">{{ lab_tests_data[n - 1].name }}</span> - 
+                        Test Date: {{ prescription_details.lab_tests[n - 1].test_date ? prescription_details.lab_tests[n - 1].test_date : 'None' }}, 
+                        Status: {{ prescription_details.lab_tests[n - 1].status }}
+                        Report Code: {{ prescription_details.lab_tests[n - 1].report_code ? prescription_details.lab_tests[n - 1].report_code : 'None' }}
+                    </li>
+                </ul>
+            </div>
+
+            <div v-if="unlisted_lab_tests_length > 0" class="mt-4">
+                <ul class="list-disc list-inside space-y-2">
+                    <li v-for="n in unlisted_lab_tests_length" :key="n">
+                        <span class="font-medium">{{ prescription_details.unlisted_lab_tests[n - 1].name }}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <Button id="submit" label="Submit" @click.prevent="submit"/>
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4">Additional Information</h2>
+            <
+        </div>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4">Previous Prescription</h2>
+            <router-link v-if="is_previous_prescription_present" class="underline" :to="{ name: 'ViewPrescription', query: { id: appointment_details.previous_appointment } }">Link to Previous Prescription</router-link>
+            <label v-else>There are no previous prescriptions.</label>
+        </div>
     </div>
 </template>

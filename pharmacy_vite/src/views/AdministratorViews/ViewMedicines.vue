@@ -32,7 +32,7 @@
             console.log(medicines_data.value)
         })
         .catch( (error) => {
-            warn('warn', 'Log in using an admin account to access this page.', '')
+            warn('warn', 'Log in using an admin account to access this page.', error)
         })
     }
 
@@ -60,7 +60,7 @@
             medicines_data.value = response.data
         })
         .catch( (error) =>{
-            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error searching for the medicine with the given filter.', error)
         })
     }
 
@@ -82,7 +82,7 @@
             warn('success', 'Successfully deleted medicines!', '');
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccesful in deleting medicines.', 'Please try again.');
+            warn('warn', 'Unsuccesful in deleting medicines.', error);
         })
     }
 </script>

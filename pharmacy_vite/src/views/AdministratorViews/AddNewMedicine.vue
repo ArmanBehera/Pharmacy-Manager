@@ -55,7 +55,7 @@
             side_effects_data.value = response.data.side_effects
         })
         .catch((error) => {
-            warn('warn', 'Unsuccessful in getting data from the server.', 'Please try again.')
+            warn('warn', 'Unsuccessful in getting data from the server.', error)
         })
     } else {
         warn('warn', 'Please log in with an appropriate account to access this page.', '');
@@ -164,7 +164,7 @@
             }, 1000);
         })  
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in adding medicine.', 'Please try again in some time.')
+            warn('warn', 'Unsuccessful in adding medicine.', error)
         })
     }
 </script>

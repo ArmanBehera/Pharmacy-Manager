@@ -32,7 +32,7 @@
             length.value = lab_tests_data.value.length
         })
         .catch( (error) => {
-            warn('warn', 'Log in using an admin account to access this page.', '')
+            warn('warn', 'Log in using an admin account to access this page.', error)
         })
     }
 
@@ -64,7 +64,7 @@
             warn('success', 'Successfully deleted lab tests!', '');
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccesful in deleting lab tests.', 'Please try again.');
+            warn('warn', 'Unsuccesful in deleting lab tests.', error);
         })
     }
 
@@ -84,7 +84,7 @@
             warn('success', 'Successfully edited lab tests.', '')
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in editing lab tests.', 'Please try again.')
+            warn('warn', 'Unsuccessful in editing lab tests.', error)
         })  
     }
 
@@ -101,7 +101,7 @@
             lab_tests_data.value = response.data
         })
         .catch( (error) =>{
-            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error searching for the medicine with the given filter.', error)
         })
     }
 </script>

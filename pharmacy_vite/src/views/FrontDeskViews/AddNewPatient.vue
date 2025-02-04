@@ -43,7 +43,7 @@
         }));
         })
         .catch( (error) => {
-            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
+            warn('warn', 'Error getting doctor users data.', error);
         })
     } else {
         warn('warn', 'Please log in to access this page.', '');
@@ -105,7 +105,7 @@
                 }, 3000);
             })  
             .catch( (error) => {
-                warn('warn', 'Failed to add patient into the system.', 'Make sure all the fields are filled appropriately or try reloading this page.')
+                warn('warn', 'Failed to add patient into the system.', error)
             })
         } else {
             warn('warn', 'Not all fields are filled.', '')

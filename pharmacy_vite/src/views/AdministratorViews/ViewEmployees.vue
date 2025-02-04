@@ -25,11 +25,11 @@
             data.value = response.data
         })
         .catch( (error) => {
-            warn('warn', "Log in using an admin account to access this page.", '');
+            warn('warn', "Log in using an admin account to access this page.", error);
         })
     }
     else {
-        warn('warn', "Log in using an admin account to access this page.", '');
+        warn('warn', "Log in using an admin account to access this page.", error);
     }
 
     const confirmDeletion = () => {      
@@ -50,10 +50,10 @@
             data.value = data.value.filter(val => !selected.value.includes(val));
             selected.value = null;
 
-            toast.add({severity:'success', summary: 'Successfully deleted users!', life: 3000});
+            warn('success', 'Successfully deleted users!', '')
         })
         .catch( (error) => {
-            toast.add({severity:'warn', summary: 'Unsuccesful in deleting users.', message: 'Please try again.', life:3000});
+            warn('warn', 'Unsuccesful in deleting users.', error)
         })
     }
 </script>

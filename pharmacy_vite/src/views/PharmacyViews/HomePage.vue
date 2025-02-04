@@ -46,7 +46,7 @@
                 }
             })
             .catch( (error) => {
-                warn('warn', 'Error getting completed prescriptions data.', 'Please check the status of the server or try reloading.')
+                warn('warn', 'Error getting completed prescriptions data.', error)
             })
     }
 
@@ -57,7 +57,7 @@
             is_loaded.value[0] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting medicines data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting medicines data.", error)
         })
 
         axios.get('/pharmacy/getLabTests/')
@@ -66,7 +66,7 @@
             is_loaded.value[1] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting lab tests data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting lab tests data.", error)
         })
 
         axios.get('/pharmacy/getDoctors/')
@@ -81,7 +81,7 @@
             is_loaded.value[2] = true;
         })
         .catch( (error) => {
-            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
+            warn('warn', 'Error getting doctor users data.', error);
         })
 
         watch(selected_doctor_prescribed_medicine, (newVal, oldVal) => {
@@ -90,7 +90,7 @@
                     getPrescriptionsForDoctor(newVal.id, 1);
                 }
             } catch (error) {
-                warn('warn', 'Error getting completed prescriptions data 200.', 'Please check the status of the server or try reloading.')
+                warn('warn', 'Error getting completed prescriptions data 200.', error)
             }
         })
 
@@ -100,7 +100,7 @@
                     getPrescriptionsForDoctor(newVal.id, 2);
                 }
             } catch (error) {
-                warn('warn', 'Error getting completed prescriptions data 100.', 'Please check the status of the server or try reloading.')
+                warn('warn', 'Error getting completed prescriptions data 100.', error)
             }
         })
     } else {

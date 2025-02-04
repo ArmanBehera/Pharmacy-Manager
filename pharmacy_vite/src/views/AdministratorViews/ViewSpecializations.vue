@@ -28,7 +28,7 @@
             specialization_data.value = response.data
         })
         .catch( (error) => {
-            warn('warn', 'Log in using an admin account to access this page.', '')
+            warn('warn', 'Log in using an admin account to access this page.', error)
         })
     }
 
@@ -60,7 +60,7 @@
             warn('success', 'Successfully deleted specializations!', '');
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccesful in deleting specializations.', 'Please try again.');
+            warn('warn', 'Unsuccesful in deleting specializations.', error);
         })
     }
 
@@ -80,7 +80,7 @@
             warn('success', 'Successfully edited specializations.', '')
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in editing specializations.', 'Please try again.')
+            warn('warn', 'Unsuccessful in editing specializations.', error)
         })  
     }
 
@@ -98,7 +98,7 @@
             getSpecializationsWithoutFilter();
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in adding specialization', '')
+            warn('warn', 'Unsuccessful in adding specialization', error)
         })
     }
 
@@ -115,7 +115,7 @@
             specialization_data.value = response.data
         })
         .catch( (error) =>{
-            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error searching for the medicine with the given filter.', error)
         })
     }
 </script>

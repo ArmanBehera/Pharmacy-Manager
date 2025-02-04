@@ -57,6 +57,10 @@
         .then( (response) => {
             appointment_details.value = response.data;
             console.log(appointment_details.value)
+            if (appointment_details.value.status === 'Completed') {
+                warn('warn', 'Cannot update a completed prescription', '')
+                return;
+            }
             is_previous_prescription_present.value = appointment_details.value.previous_appointment ? true : false;
 
             name.value = `${appointment_details.value.patient.first_name} ${appointment_details.value.patient.last_name}`
@@ -64,7 +68,7 @@
             age.value = appointment_details.value.patient.age 
         })
         .catch( (error) => {
-            warn('warn', 'Error getting appointment details for the patient.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error getting appointment details for the patient.', error)
         })
 
         axios.get('/doctor/getMedicines/')
@@ -72,7 +76,7 @@
             medicines_data.value = response.data
         })
         .catch( (error) => {
-            warn('warn', 'Error getting medicines data.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error getting medicines data.', error)
         })
 
         axios.get('/doctor/getLabTests/')
@@ -80,7 +84,7 @@
             lab_tests_data.value = response.data
         })
         .catch( (error) => {
-            warn('warn', 'Error getting lab tests data.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error getting lab tests data.', error)
         })
     } else {
         warn('warn', 'Please log in to access this page.', '')
@@ -171,7 +175,7 @@
                 if (unlisted_index_array_lab_tests.value.some(index => index === i)) {
                     unlisted_lab_tests.value.push({'name': prescribed_lab_tests.value[i]});
                 } else {
-                    listed_lab_tests.value.push({'lab_test': prescribed_lab_tests.value[i].id, 'test_date': null, 'test_result': null, 'attachment': null, 'status': 'Prescribed', 'sample_tracking_code': null});
+                    listed_lab_tests.value.push({'lab_test': prescribed_lab_tests.value[i].id, 'test_date': null, 'test_result': null, 'attachment': null, 'status': 'Prescribed', 'sample_tracking_code': null, 'report_code': null});
                 }
             } else {
                 if (prescribed_lab_tests.value.length !== 0) {
@@ -219,7 +223,7 @@
             }, 1000);
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in adding prescription for the patient.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Unsuccessful in adding prescription for the patient.', error)
         })
     }
 </script>

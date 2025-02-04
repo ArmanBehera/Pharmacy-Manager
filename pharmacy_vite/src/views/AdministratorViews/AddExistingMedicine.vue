@@ -34,7 +34,7 @@
             is_loaded.value[0] = true
         })
         .catch( (error) => {
-            warn('warn', 'Error getting medicines data.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error getting medicines data.', error)
         })
     } else {
         warn('warn', 'Please log in to access this page.', '');
@@ -54,7 +54,7 @@
             medicines_data.value = response.data
         })
         .catch( (error) =>{
-            warn('warn', 'Error searching for the medicine with the given filter.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error searching for the medicine with the given filter.', error)
         })
     }
 
@@ -82,7 +82,7 @@
             }, 1000);
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in adding stock for the medicine', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Unsuccessful in adding stock for the medicine', error)
         })
     }
 </script>

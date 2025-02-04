@@ -98,9 +98,7 @@
                 router.push({ name: 'AdministratorHomePage' });
             })
             .catch( (error) => {
-                console.log(error)
-                // If an error is raised, not working now
-                warn('Unauthorized credentials!', 'Invalid username/password or unauthorized by the admin. Contact admin for further details.');
+                warn('Unauthorized credentials!', error);
             })
         }
     };

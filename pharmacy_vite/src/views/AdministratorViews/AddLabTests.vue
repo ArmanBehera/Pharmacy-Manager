@@ -57,7 +57,7 @@
             }, 1000);
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in adding the labtest.', '')
+            warn('warn', 'Unsuccessful in adding the labtest.', error)
         })
     }
 </script>    

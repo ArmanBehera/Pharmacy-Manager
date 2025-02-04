@@ -111,7 +111,7 @@
                 router.push({ name: 'PharmacyLogin' })
             })
             .catch( (error) => {
-                warn("Failed to create a new pharmacy user.")
+                warn("Failed to create a new pharmacy user.", error)
             })
         }
     }

@@ -36,7 +36,7 @@
             specializations_available.value = response.data;
         })
         .catch( (error) => {
-            warn("Error getting specializations.")
+            warn("Error getting specializations.", error)
         })
     });
 

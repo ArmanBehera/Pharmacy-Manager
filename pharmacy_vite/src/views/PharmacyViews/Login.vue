@@ -98,7 +98,7 @@
                 router.push({ name: 'PharmacyHomePage' })
             })
             .catch( (error) => {
-                warn("Unauthorized credentials!", "Invalid username/password or unauthorized by the admin. Contact admin for further details.");
+                warn("Unauthorized credentials!", error);
             })
         }
     };

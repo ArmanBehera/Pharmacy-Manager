@@ -32,7 +32,7 @@
             is_loaded.value[0] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting unverified users data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting unverified users data.", error)
         })
 
         axios.get('administrator/getEmployees/')
@@ -41,7 +41,7 @@
             is_loaded.value[1] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting employees data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting employees data.", error)
         })
 
         // To get data for inventory
@@ -51,7 +51,7 @@
             is_loaded.value[2] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting medicines data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting medicines data.", error)
         })
 
         axios.get('/administrator/getLabTests/')
@@ -60,7 +60,7 @@
             is_loaded.value[3] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting lab tests data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting lab tests data.", error)
         })
 
         axios.get('/administrator/getSpecializations/')
@@ -69,7 +69,7 @@
             is_loaded.value[4] = true;
         })
         .catch( (error) => {
-            warn("warn", "Error getting specializations data.", "Please check the status of the server or try reloading.")
+            warn("warn", "Error getting specializations data.", error)
         })
     } else { 
         warn('warn', "Log in using an admin account to access this page.", '');

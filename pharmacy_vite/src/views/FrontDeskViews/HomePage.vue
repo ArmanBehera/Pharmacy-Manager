@@ -44,7 +44,7 @@
             is_loaded.value[0] = true;
         })
         .catch( (error) => {
-            warn('warn', "Error getting patients data.", "Please check the status of the server or try reloading.")
+            warn('warn', "Error getting patients data.", error)
         })
     }
 
@@ -63,7 +63,7 @@
         })
         .catch( (error) => {
             
-            warn('warn', 'Error getting patients who did not show up.', '')
+            warn('warn', 'Error getting patients who did not show up.', error)
         })
     }
 
@@ -81,7 +81,7 @@
             is_loaded.value[1] = true;
         })
         .catch( (error) => {
-            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
+            warn('warn', 'Error getting doctor users data.', error);
         })
 
         watch(selected_doctor_scheduled, (newVal, oldVal) => {
@@ -150,7 +150,7 @@
             getPatients();
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in creating an appointment for the patient.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Unsuccessful in creating an appointment for the patient.', error)
         })
     }
 
@@ -172,7 +172,7 @@
             getPatients();
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in cancelling appointment for the patient.', 'Please check the status of the server and try reloading the page.')
+            warn('warn', 'Unsuccessful in cancelling appointment for the patient.', error)
         })
     }
 </script>

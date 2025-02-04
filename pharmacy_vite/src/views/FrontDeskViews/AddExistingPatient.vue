@@ -45,7 +45,7 @@
             is_loaded.value[0] = true;   
         })
         .catch( (error) => {
-            warn('warn', "Error getting patients data.", "Please check the status of the server or try reloading.")
+            warn('warn', "Error getting patients data.", error)
         })
 
         axios.get('/frontdesk/getDoctors/')
@@ -56,7 +56,7 @@
         }));
         })
         .catch( (error) => {
-            warn('warn', 'Error getting doctor users data.', 'Please check the status of the server or try reloading.');
+            warn('warn', 'Error getting doctor users data.', error);
         })
     } else {
         warn('warn', 'Please log in to access this page.', '');
@@ -80,7 +80,7 @@
             }));
         })
         .catch( (error) => {
-            warn('warn', 'Error in searching for the patient.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Error in searching for the patient.', error)
         })
     }
 
@@ -116,7 +116,7 @@
             }, 3000);
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in making appointment.', 'Please check the status of the server or try reloading.')
+            warn('warn', 'Unsuccessful in making appointment.', error)
         })
     }
 
@@ -131,7 +131,7 @@
             }))
         })
         .catch( (error) => {
-            warn('warn', 'Failure to access previous appointments of patients.' + error, '')
+            warn('warn', 'Failure to access previous appointments of patients.', error)
         })
     }
 

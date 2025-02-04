@@ -107,7 +107,7 @@
                 router.push({ name: 'FrontDeskLogin' })
             })
             .catch( (error) => {
-                warn("Failed to create a new front desk user.")
+                warn("Failed to create a new front desk user.", error)
             })
         }
     }
