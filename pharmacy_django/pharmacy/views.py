@@ -119,6 +119,8 @@ class UpdateStock(views.APIView):
 
             resp = []
 
+            medicines_cost = 0
+
             for row in update_stock:
                 try:
                     medicine = Medicines.objects.get(id=row['id'])
@@ -131,9 +133,11 @@ class UpdateStock(views.APIView):
 
                         if stock <= quantity:
                             quantity -= stock
+                            medicines_cost += medicine.price * stock
                             stock_entry.delete()  # Delete depleted stock
                         else:
                             stock_entry.stock -= quantity
+                            medicines_cost += medicine.price * quantity
                             stock_entry.save()
                             quantity = 0  # Fully reduced, break loop
                     
@@ -155,6 +159,9 @@ class UpdateStock(views.APIView):
 
                 except Exception as e:
                     resp.append({"id": row['id'], "medicine_name": f"ID {row['id']}", "status": f"Error: {str(e)}"})
+
+            prescription.medicines_cost = medicines_cost
+            prescription.save()
 
             return response.Response(resp, status=status.HTTP_200_OK)
 

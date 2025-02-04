@@ -11,6 +11,7 @@ from django.conf import settings
 from datetime import datetime, date
 from pharmacy.models import Medicines, LabTests
 from pharmacy.serializers import MedicinesSerializer, LabTestsSerializer
+from django.db.models import Q
 
 class SignIn(views.APIView):
     '''
@@ -284,12 +285,11 @@ class GetPrescriptionID(views.APIView):
             return response.Response('Could not find prescription for this appointment id.', status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class UpdatePrescription(views.APIView):
     '''
         On a successful post request, partially update the prescription    
     '''
-    authentication_classes = (authentication.CombinedPharmacyAndDoctorAuthentication, )
+    authentication_classes = (authentication.CustomUserAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
@@ -311,3 +311,52 @@ class UpdatePrescription(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)    
 
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetPreviousIncompletePrescriptions(views.APIView):
+    '''
+        On a successful post request, returns all the incomplete prescriptions
+    '''
+
+    authentication_classes = (authentication.CustomDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        doctor = DoctorUser.objects.get(id=request.data['doctor_id'])
+
+        prescriptions = Prescription.objects.filter(
+            appointment__doctor=doctor
+        ).filter(
+            Q(medicines_fulfilled=False, lab_tests_completed=False) | 
+            Q(medicines_fulfilled=True, lab_tests_completed=False) | 
+            Q(medicines_fulfilled=False, lab_tests_completed=True)
+        )
+
+        resp = []
+
+        for prescription in prescriptions:
+            resp.append({'id': prescription.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
+
+        return response.Response(resp, status=status.HTTP_200_OK)
+
+
+class GetPreviousCompletedPrescriptions(views.APIView):
+    '''
+        On a successful post request, returns all the completed prescriptions
+    '''
+
+    authentication_classes = (authentication.CustomDoctorAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+
+        doctor = DoctorUser.objects.get(id=request.data['doctor_id'])
+
+        prescriptions = Prescription.objects.filter(appointment__doctor=doctor, medicines_fulfilled=True, lab_tests_completed=True)
+
+        resp = []
+
+        for prescription in prescriptions:
+            resp.append({'id': prescription.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
+
+        return response.Response(resp, status=status.HTTP_200_OK)

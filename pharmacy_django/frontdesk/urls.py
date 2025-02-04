@@ -1,4 +1,6 @@
 from django.urls import path
+
+import doctor.views
 from . import views
 
 urlpatterns = [
@@ -11,5 +13,7 @@ urlpatterns = [
     path('cancelAppointment/', views.CancelAppointment.as_view(), name='cancelAppointment'),
     path('noShowUpdate/', views.NoShowUpdate.as_view(), name='noShowUpdate'),
     path('rebookAppointment/', views.RebookAppointment.as_view(), name='rebookAppointment'),
-    path('getPreviousAppointments/', views.GetPreviousAppointments.as_view(), name='getPreviousAppointments')
+    path('getPreviousAppointments/', views.GetPreviousAppointments.as_view(), name='getPreviousAppointments'),
+    path('getUnpaidAppointments/', views.GetUnpaidAppointments.as_view(), name='getUnpaidAppointments'),
+    path('updatePrescription/', doctor.views.UpdatePrescription.as_view(), name='updatePrescription')
 ]

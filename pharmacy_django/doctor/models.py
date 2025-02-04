@@ -165,10 +165,12 @@ class Prescription(models.Model):
     unlisted_medicines = models.ManyToManyField(UnlistedPrescribedMedicines, verbose_name= "Prescribed Unlisted Medicines", related_name='prescription', blank=True)
     lab_tests = models.ManyToManyField(PrescribedLabTest, verbose_name="Prescribed Lab Tests", related_name='prescription', blank=True)
     unlisted_lab_tests = models.ManyToManyField(UnlistedPrescribedLabTests, verbose_name="Prescribed Unlisted Lab Tests", related_name='prescription', blank=True)
-    additonal_information = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Additional Information for the patient")
+    additional_information = models.TextField(verbose_name="Additional Information", blank=True, null=True, help_text="Additional Information for the patient")
     created_at = models.DateTimeField(auto_now_add=True) 
     medicines_fulfilled = models.BooleanField(default=False, blank=False, help_text="Indicates whether all prescribed medicines (both listed and unlisted) have been dispensed or the patient has been informed about any unavailability.")
     lab_tests_completed = models.BooleanField(default=False, blank=False, help_text="Indicates whether all prescribed lab tests (both listed and unlisted) have been completed (samples collected) or the patient has been informed about any unavailability.")
+    paid = models.BooleanField(default=False, blank=False, help_text="If the patient has paid or not.")
+    medicines_cost = models.IntegerField(validators=[MinValueValidator(0)], blank=False)
 
     def __str__(self):
         patient = self.appointment.patient

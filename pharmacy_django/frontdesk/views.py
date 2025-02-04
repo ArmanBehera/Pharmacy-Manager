@@ -2,9 +2,11 @@ from rest_framework import views, response, status, permissions, exceptions
 from administrator.serializers import UserSerializer
 from administrator import authentication
 from administrator.models import User
-from doctor.models import DoctorUser, Appointment, PatientUser
-from doctor.serializers import AppointmentSerializer, PatientSerializer, DoctorSerializer
+from doctor.models import DoctorUser, Appointment, PatientUser, Prescription
+from doctor.serializers import AppointmentSerializer, PatientSerializer, DoctorSerializer, PrescriptionSerializer
 from datetime import datetime, date
+from django.db.models import Sum, F, Q
+from django.core.exceptions import ObjectDoesNotExist
 
 class SignIn(views.APIView):
     '''
@@ -256,8 +258,8 @@ class GetPreviousAppointments(views.APIView):
     '''
         On a successful post request, returns the previous appointments for a patient
     '''
-    #authentication_classes = (authentication.CustomFrontDeskAuthentication, )
-    #permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (authentication.CustomFrontDeskAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         
@@ -272,3 +274,56 @@ class GetPreviousAppointments(views.APIView):
 
         return response.Response(resp, status=status.HTTP_202_ACCEPTED)
     
+
+
+class GetUnpaidAppointments(views.APIView):
+    '''
+        On a successful post request, returns unpaid appointments for a doctor
+    '''
+    authentication_classes = (authentication.CustomFrontDeskAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def getTotalCost(self, prescription):
+        total_cost = 0
+
+        # Doctor Cost
+        doctor_cost = prescription.appointment.doctor.consultation_fee
+        total_cost += doctor_cost
+
+        # Lab Tests costs
+        lab_tests_cost = sum(
+            lab_test.lab_test.test_cost for lab_test in prescription.lab_tests.all() if lab_test.status != 'Prescribed'
+        )
+        total_cost += lab_tests_cost
+
+        # Medicines Cost
+        medicines_cost = prescription.medicines_cost
+        total_cost += medicines_cost
+
+        return {
+            'doctor_cost': doctor_cost,
+            'lab_tests_cost': lab_tests_cost,
+            'medicines_cost': medicines_cost,
+            'total_cost': total_cost
+        }
+
+    def post(self, request):
+        try:
+            doctor = DoctorUser.objects.get(id=request.data['doctor_id'])
+        except ObjectDoesNotExist:
+            return response.Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        prescriptions = Prescription.objects.filter(appointment__doctor=doctor, paid=False)
+
+        resp = [
+            {
+                'id': prescription.id,
+                'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}',
+                'age': prescription.appointment.patient.age,
+                'gender': prescription.appointment.patient.gender,
+                'cost': self.getTotalCost(prescription)
+            }
+            for prescription in prescriptions
+        ]
+
+        return response.Response(resp, status=status.HTTP_200_OK)

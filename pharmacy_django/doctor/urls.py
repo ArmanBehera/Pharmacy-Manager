@@ -15,5 +15,7 @@ urlpatterns = [
     path('getMedicinesDetailsForID/', views.GetMedicinesDetailsForID.as_view(), name='getMedicinesDetailsForID'),
     path('getCompletedPrescriptions/', views.GetCompletedPrescriptions.as_view(), name='getCompletedPrescriptions'),
     path('getPrescriptionID/', views.GetPrescriptionID.as_view(), name='getPrescriptionID'),
-    path('updatePrescription/', views.UpdatePrescription.as_view(), name='updatePrescription')
+    path('updatePrescription/', views.UpdatePrescription.as_view(), name='updatePrescription'),
+    path('getPreviousCompletedPrescriptions/', views.GetPreviousCompletedPrescriptions.as_view(), name='getPreviousPrescriptions'),
+    path('getPreviousIncompletePrescriptions/', views.GetPreviousIncompletePrescriptions.as_view(), name='getPreviousIncompletePrescriptions')
 ]
