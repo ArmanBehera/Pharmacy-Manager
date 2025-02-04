@@ -74,17 +74,10 @@ class PrescribedMedicine(models.Model):
         ('Months', 'Months')
     ]
 
-    MEDICINES_STATUS_CHOICES = [
-        ('Prescribed', 'Prescribed'),
-        ('Dispensed', 'Dispensed'),
-        ('Not Available', 'Not Available')
-    ]
-
     medicine = models.ForeignKey(Medicines, verbose_name="Medicine Details", on_delete=models.CASCADE, related_name="prescribed_medicine")
     frequency = models.IntegerField(validators=[MinValueValidator(1)], help_text="Number of times the medicine should be taken per day")
     duration_value = models.FloatField(validators=[MinValueValidator(1)], help_text="Duration value based on the selected unit")
     duration_unit = models.CharField(max_length=6, choices=DURATION_UNIT_CHOICES, verbose_name="Duration Unit")
-    status = models.CharField(max_length=13, choices=MEDICINES_STATUS_CHOICES, default='Prescribed', verbose_name="Medicine Status", blank=False, null=False)
 
     class Meta:
         constraints = [
@@ -117,7 +110,6 @@ class PrescribedLabTest(models.Model):
     status = models.CharField(max_length=16, choices=LAB_TESTS_STATUS_CHOICES, default='Prescribed', verbose_name="Lab Test Status") 
     sample_tracking_code = models.CharField(max_length=255, blank=True, null=True)
     report_code = models.CharField(max_length=255, blank=True, null=True)
-    attachment = models.FileField(upload_to='lab_tests/', verbose_name="Test Report", blank=True, null=True)
 
     def __str__(self):
         return f"{self.lab_test} prescribed for {self.lab_test.name} on {self.test_date}. Status: {self.status}."

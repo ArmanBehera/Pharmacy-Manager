@@ -1,7 +1,9 @@
 from django.db.models import Count
 from rest_framework import views, response, status, permissions, exceptions
 
-from administrator.models import User
+from .models import User
+from . import authentication
+
 from doctor.models import SpecializationAvailable, DoctorUser
 from pharmacy.models import Medicines, Allergens, SideEffects, Ingredients, Categories, MedicineStock, LabTests
 
@@ -9,9 +11,8 @@ from pharmacy.serializers import MedicinesSerializer, AllergensSerializer, Categ
 from administrator.serializers import UserSerializer
 from doctor.serializers import SpecializationSerializer
 
-from . import authentication
-
 from datetime import datetime
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class SignIn(views.APIView):
     '''
@@ -481,11 +482,31 @@ class DeleteLabTests(views.APIView):
 
 class Logout(views.APIView):
     '''
-        Logout view can only be accessed by authenticated users
+        Logout view that clears JWT cookies and blacklists the refresh token.
     '''
-    authentication_classes = (authentication.CustomAdminAuthentication, )
+    authentication_classes = (authentication.CustomUserAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
-    
+
     def post(self, request):
-        
-        return response.Response("Successfully logged out user.")
+        try:
+            # Get the refresh token from the request cookies
+            refresh_token = request.COOKIES.get('refresh_token')
+
+            if refresh_token:
+                # Blacklist the token (only if blacklisting is enabled)
+                try:
+                    token = RefreshToken(refresh_token)
+                    token.blacklist()  # This prevents reuse
+                except Exception as e:
+                    return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Create a response and delete cookies
+            response_data = response.Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+            response_data.delete_cookie('access_token')  # Clear access token cookie
+            response_data.delete_cookie('refresh_token')  # Clear refresh token cookie
+            response_data.delete_cookie('csrftoken')  # Optional: Clear CSRF token
+
+            return response_data
+
+        except Exception as e:
+            return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

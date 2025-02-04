@@ -4,11 +4,11 @@ from rest_framework import views, response, status, permissions, exceptions
 from administrator.serializers import UserSerializer
 from administrator import authentication
 
-from doctor.models import DoctorUser, Prescription, PrescribedLabTest, Appointment
+from doctor.models import DoctorUser, Prescription, PrescribedLabTest, Appointment, PrescribedMedicine
 from doctor.serializers import PrescriptionSerializer, AppointmentSerializer
 
-from .models import LabTests
-from .serializers import LabTestsSerializer
+from .models import LabTests, Medicines, MedicineStock
+from .serializers import LabTestsSerializer, MedicinesSerializer
 
 from django.utils import timezone
 
@@ -103,6 +103,66 @@ class UpdateLabTests(views.APIView):
             return response.Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return response.Response({'message': 'Successfully edited lab test.'}, status=status.HTTP_202_ACCEPTED)
+
+
+class UpdateStock(views.APIView):
+    '''
+        On a successful post request, updates the stock
+    '''
+    authentication_classes = (authentication.CustomPharmacyAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        try:
+            prescription = Prescription.objects.get(id=request.data['prescription_id'])
+            update_stock = request.data.get('update_stock', [])  # Extract update_stock list safely
+
+            resp = []
+
+            for row in update_stock:
+                try:
+                    medicine = Medicines.objects.get(id=row['id'])
+                    quantity = row['quantity']
+                    medicine_stocks = MedicineStock.objects.filter(medicine=medicine).order_by('expiration_date')
+
+                    while quantity > 0 and medicine_stocks.exists():
+                        stock_entry = medicine_stocks.first()  # Get the earliest expiring stock
+                        stock = stock_entry.stock
+
+                        if stock <= quantity:
+                            quantity -= stock
+                            stock_entry.delete()  # Delete depleted stock
+                        else:
+                            stock_entry.stock -= quantity
+                            stock_entry.save()
+                            quantity = 0  # Fully reduced, break loop
+                    
+                    prescribed_medicine = PrescribedMedicine.objects.filter(
+                        prescription=prescription, 
+                        medicine=medicine
+                    ).first()
+
+                    if prescribed_medicine:
+                        if quantity == 0:
+                            resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "updated"})
+                        else:
+                            resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "unavailable", "quantity": quantity})
+                        
+                        prescribed_medicine.save()
+
+                except Medicines.DoesNotExist:
+                    resp.append({"id": row['id'], "medicine_name": f"ID {row['id']}", "status": "Medicine Not Found."})
+
+                except Exception as e:
+                    resp.append({"id": row['id'], "medicine_name": f"ID {row['id']}", "status": f"Error: {str(e)}"})
+
+            return response.Response(resp, status=status.HTTP_200_OK)
+
+        except Prescription.DoesNotExist:
+            return response.Response({"error": "Prescription not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Logout(views.APIView):

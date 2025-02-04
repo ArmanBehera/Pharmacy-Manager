@@ -16,11 +16,13 @@ urlpatterns = [
     path('deleteMedicines/', administrator.views.DeleteMedicines.as_view(), name='deleteMedicines'),
     path('getLabTests/', administrator.views.GetLabTests.as_view(), name='getLabTests'),
     path('getLabTestsDetailsForID/', doctor.views.GetLabTestsDetailsForID.as_view(), name='getLabTestsDetailsForID'),
+    path('getMedicinesDetailsForID/', doctor.views.GetMedicinesDetailsForID.as_view(), name='getMedicinesDetailsForID'),
     path('addLabTests/', administrator.views.AddLabTests.as_view(), name='addLabTests'),
     path('editLabTests/', administrator.views.EditLabTests.as_view(), name='editLabTests'),
     path('deleteLabTests/', administrator.views.DeleteLabTests.as_view(), name='deleteLabTests'),
     path('getDoctors/', views.GetDoctors.as_view(), name='getDoctors'),
     path('getCompletedPrescriptions/', doctor.views.GetCompletedPrescriptions.as_view(), name='getCompletedPrescriptions'),
     path('updateLabTests/', views.UpdateLabTests.as_view(), name='updateLabTests'),
-    path('updatePrescription/', doctor.views.UpdatePrescription.as_view(), name='updatePrescription')
+    path('updatePrescription/', doctor.views.UpdatePrescription.as_view(), name='updatePrescription'),
+    path('updateStock/', views.UpdateStock.as_view(), name='updateStock')
 ]
