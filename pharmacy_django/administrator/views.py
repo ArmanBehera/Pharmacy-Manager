@@ -479,34 +479,3 @@ class DeleteLabTests(views.APIView):
         
         except Exception as e:
             return response.Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-
-class Logout(views.APIView):
-    '''
-        Logout view that clears JWT cookies and blacklists the refresh token.
-    '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-
-    def post(self, request):
-        try:
-            # Get the refresh token from the request cookies
-            refresh_token = request.COOKIES.get('refresh_token')
-
-            if refresh_token:
-                # Blacklist the token (only if blacklisting is enabled)
-                try:
-                    token = RefreshToken(refresh_token)
-                    token.blacklist()  # This prevents reuse
-                except Exception as e:
-                    return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Create a response and delete cookies
-            response_data = response.Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
-            response_data.delete_cookie('access_token')  # Clear access token cookie
-            response_data.delete_cookie('refresh_token')  # Clear refresh token cookie
-            response_data.delete_cookie('csrftoken')  # Optional: Clear CSRF token
-
-            return response_data
-
-        except Exception as e:
-            return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -163,15 +163,3 @@ class UpdateStock(views.APIView):
         
         except Exception as e:
             return response.Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class Logout(views.APIView):
-    '''
-        Logout view can only be accessed by authenticated users
-    '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-    
-    def post(self, request):
-        
-        return response.Response("Successfully logged out user.")

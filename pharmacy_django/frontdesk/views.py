@@ -272,19 +272,3 @@ class GetPreviousAppointments(views.APIView):
 
         return response.Response(resp, status=status.HTTP_202_ACCEPTED)
     
-
-class Logout(views.APIView):
-    '''
-        Logout view can only be accessed by authenticated users
-    '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-    
-    def post(self, request):
-
-        resp = response.Response()
-        
-        resp.data = {"message": "Successfully logged out user."}
-        
-        return resp
-        

@@ -311,20 +311,3 @@ class UpdatePrescription(views.APIView):
             return response.Response(serializer.data, status=status.HTTP_202_ACCEPTED)    
 
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
-
-class Logout(views.APIView):
-    '''
-        Logout view can only be accessed by authenticated users
-    '''
-    authentication_classes = (authentication.CustomUserAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
-    
-    def post(self, request):
-        resp = response.Response()
-        # resp.delete_cookie("jwt")
-        
-        resp.data = {"message": "Successfully logged out user."}
-        
-        return resp

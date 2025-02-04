@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from .views import LogoutView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -15,5 +16,6 @@ urlpatterns = [
     path('frontdesk/', include('frontdesk.urls')),
     path('pharmacy/', include('pharmacy.urls')),
     path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('djoser.urls.jwt'))
+    path('api/v1/', include('djoser.urls.jwt')),
+    path('logout/', LogoutView.as_view(), name='logout')
 ]
