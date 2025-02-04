@@ -111,12 +111,10 @@
             warn('error', "An error occurred while updating stock.", error)
         })
 
-        if (are_medicines_fulfilled.value !== prescription_details.value.medicines_fulfilled) {
-            axios.post('/pharmacy/updatePrescription/', {
-                'id': prescription_id,
-                'medicines_fulfilled': are_medicines_fulfilled.value
-            })
-        }
+        axios.post('/pharmacy/updatePrescription/', {
+            'id': prescription_id,
+            'medicines_fulfilled': are_medicines_fulfilled.value
+        })
     }
 
 </script>

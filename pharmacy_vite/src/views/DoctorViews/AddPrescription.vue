@@ -4,8 +4,9 @@
     import { useStore } from 'vuex';
     import { ref, computed, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
-    import { useRoute } from 'vue-router';
+    import { routerKey, useRoute } from 'vue-router';
     import { AutoComplete, InputText } from 'primevue';
+    import router from '../../router';
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -59,6 +60,9 @@
             console.log(appointment_details.value)
             if (appointment_details.value.status === 'Completed') {
                 warn('warn', 'Cannot update a completed prescription', '')
+                setTimeout(() => {
+                    router.push({ name: 'DoctorHomePage' })
+                }, 2000);
                 return;
             }
             is_previous_prescription_present.value = appointment_details.value.previous_appointment ? true : false;
@@ -210,7 +214,9 @@
             'unlisted_lab_tests': unlisted_lab_tests.value,
             'additional_information': additional_information.value ? additional_information.value : '',
             'medicines_fulfilled': medicines_fulfilled.value,
-            'lab_tests_completed': lab_tests_completed.value
+            'lab_tests_completed': lab_tests_completed.value,
+            'paid': false,
+            'medicines_cost': 0
         }
         
         axios.post('/doctor/addPrescription/', {
@@ -219,8 +225,8 @@
         .then( (response) => {
             warn('success', 'Successfully added prescription for the patient.', '')
             setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+                router.push({ name: 'DoctorHomePage' })
+            }, 2000);
         })
         .catch( (error) => {
             warn('warn', 'Unsuccessful in adding prescription for the patient.', error)
@@ -236,7 +242,7 @@
     </div>
 
 
-    <div class="container mx-auto flex flex-column" v-if="is_registered === 'true'">
+    <div class="m-4 flex flex-column" v-if="is_registered === 'true'">
         <div class="flex flex-col space-y-4">
             <label class="text-xl font-semibold">Medicines</label>
             <div v-for="n in medicine_count" :key="n" class="flex flex-row items-center space-x-4">

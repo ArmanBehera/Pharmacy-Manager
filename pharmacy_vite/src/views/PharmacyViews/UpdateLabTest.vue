@@ -88,6 +88,12 @@
             'status': status.value,
             'report_code': report_codes.value
         })
+        .then( (response) => {
+            warn('success', 'Successfully updated lab tests.', '')
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccessful in editing lab tests.', error)
+        })
 
         if (lab_tests_completed.value !== prescription_details.value.lab_tests_completed) {
             axios.post('/pharmacy/updatePrescription/', {
@@ -149,7 +155,7 @@
             </div>
             
             <!-- Submit Button -->
-            <Button id="submit" label="Submit" @click.prevent="submit" class="mt-6 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"/>
+            <Button id="submit" label="Submit" @click.prevent="submit"/>
         </div>
     </div>
 </template>

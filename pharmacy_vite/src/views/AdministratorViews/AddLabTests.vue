@@ -38,13 +38,14 @@
 
         for (const key in data) {
             const value = data[key];
-            if (typeof value === 'string' && value.trim() === '') {
-                warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
-                return; // Exit the loop early if an empty field is found
-            } else if (typeof value === 'number' && value === 0) {
-                warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
-                return; // Exit the loop early if a zero value is found
-            }
+            if (key !== 'description' && key !== 'pre_test_requirements')
+                if (typeof value === 'string' && value.trim() === '') {
+                    warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
+                    return; // Exit the loop early if an empty field is found
+                } else if (typeof value === 'number' && value === 0) {
+                    warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
+                    return; // Exit the loop early if a zero value is found
+                }
         }
 
         axios.post(`${usertype}/addLabTests/`, {

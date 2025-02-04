@@ -42,6 +42,15 @@
             }
         },
         {
+            label: 'Signin',
+            icon: 'pi pi-user',
+            loggedIn: false,
+            loggedOut: true,
+            command: () => {
+                router.push({ name: 'PharmacySignin' })
+            }
+        },
+        {
             label: 'Login',
             icon: 'pi pi-user',
             loggedIn: false,

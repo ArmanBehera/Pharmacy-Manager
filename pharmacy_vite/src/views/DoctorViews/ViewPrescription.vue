@@ -27,6 +27,7 @@
     const name = ref('');
     const gender = ref('');
     const age = ref('');
+    const additional_information = ref();
 
     const unlisted_lab_tests_length = ref(0);
     const listed_lab_tests_length = ref(0);
@@ -53,6 +54,7 @@
             .then(response => {
                 is_loaded.value[0] = true;
                 prescription_details.value = response.data;
+                additional_information.value = prescription_details.value.additional_information ? prescription_details.value.additional_information : 'No additional information prescribed.';
 
                 unlisted_lab_tests_length.value = prescription_details.value.unlisted_lab_tests.length;
                 listed_lab_tests_length.value = prescription_details.value.lab_tests.length;
@@ -179,9 +181,9 @@
             </div>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-6" v-if="are_all_requests_made">
             <h2 class="text-xl font-semibold border-b pb-2 mb-4">Additional Information</h2>
-            <
+            <label class="font-semibold">{{ additional_information }}</label>
         </div>
 
         <div class="mt-6">

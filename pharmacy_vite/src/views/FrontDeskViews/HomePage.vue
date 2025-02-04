@@ -11,13 +11,16 @@
     const patients_data = ref([]);
     const doctors_data = ref([]);
     const no_show_patients_data = ref([]);
-    const is_loaded = ref([false, false, false]);
+    const is_loaded = ref([false, false, false, false]);
+    const unpaid_appointiments_data = ref([]);
     
     // The below variables are for scheduling a new appointment for a patient
     const appointment_date = ref();
     const selected_appointment = ref();
+
     const rebook_appointment_dialog = ref(false);
     const cancellation_dialog = ref(false);
+    const payment_confirmation_dialog = ref(false);
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -30,6 +33,7 @@
 
     const selected_doctor_scheduled = ref();
     const selected_doctor_no_show = ref();
+    const selected_doctor_unpaid_appointments = ref();
 
     const is_registered = ref(store.state.is_registered)
 
@@ -67,6 +71,19 @@
         })
     }
 
+    const getUnpaidAppointments = () => {
+        axios.post('/frontdesk/getUnpaidAppointments/', {
+            'doctor_id': selected_doctor_unpaid_appointments.value['id']
+        })
+        .then( (response) => {
+            unpaid_appointiments_data.value = response.data
+            is_loaded.value[3] = true
+        })
+        .catch( (error) => {
+            warn('warn', 'Error in getting unpaid appointments', error)
+        })
+    }
+
     if (is_registered.value === 'true') {
         // Gets all the doctors
         axios.get('/frontdesk/getDoctors/')
@@ -78,6 +95,7 @@
             
             selected_doctor_scheduled.value = doctors_data.value[0]
             selected_doctor_no_show.value = doctors_data.value[0]
+            selected_doctor_unpaid_appointments.value = doctors_data.value[0]
             is_loaded.value[1] = true;
         })
         .catch( (error) => {
@@ -102,11 +120,20 @@
                 }
             }
             catch (error) {
-                warn('warn', 'Error getting data for patients.', '')
+                warn('warn', 'Error getting data for patients.', error)
             }
         })
 
-        
+        watch(selected_doctor_unpaid_appointments, (newVal, oldVal) => {
+            try { 
+                if (typeof selected_doctor_unpaid_appointments.value == 'object') {
+                    getUnpaidAppointments();
+                }
+            }
+            catch (error) {
+                warn('warn', 'Error getting data for unpaid appointments.', error)
+            }
+        })
     } else {
         warn('warn', 'Please log in to access this page.', '')
     }
@@ -175,6 +202,35 @@
             warn('warn', 'Unsuccessful in cancelling appointment for the patient.', error)
         })
     }
+
+    const payment_prescription_id = ref();
+    const payment_patient_name = ref();
+
+    const preliminaryPayment = (id, name) => {
+        payment_confirmation_dialog.value = true;
+        payment_prescription_id.value = id;
+        payment_patient_name.value = name;
+    }
+
+    const sendPaymentRequest = () => {
+        payment_confirmation_dialog.value = false;
+
+        axios.post('/frontdesk/updatePrescription/', {
+            'id': payment_prescription_id.value,
+            'paid': true
+        })
+        .then( (response) => {
+            warn('success', `Successfully paid for ${payment_patient_name.value}`, '');
+            payment_prescription_id.value = null;
+            payment_patient_name.value = '';
+        })
+        .catch( (error) => {
+            warn('warn', 'Unsuccesful in payment for the prescription.', error)
+            payment_prescription_id.value = null;
+            payment_patient_name.value = '';
+        })
+        
+    }
 </script>
 
 <template>
@@ -215,10 +271,8 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mb-4">
-            <div class="card ml-5">
+            <div class="card ml-5 mb-4">
                 <h1 class="text-l font-bold m-2">No Show Appointments</h1>
                 <AutoComplete v-model="selected_doctor_no_show" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
                 <DataTable v-if="is_loaded[2] & no_show_patients_data.length > 0" :value="no_show_patients_data" removableSort :rows="5" paginator tableStyle="min-width: 22rem">
@@ -234,6 +288,39 @@
 
                 <div v-else-if="no_show_patients_data.length == 0 && is_loaded[2]" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
                     There are no "No-Show" patients for this doctor in the system.
+                </div>
+
+                <div class="centered" v-else>
+                    <ProgressSpinner/>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-column">
+            
+            
+            <div class="card ml-5 mb-4">
+                <h1 class="text-l font-bold m-2">Unpaid Appointments</h1>
+                <AutoComplete v-model="selected_doctor_unpaid_appointments" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
+                <DataTable v-if="is_loaded[3] && unpaid_appointiments_data.length > 0" :value="unpaid_appointiments_data" removableSort sortField="id" :sortOrder="1" :rows="3" paginator tableStyle="min-width: 22rem">
+                    <Column field="id" header="Prescription ID" sortable/>
+                    <Column field="patient_name" header="Patient Name" sortable/>
+                    <Column field="age" header="Age"/>
+                    <Column field="gender" header="Gender"/>
+                    <Column field="cost.doctor_cost" header="Doctor Cost"/>
+                    <Column field="cost.lab_tests_cost" header="Lab Tests Cost"/>
+                    <Column field="cost.medicines_cost" header="Medicines Cost"/>
+                    <Column field="cost.total_cost" header="Total Cost"/>
+                    
+                    <Column>
+                        <template #body="slotProps">
+                            <Button severity="success" label="Pay" @click.prevent="preliminaryPayment(slotProps.data.id, slotProps.data.patient_name)"/>
+                        </template>
+                    </Column>
+                </DataTable>
+
+                <div v-else-if="unpaid_appointiments_data.length == 0" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">
+                    There are no prescriptions that are unpaid.
                 </div>
 
                 <div class="centered" v-else>
@@ -258,6 +345,18 @@
         <template #footer>
             <Button label="No" icon="pi pi-times" text @click="cancellation_dialog = false"/>
             <Button label="Yes" icon="pi pi-check" text @click="sendCancelRequest"/>
+        </template>
+    </Dialog>
+
+    <Dialog v-model:visible="payment_confirmation_dialog" :style="{ width: '450px' }" header="Confirm">
+        <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span>Are you sure you want to pay for the prescription for {{ payment_patient_name }}?</span>
+        </div>
+        
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="payment_confirmation_dialog = false"/>
+            <Button label="Yes" icon="pi pi-check" text @click="sendPaymentRequest"/>
         </template>
     </Dialog>
 </template>

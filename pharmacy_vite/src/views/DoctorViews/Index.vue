@@ -66,7 +66,7 @@
 </script>
 
 <template>
-    <Menubar :model="items">
+    <Menubar :model="items" class="mt-2">
         <template #item="{ item, props }">
             <a v-if="item.loggedIn == logged_in || item.loggedOut == !logged_in" :target="item.target" v-bind="props.action">
                 <span :class="item.icon" />
