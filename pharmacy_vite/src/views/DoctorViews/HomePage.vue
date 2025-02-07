@@ -100,6 +100,11 @@
                     <Column field="id" header="Prescription ID"/>
                     <Column field="patient_name" header="Patient Name"/>
                     <Column field="details" header="Details"/>
+                    <Column>
+                        <template #body="slotProps">
+                            <Button severity="success" label="View Prescription" @click.prevent="router.push({ name: 'ViewPrescription', query: { id: slotProps.data.id } })"/>
+                        </template>
+                    </Column>
                 </DataTable>
 
                 <div v-else-if="previous_completed_prescriptions_data.length == 0" class="centered placeholder-table" style="min-width: 20rem; padding:1rem">

@@ -1,0 +1,131 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
+  <diagram name="Page-1" id="NWrikm-oI_lgrHWJkClR">
+    <mxGraphModel dx="-1377" dy="-505" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-76" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-74" target="I2NMwHD3v8y9YMX34p4l-75">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-74" value="START" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="2905" y="1160" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-78" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-75" target="I2NMwHD3v8y9YMX34p4l-77">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-75" value="Display Doctor&amp;nbsp;&lt;div&gt;Login Page&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="2905" y="1290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-80" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-77" target="I2NMwHD3v8y9YMX34p4l-79">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-77" value="Send request&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;to the backend for&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;verifying user data&lt;/span&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="2895" y="1400" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-82" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-79" target="I2NMwHD3v8y9YMX34p4l-81">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-83" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="I2NMwHD3v8y9YMX34p4l-82">
+          <mxGeometry x="-0.1425" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-86" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-79" target="I2NMwHD3v8y9YMX34p4l-85">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-79" value="Is the&amp;nbsp;&lt;div&gt;response&amp;nbsp;&lt;/div&gt;&lt;div&gt;valid?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="2910" y="1520" width="110" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-81" value="Display notification&amp;nbsp;&lt;div&gt;that&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;there is no such&lt;/span&gt;&lt;div&gt;user in the database&lt;/div&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="3095" y="1535.6200000000001" width="160" height="73.75" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-103" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-85" target="I2NMwHD3v8y9YMX34p4l-102">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-85" value="Display Doctor&lt;div&gt;Homepage&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="2905" y="1670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-87" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2645" y="1930" as="sourcePoint" />
+            <mxPoint x="2845" y="1930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-88" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2845" y="1930" as="sourcePoint" />
+            <mxPoint x="3305" y="1930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-90" value="Display sales of medicine page." style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="2925" y="2000" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-91" value="Display apply for&lt;br&gt;&amp;nbsp;leave page." style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="3070" y="2000" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-93" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="I2NMwHD3v8y9YMX34p4l-90">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2985" y="1930" as="sourcePoint" />
+            <mxPoint x="3065" y="1980" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-94" value="Check sales" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="I2NMwHD3v8y9YMX34p4l-93">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-95" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2825" y="1930" as="sourcePoint" />
+            <mxPoint x="2825.0000000000005" y="2000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-96" value="Check Inventory" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="I2NMwHD3v8y9YMX34p4l-95">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-97" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="I2NMwHD3v8y9YMX34p4l-91">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="3135" y="1930" as="sourcePoint" />
+            <mxPoint x="3235" y="1950" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-98" value="Apply for leave" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="I2NMwHD3v8y9YMX34p4l-97">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-99" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2645" y="1930" as="sourcePoint" />
+            <mxPoint x="2645" y="2000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-100" value="New Appointments" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="I2NMwHD3v8y9YMX34p4l-99">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-104" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="I2NMwHD3v8y9YMX34p4l-102">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2965" y="1930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-102" value="Option&lt;div&gt;Selection&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="2905" y="1780" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-105" value="Display current&lt;br&gt;&amp;nbsp;medicine inventory&lt;br&gt;&amp;nbsp;page." style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="2755" y="2000" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-106" value="Display the&lt;div&gt;appointments&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;that&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;have been&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;made&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;throughout&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;the day and status&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/div&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="2555" y="2000" width="165" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-107" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; Display Prescriptions&lt;div&gt;from previous&lt;/div&gt;&lt;div&gt;appointments&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;and if&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;there&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;are any&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;updates (lab tests)&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="3215" y="2000" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-108" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="I2NMwHD3v8y9YMX34p4l-107">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="3305" y="1930" as="sourcePoint" />
+            <mxPoint x="3390" y="1950" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I2NMwHD3v8y9YMX34p4l-109" value="Previous Prescriptions" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="I2NMwHD3v8y9YMX34p4l-108">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

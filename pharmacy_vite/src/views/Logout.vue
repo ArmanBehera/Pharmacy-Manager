@@ -32,11 +32,8 @@
 </script>
 
 <template>
-    <div class="centered">
+    <div class="flex flex-column align-items-center justify-content-center mt-4">
         <h1>{{ message }}</h1>
-    </div>
-
-    <div class="centered">
         <Button label="small" class="routerlink" @click="$router.push({ name: 'Home' })">Home Page</Button>
     </div>
 </template>
