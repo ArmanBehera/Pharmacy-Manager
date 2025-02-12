@@ -73,6 +73,7 @@
         })
     } else { 
         warn('warn', "Log in using an admin account to access this page.", '');
+        router.push({ name: 'Home' })
     }
 </script>
 

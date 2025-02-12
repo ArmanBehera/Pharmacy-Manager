@@ -135,7 +135,7 @@
             }
         })
     } else {
-        warn('warn', 'Please log in to access this page.', '')
+        router.push({ name: 'Home' })
     }
 
     const filtered_array = ref([]);
@@ -217,7 +217,9 @@
 
         axios.post('/frontdesk/updatePrescription/', {
             'id': payment_prescription_id.value,
-            'paid': true
+            'paid': true,
+            'medicines_fulfilled': true,
+            'lab_tests_completed': true
         })
         .then( (response) => {
             warn('success', `Successfully paid for ${payment_patient_name.value}`, '');

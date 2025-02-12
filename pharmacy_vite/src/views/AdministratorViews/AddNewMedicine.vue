@@ -5,7 +5,7 @@
     import '../../styles/styles.css';
     import axios from '../../axios';
     import { format } from 'date-fns';
-    import { checkDate } from '../../helpers';
+    import { checkDate, filled } from '../../helpers';
 
     const store = useStore();
     const toast = useToast();
@@ -75,57 +75,23 @@
 
     const submit = () => {
 
-        if (!name.value){
-            warn('warn', 'Name field should be filled with the name of the medicine.', '');
+        try {
+            const medicineToSend = {
+                'name': name.value,
+                'price': price.value,
+                'description': description.value ? description.value : '',
+                'manufacturer': manufacturer.value,
+                'timings': timings.value,
+                'side_effects' : selected_side_effects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
+                'allergens' : selected_allergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
+                'timings': timings.value,
+                'custom_timing_description': custom_timing_description.value
+            }
+        } catch (error) {
+            warn("warn", "Required fields are not filled", "Please fill in all the required fields with appropriate values.")
             return;
         }
-
-        if (!stock.value){
-            warn('warn', 'Stock field should be filled with an appropriate value.', '');
-            return;
-        }
-
-        if (!price.value){
-            warn('warn', 'Price field should be filled with an appropriate value.', '');
-            return;
-        }
-
-        if (!manufacturer.value){
-            warn('warn', 'Manufacturer field should be filled with the name of the manufacturer.', '');
-            return;
-        }
-
-        if (!timings.value) {
-            warn('warn', 'Timings field should be filled with the timing at which the medicine should be taken.', '');
-            return;
-        }
-
-        if (!checkDate(expiration_date)) {
-            warn('Error with expiration date.', 'Make sure the date is filled and is today or after today.');
-            return;
-        }
-
-        if (selected_allergens.value.length == 0) {
-            warn('warn', 'Allergens should be filled.', '');
-            return;
-        }
-
-        if (selected_side_effects.value.length == 0){
-            warn('warn', 'Side Effects should be filled.', '');
-            return;
-        }
-
-        const medicineToSend = {
-            'name': name.value,
-            'price': price.value,
-            'description': description.value ? description.value : '',
-            'manufacturer': manufacturer.value,
-            'timings': timings.value,
-            'side_effects' : selected_side_effects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
-            'allergens' : selected_allergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
-            'timings': timings.value,
-            'custom_timing_description': custom_timing_description.value
-        }
+        
         
         if (selected_ingredients.value.length != 0) {
             medicineToSend.ingredients = selected_ingredients.value.map(ingredient => ({ name: ingredient.name ? ingredient.name : ingredient }));
@@ -146,6 +112,14 @@
             medicineToSend.categories = categoriesArray
         } else {
             warn('warn', 'Categories should be filled.', '');
+            return;
+        }
+
+        let completed = filled(medicineToSend, ['ingredients', 'description'])
+        console.log(completed)
+
+        if (completed !== 'success') {
+            warn('warn', completed + " required field is not filled", "Please fill in all the required fields with appropriate values.")
             return;
         }
 

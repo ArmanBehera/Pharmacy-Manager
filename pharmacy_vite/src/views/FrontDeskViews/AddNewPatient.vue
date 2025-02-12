@@ -5,7 +5,7 @@
     import { useStore } from 'vuex';
     import { ref } from 'vue';
     import { useToast } from 'primevue/usetoast';
-    import { checkDate } from '../../helpers';
+    import { checkDate, filled } from '../../helpers';
     import { format } from 'date-fns';
 
     const store = useStore();
@@ -50,32 +50,21 @@
     }
 
     const submit = () => {
-
-        let data = {
-            'first_name': first_name.value,
-            'last_name': last_name.value,
-            'primary_phone_number': primary_phone_number.value,
-            'age': age.value,
-            'gender': gender.value['gender'],
-            'secondary_phone_number': secondary_phone_number.value ? secondary_phone_number.value : '0',
-        };
-
-        var filled = true;
-
-        // Checks for any empty fields
-        // Do not have to check for null fields since .trim() function already handles undefined values
-        for (const key in data) {
-            const value = data[key];
-            if (key !== 'secondary_phone_number'){
-                if (typeof value === 'string' && value.trim() === '') {
-                    filled = false;
-                    break; // Exit the loop early if an empty field is found
-                } else if (typeof value === 'number' && value === 0) {
-                    filled = false;
-                    break; // Exit the loop early if a zero value is found
-                }
-            }
+        try {
+            let data = {
+                'first_name': first_name.value,
+                'last_name': last_name.value,
+                'primary_phone_number': primary_phone_number.value,
+                'age': age.value,
+                'gender': gender.value['gender'],
+                'secondary_phone_number': secondary_phone_number.value ? secondary_phone_number.value : '0',
+            };
+        } catch (error) {
+            warn("warn", "Required fields are not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
+
+        var filled = filled(data, ['secondary_phone_number'])
 
         if (!selected_doctor.value) {
             warn('warn', 'Patient has to be assgined a doctor.', 'Select a doctor from the dropdown menu.');

@@ -7,6 +7,7 @@
     import { useToast } from 'primevue/usetoast';
     import { onMounted, onBeforeUnmount } from 'vue';
     import { useStore } from 'vuex';
+    import { filled } from '../../helpers';
 
     const store = useStore();
     store.dispatch('logout')
@@ -69,20 +70,27 @@
     const specialization = ref();
 
     const submit = () => {
-        let data = {
-            first_name: first_name.value,
-            last_name: last_name.value,
-            primary_phone_number: primary_phone_number.value,
-            email: email.value,
-            password: password.value,
-            age: age.value,
-            gender: gender.value['gender'],
-            consultation_fee: parseInt(consultation_fee.value),
-            registration_number: registration_number.value,
-            secondary_phone_number: secondary_phone_number.value ? secondary_phone_number.value : '0',
-            experience: experience.value,
-            specialization: specialization.value['id']
-        };
+        let data = {}
+        try {
+            data = {
+                first_name: first_name.value,
+                last_name: last_name.value,
+                primary_phone_number: primary_phone_number.value,
+                email: email.value,
+                password: password.value,
+                age: age.value,
+                gender: gender.value['gender'],
+                consultation_fee: parseInt(consultation_fee.value),
+                registration_number: registration_number.value,
+                secondary_phone_number: secondary_phone_number.value ? secondary_phone_number.value : '0',
+                experience: experience.value ? experience.value : 0,
+                specialization: specialization.value['id']
+            };
+        } catch (error) {
+            warn("Required fields are not filled", "Please fill in all the required fields with appropriate values.")
+            return;
+        }
+            
 
         if (data.password !== confirm_password.value) {
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.");
@@ -94,34 +102,15 @@
             return;
         }
 
-        if (data.experience === undefined){
-            data.experience = 0
-        }
-
-        var filled = true;
-
-        // Checks for any empty fields
-        // Do not have to check for null fields since .trim() function already handles undefined values
-        for (const key in data) {
-            const value = data[key];
-            if (key !== 'secondary_phone_number' || key !== 'experience'){
-                if (typeof value === 'string' && value.trim() === '') {
-                    filled = false;
-                    break; // Exit the loop early if an empty field is found
-                } else if (typeof value === 'number' && value === 0) {
-                    filled = false;
-                    break; // Exit the loop early if a zero value is found
-                }
-            }
-        }
+        var completed = filled(data, ['secondary_phone_number', 'experience']);
 
         // If there's any field left out - All fields need to be filled
-        if (!filled) {
-            warn("Required fields are not filled", "Please fill in all the required fields with appropriate values.")
+        if (completed !== 'success') {
+            warn(completed + " required field is not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
         // No errors - Sending message to the backend to be processed
         else {
-            // Debug this part - Showing internal server error
             axios.post('/doctor/signin/', {
                 user: {
                     "username": `${data.first_name}${data.last_name}${data.registration_number}`,
@@ -149,7 +138,7 @@
                 router.push({ name: 'DoctorLogin' })
             })
             .catch( (error) => {
-                warn("Failed to create a new doctor user.")
+                warn("Failed to create a new doctor user.", error)
             })
         }
     }

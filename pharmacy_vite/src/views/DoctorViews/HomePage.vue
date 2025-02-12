@@ -62,6 +62,8 @@
             }))
             is_loaded.value[2] = true;
         })
+    } else {
+        router.push({ name: 'Home' })
     }
 </script>
 
@@ -71,14 +73,14 @@
         <div class="mt-2">
             <div class="card ml-5">
                 <h1 class="text-l font-bold m-2">Active Prescriptions</h1>
-                <DataTable v-if="is_loaded[0] && patients_data.length > 0" :value="patients_data" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+                <DataTable v-if="is_loaded[0] && patients_data.length > 0" :value="patients_data" removableSort :rows="10" paginator tableStyle="min-width: 22rem">
                     <Column field="name" header="Name" style="width: 20%" sortable></Column>
                     <Column field="token_assigned" header="Token Number" style="width: 20%" sortable></Column>
                     <Column field="appointment_date" header="Date" style="width: 20%;" sortable></Column>
                     <Column style="width: 20%">
                         <template #body="slotProps">
                             <Button severity="success" label="Prescription" icon="pi pi-external-link"  iconPos="right" @click="$router.push({ name: 'AddPrescription', query: { id: slotProps.data.id } })" v-if="checkToday(slotProps.data.date)"/>
-                            <Button severity="secondary" label="Prescription" icon="pi pi-external-link"  iconPos="right" v-else disabled/>
+                            <Button severity="secondary" label="Prescription" icon="pi pi-external-link"  iconPos="right" v-else disabled />
                         </template>
                     </Column>
                 </DataTable>
@@ -96,7 +98,7 @@
         <div class="mt-2">
             <div class="card ml-5">
                 <h1 class="text-l font-bold m-2">Previous Completed Prescriptions</h1>
-                <DataTable v-if="is_loaded[1] && previous_completed_prescriptions_data.length > 0" :value="previous_completed_prescriptions_data" removableSort :rows="3" paginator tableStyle="min-width: 22rem">
+                <DataTable v-if="is_loaded[1] && previous_completed_prescriptions_data.length > 0" :value="previous_completed_prescriptions_data" removableSort :rows="10" paginator tableStyle="min-width: 22rem">
                     <Column field="id" header="Prescription ID"/>
                     <Column field="patient_name" header="Patient Name"/>
                     <Column field="details" header="Details"/>
@@ -120,7 +122,7 @@
         <div class="mt-2">
             <div class="card ml-5">
                 <h1 class="text-l font-bold m-2">Previous Incomplete Prescriptions</h1>
-                <DataTable v-if="is_loaded[2] && previous_incomplete_prescriptions_data.length > 0" :value="previous_incomplete_prescriptions_data" removableSort sortField="id" :sortOrder="1" :rows="3" paginator tableStyle="min-width: 22rem">
+                <DataTable v-if="is_loaded[2] && previous_incomplete_prescriptions_data.length > 0" :value="previous_incomplete_prescriptions_data" removableSort sortField="id" :sortOrder="1" :rows="10" paginator tableStyle="min-width: 22rem">
                     <Column field="id" header="Prescription ID" sortable/>
                     <Column field="patient_name" header="Patient Name" sortable/>
                     <Column field="details" header="Details"/>

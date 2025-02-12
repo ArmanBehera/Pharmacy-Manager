@@ -117,8 +117,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
         try:
             patient = PatientUser.objects.create(**patient_data)
-        except Exception:
-            raise serializers.ValidationError('Failed to make a new patient.')
+        except Exception as e:
+            raise serializers.ValidationError(e)
         
         validated_data['patient'] = patient
 
@@ -143,11 +143,8 @@ class PrescribedLabTestsSerializer(serializers.ModelSerializer):
 
 class PrescriptionSerializer(serializers.ModelSerializer):
 
-    # appointment is created directly using primary key
     lab_tests = PrescribedLabTestsSerializer(many=True, required=False)
     medicines = PrescribedMedicinesSerializer(many=True, required=False)
-    # medicines = serializers.PrimaryKeyRelatedField(queryset=PrescribedMedicine.objects.all(), many=True, required=False)
-    # lab_tests = serializers.PrimaryKeyRelatedField(queryset=PrescribedLabTest.objects.all(), many=True, required=False)
     unlisted_lab_tests = UnlistedLabTestsSerializer(many=True, required=False)
     unlisted_medicines = UnlistedMedicinesSerializer(many=True, required=False)
 

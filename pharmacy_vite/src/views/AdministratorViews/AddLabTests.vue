@@ -4,6 +4,7 @@
     import { ref } from 'vue';
     import '../../styles/styles.css';
     import axios from '../../axios';
+    import { filled } from '../../helpers';
 
     const store = useStore();
     const toast = useToast();
@@ -27,25 +28,28 @@
     }
 
     const submit = () => {
-        const data = {
-            'name': name.value,
-            'test_cost': price.value,
-            'provider': provider.value,
-            'description': description.value ? description.value : '',
-            'sample_required': sample_required.value,
-            'pre_test_requirements': pre_test_requirements.value ? pre_test_requirements.value : ''
+        
+        let data = {}
+        
+        try {
+            data = {
+                'name': name.value,
+                'test_cost': price.value,
+                'provider': provider.value,
+                'description': description.value ? description.value : '',
+                'sample_required': sample_required.value,
+                'pre_test_requirements': pre_test_requirements.value ? pre_test_requirements.value : ''
+            }
+        } catch (error) {
+            warn("warn", "Required fields are not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
 
-        for (const key in data) {
-            const value = data[key];
-            if (key !== 'description' && key !== 'pre_test_requirements')
-                if (typeof value === 'string' && value.trim() === '') {
-                    warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
-                    return; // Exit the loop early if an empty field is found
-                } else if (typeof value === 'number' && value === 0) {
-                    warn('warn', "Required fields are not filled", "Please fill in all the required fields with appropriate values.");
-                    return; // Exit the loop early if a zero value is found
-                }
+        const completed = filled(data, [])
+
+        if (completed !== 'success') {
+            warn('warn', completed + " required field is not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
 
         axios.post(`${usertype}/addLabTests/`, {

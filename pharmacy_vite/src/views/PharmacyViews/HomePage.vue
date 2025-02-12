@@ -5,6 +5,7 @@
     import { ref, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import '../../styles/styles.css';
+    import router from '../../router';
 
     const medicine_inventory_data = ref([]);
     const lab_tests_data = ref([]);
@@ -104,7 +105,7 @@
             }
         })
     } else {
-        warn('warn', "Log in using a pharmacy account to access this page.", '');
+        router.push({ name: 'Home' })
     }
 
     const filtered_array = ref([]);

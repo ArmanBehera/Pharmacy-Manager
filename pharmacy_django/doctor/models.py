@@ -21,7 +21,6 @@ class DoctorUser(models.Model):
     experience = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)], blank=True, null=True, default=None)
     registration_number = models.CharField(unique=True, blank=False, default=None, max_length=50)
     specialization = models.ForeignKey(SpecializationAvailable, verbose_name="Specialization field for this doctor", on_delete=models.PROTECT, related_name="doctor", blank=False, null=True, default=None)
-    # availability = // To think of a way to represent availability
 
     def __str__(self):
         return f"Name: {self.user.first_name} {self.user.last_name}. Specialization: {self.specialization}"
@@ -31,7 +30,7 @@ class PatientUser(models.Model):
     
     first_name = models.CharField(max_length=100, blank=False, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
-    age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)], blank=False, null=True)
+    age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)], blank=False, null=False)
     GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
@@ -41,7 +40,6 @@ class PatientUser(models.Model):
     
     primary_phone_number = models.CharField(max_length=15, blank=False, null=True)
     secondary_phone_number = models.CharField(max_length=15, blank=True, null=True)
-    medical_history = models.TextField(blank=True)
 
     def __str__(self):
         return f"Patient Name: {self.first_name} {self.last_name}"
@@ -58,7 +56,7 @@ class Appointment(models.Model):
     
     doctor = models.ForeignKey(DoctorUser, verbose_name="Doctor", on_delete=models.PROTECT, related_name='appointments')
     patient = models.ForeignKey(PatientUser, verbose_name="Patient", on_delete=models.CASCADE, related_name='appointments')
-    date = models.DateField(default=timezone.now, verbose_name="Appointment Date")
+    date = models.DateField(default=timezone.now, verbose_name="Appointment Date")  
     token_assigned = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=True, verbose_name="Token Assigned")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled', verbose_name="Status")
     previous_appointment = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='appointments', verbose_name='Previous Appointment')

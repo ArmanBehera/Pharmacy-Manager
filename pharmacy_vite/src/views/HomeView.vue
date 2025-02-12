@@ -60,12 +60,7 @@
 
     <!-- Footer Section with Useful Links -->
     <footer class="mt-16 bg-gray-100 p-4 text-center">
-        <p class="text-gray-600">© 2024 Healthcare Management System</p>
-        <div class="flex justify-center space-x-4">
-            <a href="/privacy-policy" class="text-indigo-400 underline">Privacy Policy</a>
-            <a href="/terms-of-service" class="text-indigo-400 underline">Terms of Service</a>
-            <a href="/help" class="text-indigo-400 underline">Help</a>
-        </div>
+        <p class="text-gray-600">© 2024 Healthcare Management System</p>        
     </footer>
 </template>
 

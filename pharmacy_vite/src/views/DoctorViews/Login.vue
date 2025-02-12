@@ -5,6 +5,7 @@
     import { useStore } from 'vuex';
     import { useToast } from 'primevue/usetoast';
     import router from '../../router' 
+import { filled } from '../../helpers';
     
     const first_name = ref('');
     const last_name = ref('');
@@ -57,27 +58,15 @@
             return;
         }
         
-
-        let filled = true;
-
         if (data.password !== confirm_password.value){
             warn("Passwords do not match!", "Password and confirmation password do not match. Ensure that they are the same.")
             return;
         }
 
-        for (const key in data) {
-            
-            const value = data[key];
-            if (typeof value === 'string' && value.trim() === '') {
-                filled = false;
-                break; // Exit the loop early if an empty field is found
-            } else if (typeof value === 'number' && value === 0) {
-                filled = false;
-                break; // Exit the loop early if a zero value is found
-            }
-        }
+        let completed = filled(data, []);
 
-        if (!filled){
+
+        if (completed !== 'success') {
             warn("Required fields are not filled!", "Please fill in all the required fields with appropriate values.");
         }
         else {

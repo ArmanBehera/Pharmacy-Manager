@@ -44,3 +44,21 @@ export const convertDateFormat = (date_string) => {
 export const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+export const filled = (data, optional_fields) => {
+
+    for (const key in data) {
+        if (!optional_fields.includes(key)) {
+            const value = data[key];
+            if (typeof value === 'string' && value.trim() === '') {
+                return key; // Exit the loop early if an empty field is found
+            } else if (typeof value === 'number' && value === 0) {
+                return key; // Exit the loop early if a zero value is found
+            } else if (Array.isArray(value) && value.length === 0) {
+                return key;
+            }
+        }
+    }
+
+    return 'success';
+}

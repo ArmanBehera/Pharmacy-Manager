@@ -6,6 +6,7 @@
     import { useToast } from 'primevue/usetoast';
     import router from '../../router' 
     import '../../styles/styles.css';
+    import { filled } from '../../helpers';
     
     const first_name = ref('');
     const last_name = ref('');
@@ -55,52 +56,41 @@
             warn('Required fields are not filled!', 'Please fill in all the required fields with appropriate values.');
             return;
         }
-        
-        let filled = true;
 
         if (data.password !== confirm_password.value){
             warn('Passwords do not match!', 'Password and confirmation password do not match. Ensure that they are the same.')
             return;
         }
 
-        for (const key in data) {
-            const value = data[key];
-            if (typeof value === 'string' && value.trim() === '') {
-                filled = false;
-                break; // Exit the loop early if an empty field is found
-            } else if (typeof value === 'number' && value === 0) {
-                filled = false;
-                break; // Exit the loop early if a zero value is found
-            }
+        let completed = filled(data, [])
+
+        if (completed !== 'success') {
+            warn(completed + " required field is not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
 
-        if (!filled){
-            warn('Required fields are not filled!', 'Please fill in all the required fields with appropriate values.');
-        }
-        else {
-            axios.post('/api/v1/jwt/create/', {
-                
-                'username': `${data.first_name}${data.last_name}`,
-                'password': data.password,
-                'role': 'Administrator'
-            })
-            .then( (response) => {
+        axios.post('/api/v1/jwt/create/', {
+            
+            'username': `${data.first_name}${data.last_name}`,
+            'password': data.password,
+            'role': 'Administrator'
+        })
+        .then( (response) => {
 
-                store.dispatch('setLoginDetails', {
-                    'usertype': 'administrator',
-                    'is_registered': true,
-                    'refresh_token': response.data.refresh,
-                    'access_token': response.data.access,
-                    'user_id': response.data.user_id,
-                    'first_name': data.first_name,
-                    'last_name': data.last_name,
-                });
-                router.push({ name: 'AdministratorHomePage' });
-            })
-            .catch( (error) => {
-                warn('Unauthorized credentials!', error);
-            })
-        }
+            store.dispatch('setLoginDetails', {
+                'usertype': 'administrator',
+                'is_registered': true,
+                'refresh_token': response.data.refresh,
+                'access_token': response.data.access,
+                'user_id': response.data.user_id,
+                'first_name': data.first_name,
+                'last_name': data.last_name,
+            });
+            router.push({ name: 'AdministratorHomePage' });
+        })
+        .catch( (error) => {
+            warn('Unauthorized credentials!', error);
+        })
     };
 </script>
 

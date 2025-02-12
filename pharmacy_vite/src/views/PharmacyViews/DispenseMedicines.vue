@@ -44,7 +44,6 @@
         .then(response => {
             is_loaded.value[0] = true;
             prescription_details.value = response.data;
-            console.log(prescription_details.value)
 
             unlisted_medicines_length.value = prescription_details.value.unlisted_medicines.length;
             listed_medicines_length.value = prescription_details.value.medicines.length;

@@ -23,7 +23,7 @@
 
     const medicine_count = ref(1);
     const medicines_data = ref([]);
-    const prescribed_medicines = ref([]);
+    const prescribed_medicines = ref(['']);
     const frequency_medicines = ref([]);
     const duration_medicines = ref([]);
     const duration_unit = ref([]);
@@ -112,9 +112,16 @@
     const isUnlistedMedicine = (index) => {
         return computed(() => {
             const selected_medicine = prescribed_medicines.value[index];
-            return selected_medicine && !medicines_data.value.some(medicine => medicine.name === selected_medicine.name);
+            console.log(typeof selected_medicine)
+            return (typeof selected_medicine === 'string')
         });
     };
+
+    const addMedicine = () => {
+        medicine_count.value += 1; 
+        prescribed_medicines.value.push('');
+    }
+
 
     // Watch for changes in prescribedMedicines and update indexArrayMedicine
     watch(prescribed_medicines, (new_medicines) => {
@@ -206,17 +213,23 @@
         }
 
         // Id of the medicine, followed by the duration and the others
-        const prescription_to_send = {
-            'appointment': appointment_details.value.id,
-            'medicines': listed_medicines.value,
-            'lab_tests': listed_lab_tests.value,
-            'unlisted_medicines': unlisted_medicines.value,
-            'unlisted_lab_tests': unlisted_lab_tests.value,
-            'additional_information': additional_information.value ? additional_information.value : '',
-            'medicines_fulfilled': medicines_fulfilled.value,
-            'lab_tests_completed': lab_tests_completed.value,
-            'paid': false,
-            'medicines_cost': 0
+        let prescription_to_send = {}
+        try {
+            prescription_to_send = {
+                'appointment': appointment_details.value.id,
+                'medicines': listed_medicines.value,
+                'lab_tests': listed_lab_tests.value,
+                'unlisted_medicines': unlisted_medicines.value,
+                'unlisted_lab_tests': unlisted_lab_tests.value,
+                'additional_information': additional_information.value ? additional_information.value : '',
+                'medicines_fulfilled': medicines_fulfilled.value,
+                'lab_tests_completed': lab_tests_completed.value,
+                'paid': false,
+                'medicines_cost': 0
+            }
+        } catch (error) {
+            warn("Required fields are not filled", "Please fill in all the required fields with appropriate values.")
+            return;
         }
         
         axios.post('/doctor/addPrescription/', {
@@ -245,17 +258,32 @@
     <div class="m-4 flex flex-column" v-if="is_registered === 'true'">
         <div class="flex flex-col space-y-4">
             <label class="text-xl font-semibold">Medicines</label>
-            <div v-for="n in medicine_count" :key="n" class="flex flex-row items-center space-x-4">
-                <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribed_medicines[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, medicines_data )" class="w-full" />
-                <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
-                <InputNumber id="duration" placeholder="Duration *" inputId="minmaxfraction" :minFractionDigits="1" :maxFractionDigits="2" :useGrouping="false" v-model.number="duration_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
-                <Select v-model="duration_unit[n - 1]" :options="duration_unit_choices" placeholder="Unit *"/>
-                <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine *" v-if="isUnlistedMedicine(n - 1).value"/>
-                <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine" v-else disabled/>
-                <InputText v-model.trim="custom_timing_descriptions[n - 1]" id="customTiming" placeholder="Custom Timing Description *" v-if="timings[n - 1] === 'Custom'" class="p-inputtext-sm w-full"/>
+            <div v-for="n in medicine_count" :key="n" class="flex flex-column items-center space-y-2">
+                <div class="flex flex-row align-items-center justify-content-center space-x-4">
+                    <AutoComplete :placeholder="`Medicine ${n}*`" v-model="prescribed_medicines[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, medicines_data )" class="w-full" />
+                    <InputNumber id="frequency" placeholder="Frequency *" inputId="withoutgrouping" :useGrouping="false" v-model.number="frequency_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
+                    <InputNumber id="duration" placeholder="Duration *" inputId="minmaxfraction" :minFractionDigits="1" :maxFractionDigits="2" :useGrouping="false" v-model.number="duration_medicines[n-1]" :min="0" class="p-inputnumber-sm w-full"/>
+                    <Select v-model="duration_unit[n - 1]" :options="duration_unit_choices" placeholder="Unit *"/>
+                    <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine *" v-if="isUnlistedMedicine(n - 1).value"/>
+                    <Select v-model="timings[n - 1]" :options="timings_choices" placeholder="Timing for taking the medicine" v-else disabled/>
+                    <InputText v-model.trim="custom_timing_descriptions[n - 1]" id="customTiming" placeholder="Custom Timing Description *" v-if="timings[n - 1] === 'Custom'" class="p-inputtext-sm w-full"/>
+                </div>
+
+                <div class="mt-2 flex flex-column align-items-center justify-content-center space-x-4" v-if="!isUnlistedMedicine(n - 1).value">
+                    <div class="flex flex-row space-x-1">
+                        <label>Allergens: </label>
+                        <label>{{ prescribed_medicines[n - 1].allergens.map(allergen => allergen.name).join(', ') }}</label>
+                    </div>
+
+                    <div class="flex flex-row space-x-1">
+                        <label>Side Effects: </label>
+                        <label>{{ prescribed_medicines[n - 1].side_effects.map(side_effect => side_effect.name).join(', ') }}</label>
+                    </div>
+                </div>
+
             </div>
-            <div>
-                <Button label="Add Medicine" @click.prevent="medicine_count += 1"/>
+            <div class="mt-4 flex align-items-center justify-content-center">
+                <Button label="Add Medicine" @click.prevent="addMedicine"/>
                 <Button label="Delete Medicine" severity="danger" @click.prevent="medicine_count = medicine_count > 1 ? medicine_count - 1 : medicine_count" class="ml-4"/>
             </div>
         </div>
@@ -265,7 +293,7 @@
             <div v-for="n in lab_test_count" :key="n" class="flex flex-row justify-content-center align-items-center space-x-4">
                 <AutoComplete :placeholder="`Lab Test ${n}`" v-model="prescribed_lab_tests[n - 1]" optionLabel="name" dropdown :suggestions="filtered_array" @complete="(event) => search(event, lab_tests_data )" class="w-full" />
             </div>
-            <div>
+            <div class="mt-4 flex align-items-center justify-content-center">
                 <Button label="Add Lab Test" @click.prevent="lab_test_count += 1"/>
                 <Button label="Delete Lab Test" severity="danger" @click.prevent="lab_test_count = lab_test_count > 1 ? lab_test_count - 1 : lab_test_count" class="ml-4"/>
             </div>

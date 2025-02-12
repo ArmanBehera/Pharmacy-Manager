@@ -51,7 +51,7 @@ instance.interceptors.response.use(
         return response
     },
     async (error) => {
-        console.log(error.response.data.detail)
+        console.log(error.response)
         const original_request = error.config
 
         // If the access token is expired and needs to be refreshed

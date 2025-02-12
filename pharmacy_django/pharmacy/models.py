@@ -58,7 +58,7 @@ class Medicines(models.Model):
     price = models.FloatField(validators=[MinValueValidator(0.0)], verbose_name="Price", help_text="Price of the medicine", blank=False)
     description = models.TextField(verbose_name="Description", blank=True, null=True, help_text="Description of the medicine")
     manufacturer = models.CharField(max_length=255, verbose_name="Manufacturer", help_text="Manufacturer of the medicine", blank=False)
-    ingredients = models.ManyToManyField(Ingredients, verbose_name="Ingredients", help_text="Ingredients in the medicine", related_name="medicines")
+    ingredients = models.ManyToManyField(Ingredients, verbose_name="Ingredients", help_text="Ingredients in the medicine", related_name="medicines", blank=True)
     categories = models.ManyToManyField(Categories, verbose_name="Categories", help_text="Categories of the medicine", related_name="medicines", blank=False)
     side_effects = models.ManyToManyField(SideEffects, verbose_name="Side Effects", help_text="Possible side effects of the medicine", related_name="medicines", blank=False)
     allergens = models.ManyToManyField(Allergens, verbose_name="Allergens", help_text="Patients with these allergies should avoid.", related_name="medicines", blank=False)

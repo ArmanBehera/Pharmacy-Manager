@@ -145,10 +145,6 @@ class AddExistingPatient(views.APIView):
 
         doctor_id = request.data['doctor_id']
 
-        print()
-        print(doctor_id)
-        print()
-
         if doctor_id == -1:
             previous_appointment_id = request.data['previous_appointment_id']
             previous_appointment = Appointment.objects.get(id=previous_appointment_id)
@@ -274,7 +270,6 @@ class GetPreviousAppointments(views.APIView):
 
         return response.Response(resp, status=status.HTTP_202_ACCEPTED)
     
-
 
 class GetUnpaidAppointments(views.APIView):
     '''
