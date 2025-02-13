@@ -113,13 +113,14 @@ class UpdateStock(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
+
         try:
             prescription = Prescription.objects.get(id=request.data['prescription_id'])
             update_stock = request.data.get('update_stock', [])  # Extract update_stock list safely
 
             resp = []
 
-            medicines_cost = 0
+            medicines_cost = prescription.medicines_cost
 
             for row in update_stock:
                 try:

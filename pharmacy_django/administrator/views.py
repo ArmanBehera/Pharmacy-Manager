@@ -297,6 +297,7 @@ class DeleteMedicines(views.APIView):
 class GetSpecializationAvailable(views.APIView):
     '''
         In a get request, returns all specializations available
+        In a post request, filters the specializations returned according to the name given
     '''
 
     authentication_classes = (authentication.CustomAdminAuthentication, )
@@ -322,13 +323,12 @@ class GetSpecializationAvailable(views.APIView):
 
         for specialization in specializations:
             number = DoctorUser.objects.filter(specialization=specialization).count()
-            resp.append({'specialization': specialization.specialization, 'number': number})
+            resp.append({'id': specialization.id, 'specialization': specialization.specialization, 'number': number})
 
         return response.Response(resp)
 
 
 class AddSpecializationAvailable(views.APIView):
-
     '''
         In a post request, can make new entires into the SpecializationAvailable model
     '''

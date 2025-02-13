@@ -322,3 +322,29 @@ class GetUnpaidAppointments(views.APIView):
         ]
 
         return response.Response(resp, status=status.HTTP_200_OK)
+    
+
+class PayForUnpaidAppointments(views.APIView):
+
+    authentication_classes = (authentication.CustomFrontDeskAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        
+        prescription = Prescription.objects.get(id=request.data['id'])
+
+        prescription.paid = True
+        lab_tests = prescription.lab_tests
+
+        lab_tests_completed = True
+
+        for lab_test in lab_tests:
+
+            if lab_test.status != 'Prescribed':
+                lab_tests_completed = False
+
+        prescription.lab_tests_completed = lab_tests_completed
+
+        prescription.medicines_fulfilled = True
+
+        prescription.save()

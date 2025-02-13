@@ -5,6 +5,7 @@
     import { ref, computed, watch } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import { useRoute } from 'vue-router';
+    import router from '../../router';
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -105,14 +106,24 @@
                     warn('warn', `Unsuccessful in adding ${item.medicine_name}`, item.status)
                 }
             })
+
+            axios.post('/pharmacy/updatePrescription/', {
+                'id': prescription_id,
+                'medicines_fulfilled': are_medicines_fulfilled.value
+            })
+            .then( (response) => {
+                warn('success', 'Successfully updated prescription.', '')
+                setTimeout(() => {
+                    router.push({ name: 'PharmacyHomePage' });
+                }, 1000);
+            })
+            .catch( (error) => {
+                warn('warn', 'Error in updating prescription', error)
+            })
         })
         .catch((error) => {
-            warn('error', "An error occurred while updating stock.", error)
-        })
-
-        axios.post('/pharmacy/updatePrescription/', {
-            'id': prescription_id,
-            'medicines_fulfilled': are_medicines_fulfilled.value
+            warn('error', "An error occurred while updating stock.", error);
+            return;
         })
     }
 

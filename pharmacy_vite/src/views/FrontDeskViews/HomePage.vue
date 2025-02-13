@@ -215,11 +215,8 @@
     const sendPaymentRequest = () => {
         payment_confirmation_dialog.value = false;
 
-        axios.post('/frontdesk/updatePrescription/', {
-            'id': payment_prescription_id.value,
-            'paid': true,
-            'medicines_fulfilled': true,
-            'lab_tests_completed': true
+        axios.post('/frontdesk/payUnpaidAppointments/', {
+            'id': payment_prescription_id.value
         })
         .then( (response) => {
             warn('success', `Successfully paid for ${payment_patient_name.value}`, '');

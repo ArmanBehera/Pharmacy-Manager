@@ -92,15 +92,20 @@
             warn('success', 'Successfully updated lab tests.', '')
         })
         .catch( (error) => {
-            warn('warn', 'Unsuccessful in editing lab tests.', error)
+            warn('warn', 'Unsuccessful in editing lab tests.', error);
+            return;
         })
 
-        if (lab_tests_completed.value !== prescription_details.value.lab_tests_completed) {
-            axios.post('/pharmacy/updatePrescription/', {
-                'id': prescription_id,
-                'lab_tests_completed': lab_tests_completed.value
-            })
-        }
+        axios.post('/pharmacy/updatePrescription/', {
+            'id': prescription_id,
+            'lab_tests_completed': lab_tests_completed.value
+        })
+        .then( (response) => {
+            warn('success', 'Successfully updated prescription.', '')
+        })
+        .catch( (error) => {
+            warn('warn', 'Error in updating prescription', error)
+        })
     }
 
 

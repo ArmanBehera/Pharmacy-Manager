@@ -15,5 +15,6 @@ urlpatterns = [
     path('rebookAppointment/', views.RebookAppointment.as_view(), name='rebookAppointment'),
     path('getPreviousAppointments/', views.GetPreviousAppointments.as_view(), name='getPreviousAppointments'),
     path('getUnpaidAppointments/', views.GetUnpaidAppointments.as_view(), name='getUnpaidAppointments'),
-    path('updatePrescription/', doctor.views.UpdatePrescription.as_view(), name='updatePrescription')
+    path('updatePrescription/', doctor.views.UpdatePrescription.as_view(), name='updatePrescription'),
+    path('payUnpaidAppointments/', views.PayForUnpaidAppointments.as_view(), name='payUnpaidAppointments')
 ]
