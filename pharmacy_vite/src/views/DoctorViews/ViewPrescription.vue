@@ -104,7 +104,7 @@
             });
         })
         .catch( (error) => {
-            warn('warn', 'Error getting prescription id from the appointment id.', error)
+            warn('warn', 'Error getting prescription id from the appointment id. Prescription might not be written for this appointment.', error)
         })
     }
 
@@ -115,12 +115,12 @@
     }
     
     watch(
-    () => route.query, 
-    (newQuery, oldQuery) => {
-        if (newQuery !== oldQuery) {
-            window.location.reload();
-        }
-    }, 
+        () => route.query, 
+        (newQuery, oldQuery) => {
+            if (newQuery !== oldQuery) {
+                window.location.reload();
+            }
+        }, 
     { deep: true }
     );
 

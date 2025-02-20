@@ -141,19 +141,11 @@ class UpdateStock(views.APIView):
                             medicines_cost += medicine.price * quantity
                             stock_entry.save()
                             quantity = 0  # Fully reduced, break loop
-                    
-                    prescribed_medicine = PrescribedMedicine.objects.filter(
-                        prescription=prescription, 
-                        medicine=medicine
-                    ).first()
 
-                    if prescribed_medicine:
-                        if quantity == 0:
-                            resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "updated"})
-                        else:
-                            resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "unavailable", "quantity": quantity})
-                        
-                        prescribed_medicine.save()
+                    if quantity == 0:
+                        resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "updated"})
+                    else:
+                        resp.append({"id": row['id'], "medicine_name": medicine.name, "status": "unavailable", "quantity": quantity})
 
                 except Medicines.DoesNotExist:
                     resp.append({"id": row['id'], "medicine_name": f"ID {row['id']}", "status": "Medicine Not Found."})

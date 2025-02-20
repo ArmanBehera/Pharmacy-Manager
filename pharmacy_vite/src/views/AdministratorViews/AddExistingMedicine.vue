@@ -42,13 +42,8 @@
 
     const search = () => {
 
-        if (!medicine_name.value) {
-            warn('warn', 'Please fill in the name of the medicine to be searched for.', '');
-            return;
-        }
-
         axios.post(`/${usertype}/getUniqueMedicines/`, {
-            'name': medicine_name.value
+            'name': medicine_name.value ? medicine_name.value : ''
         })
         .then( (response) => {
             medicines_data.value = response.data

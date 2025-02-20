@@ -5,6 +5,7 @@
     import { ref, computed } from 'vue';
     import { useToast } from 'primevue/usetoast';
     import { useRoute } from 'vue-router';
+    import router from '../../router';
 
     const store = useStore();
     store.dispatch('initializeStore');
@@ -102,6 +103,9 @@
         })
         .then( (response) => {
             warn('success', 'Successfully updated prescription.', '')
+            setTimeout(() => {
+                router.push({ name: 'PharmacyHomePage' });
+            }, 1000);
         })
         .catch( (error) => {
             warn('warn', 'Error in updating prescription', error)

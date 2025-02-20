@@ -10,8 +10,8 @@
     const medicine_inventory_data = ref([]);
     const lab_tests_data = ref([]);
     const doctors_data = ref([]);
-    const completed_medicines_data = ref([])
-    const completed_lab_tests_data = ref([])
+    const incomplete_medicines_data = ref([])
+    const incomplete_lab_tests_data = ref([])
 
     // Ordered this way: Medicines inventory data, Lab Tests data, Doctors data, Completed medicines Data, Completed Lab Tests Data
     const is_loaded = ref([false, false, false, false, false]);
@@ -37,13 +37,13 @@
             })
             .then( (response) => {
                 if (code === 1) {
-                    completed_medicines_data.value = response.data
+                    incomplete_medicines_data.value = response.data
                     is_loaded.value[3] = true; 
-                    console.log(completed_medicines_data.value)
+                    console.log(incomplete_medicines_data.value)
                 } else if (code === 2) {
-                    completed_lab_tests_data.value = response.data
+                    incomplete_lab_tests_data.value = response.data
                     is_loaded.value[4] = true;
-                    console.log(completed_medicines_data.value)
+                    console.log(incomplete_medicines_data.value)
                 }
             })
             .catch( (error) => {
@@ -176,7 +176,7 @@
             <div class="card ml-4 mb-4">
                 <h1 class="text-l font-bold m-2">Dispense Prescribed Medicines</h1>
                 <AutoComplete v-model="selected_doctor_prescribed_medicine" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
-                <DataTable v-if="is_loaded[3] & completed_medicines_data.length > 0" :value="completed_medicines_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
+                <DataTable v-if="is_loaded[3] & incomplete_medicines_data.length > 0" :value="incomplete_medicines_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                     <Column field="prescription_id" header="ID" sortable></Column>
                     <Column field="name" header="Patient Name"sortable></Column>
                     <Column field="created_at" header="Time Created" sortable></Column>
@@ -187,7 +187,7 @@
                     </Column>
                 </DataTable>
 
-                <div v-else-if="is_loaded[3] & completed_medicines_data.length == 0" style="min-width: 20rem; padding:1rem">
+                <div v-else-if="is_loaded[3] & incomplete_medicines_data.length == 0" style="min-width: 20rem; padding:1rem">
                     There are no prescriptions that match the given filter.
                 </div>
 
@@ -199,7 +199,7 @@
             <div class="card ml-4 mb-4">
                 <h1 class="text-l font-bold m-2">Update Prescribed Lab Tests</h1>
                 <AutoComplete v-model="selected_doctor_prescribed_lab_test" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>
-                <DataTable v-if="is_loaded[4] & completed_lab_tests_data.length > 0" :value="completed_lab_tests_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
+                <DataTable v-if="is_loaded[4] & incomplete_lab_tests_data.length > 0" :value="incomplete_lab_tests_data" removableSort :rows="3" paginator sortField="stock" :sortOrder="1" tableStyle="min-width: 22rem">
                     <Column field="prescription_id" header="ID" sortable></Column>
                     <Column field="name" header="Patient Name"sortable></Column>
                     <Column field="created_at" header="Time Created" sortable></Column>
@@ -210,7 +210,7 @@
                     </Column>
                 </DataTable>
 
-                <div v-else-if="is_loaded[4] & completed_lab_tests_data.length == 0" style="min-width: 20rem; padding:1rem">
+                <div v-else-if="is_loaded[4] & incomplete_lab_tests_data.length == 0" style="min-width: 20rem; padding:1rem">
                     There are no lab tests that match the given filter.
                 </div>
 

@@ -334,7 +334,7 @@ class PayForUnpaidAppointments(views.APIView):
         prescription = Prescription.objects.get(id=request.data['id'])
 
         prescription.paid = True
-        lab_tests = prescription.lab_tests
+        lab_tests = prescription.lab_tests.all()
 
         lab_tests_completed = True
 
@@ -348,3 +348,5 @@ class PayForUnpaidAppointments(views.APIView):
         prescription.medicines_fulfilled = True
 
         prescription.save()
+
+        return response.Response(PrescriptionSerializer(prescription).data)

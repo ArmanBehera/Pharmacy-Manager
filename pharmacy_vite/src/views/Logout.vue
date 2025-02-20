@@ -1,6 +1,5 @@
 <script setup>
     import axios from '../axios';
-    import { onMounted } from 'vue';
     import { useStore } from 'vuex';
     import { ref } from 'vue';
 
@@ -10,20 +9,13 @@
     store.dispatch('initializeStore')
     
     if (store.state.is_registered === "true") {  
-        const usertype = store.state.usertype
-
         axios.post('/logout/', 
         { 
             "refresh_token": localStorage.getItem('refresh_token')
-        }, 
-        {
-            withCredentials: true
-        })
-        .then( (response) => {
+        }).then( (response) => {
             store.dispatch('logout')
             message.value = "Logout successful!"
-        })
-        .catch( (error) => {
+        }).catch( (error) => {
             message.value = "Logout unsuccessful!"
         })
     } else {

@@ -220,6 +220,7 @@
         })
         .then( (response) => {
             warn('success', `Successfully paid for ${payment_patient_name.value}`, '');
+            unpaid_appointiments_data.value = unpaid_appointiments_data.value.filter(appointment => appointment.id !== payment_prescription_id.value);
             payment_prescription_id.value = null;
             payment_patient_name.value = '';
         })
@@ -296,8 +297,6 @@
         </div>
 
         <div class="flex flex-column">
-            
-            
             <div class="card ml-5 mb-4">
                 <h1 class="text-l font-bold m-2">Unpaid Appointments</h1>
                 <AutoComplete v-model="selected_doctor_unpaid_appointments" optionLabel="label" dropdown :suggestions="filtered_array" @complete="(event) => search(event, doctors_data)" class="w-full" forceSelection/>

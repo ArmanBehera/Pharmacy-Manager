@@ -112,9 +112,9 @@ class GetEmployees(views.APIView):
         return response.Response(UserSerializer(users, many=True).data)
 
 
-class DeleteEmployees(views.APIView):
+class EditEmployees(views.APIView):
     '''
-        In a post request, deletes the employees whose ids are submitted
+        In a post request, deletes or unverifies the employees whose ids are submitted
     '''
 
     authentication_classes = (authentication.CustomAdminAuthentication, )
@@ -123,15 +123,30 @@ class DeleteEmployees(views.APIView):
     def post(self, request):
         
         ids = request.data['ids']
+        code = request.data['code']
+
+        # Deleting user
+        if code == 0:
+            try:
+                for id in ids:
+                    user = User.objects.get(id=id)
+                    user.delete()
+            except Exception as e:
+                return response.Response(e, status=status.HTTP_400_BAD_REQUEST)
+                
+            return response.Response('Users successfully deleted from system.')
         
-        try:
-            for id in ids:
-                user = User.objects.get(id=id)
-                user.delete()
-        except:
-            return exceptions.NotAcceptable('Failed to delete users.')
+        # Unverifying user
+        elif code == 1:
+            try:
+                for id in ids:
+                    user = User.objects.get(id=id)
+                    user.is_verified = False
+                    user.save()
+            except Exception as e:
+                return response.Response(e, status=status.HTTP_400_BAD_REQUEST)
             
-        return response.Response('Users successfully deleted from system.')
+            return response.Response('Users successfully unverified.')
 
 class GetMedicines(views.APIView):
     '''

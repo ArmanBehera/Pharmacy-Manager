@@ -50,8 +50,10 @@
     }
 
     const submit = () => {
+        let data = {}
+        
         try {
-            let data = {
+            data = {
                 'first_name': first_name.value,
                 'last_name': last_name.value,
                 'primary_phone_number': primary_phone_number.value,
@@ -64,7 +66,7 @@
             return;
         }
 
-        var filled = filled(data, ['secondary_phone_number'])
+        var completed = filled(data, ['secondary_phone_number'])
 
         if (!selected_doctor.value) {
             warn('warn', 'Patient has to be assgined a doctor.', 'Select a doctor from the dropdown menu.');
@@ -76,7 +78,7 @@
             return;
         }
 
-        if (filled) {
+        if (completed) {
             axios.post('/frontdesk/addNewPatient/', {
                 'patient': {
                     ...data

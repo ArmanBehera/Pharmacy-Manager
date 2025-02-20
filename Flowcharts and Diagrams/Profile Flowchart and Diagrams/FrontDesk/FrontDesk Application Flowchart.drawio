@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.4 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.4">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="25.0.2" pages="2">
   <diagram name="Page-1" id="B7TsndzCOdjArc0Phosk">
     <mxGraphModel dx="-282" dy="-427" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -183,6 +183,208 @@
         </mxCell>
         <mxCell id="fjc5lMAP9zIs6RlBsTIj-18" value="" style="shape=waypoint;sketch=0;fillStyle=solid;size=6;pointerEvents=1;points=[];fillColor=none;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
           <mxGeometry x="2540" y="1690" width="20" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="7fWbOR7vA5Kttrt7pYjm" name="Refined">
+    <mxGraphModel dx="913" dy="611" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-5" value="Load the front desk home page" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-6" value="Get Scheduled Appointments&lt;div&gt;Get Unpaid Appointments&lt;/div&gt;&lt;div&gt;Get No-Show Appointments&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="200" y="60" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.333;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-6" target="wYhiwIXgNAHdC7hFXMSH-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="130" as="sourcePoint" />
+            <mxPoint x="470" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-8" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.451;entryY=1.045;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="180" as="sourcePoint" />
+            <mxPoint x="500" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-9" value="User click on&amp;nbsp;&lt;div&gt;Logout Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-8">
+          <mxGeometry x="0.0509" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-10" value="Logout" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="90" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-11" value="Redirect user&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;to&amp;nbsp;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;the application&amp;nbsp;&lt;/span&gt;&lt;div&gt;home page&lt;/div&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="450" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.423;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-10" target="wYhiwIXgNAHdC7hFXMSH-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="210" as="targetPoint" />
+            <mxPoint x="540" y="210" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-14" value="User clicks on&amp;nbsp;&lt;div&gt;Add New&lt;/div&gt;&lt;div&gt;Patients Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-13">
+          <mxGeometry x="-0.145" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-15" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="210" as="sourcePoint" />
+            <mxPoint x="420" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-16" value="User clicks on&amp;nbsp;&lt;div&gt;Add Existing Patients&lt;/div&gt;&lt;div&gt;Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-15">
+          <mxGeometry x="0.0848" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.542;entryY=-0.008;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="240" as="sourcePoint" />
+            <mxPoint x="370" y="534" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-18" value="User clicks&lt;div&gt;on Pay Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-17">
+          <mxGeometry x="-0.634" y="1" relative="1" as="geometry">
+            <mxPoint x="-16" y="76" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-19" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.645;exitY=0.989;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="487" y="240" as="sourcePoint" />
+            <mxPoint x="490" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-20" value="User clicks on&lt;div&gt;Rebook Appointment&lt;/div&gt;&lt;div&gt;Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-19">
+          <mxGeometry x="-0.3192" y="-4" relative="1" as="geometry">
+            <mxPoint x="4" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-21" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-36">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="530" y="240" as="sourcePoint" />
+            <mxPoint x="630" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-22" value="User clicks on&lt;div&gt;Cancel Appointment&lt;/div&gt;&lt;div&gt;Button&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-21">
+          <mxGeometry x="-0.634" y="1" relative="1" as="geometry">
+            <mxPoint x="-4" y="-18" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-23" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.43;entryY=0.02;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="239" y="209" as="sourcePoint" />
+            <mxPoint x="241" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-24" value="Load the Add Existing Patient Form" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="185.00000000000006" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="245" y="320" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-26" value="User clicks&amp;nbsp;&lt;div&gt;on Submit&amp;nbsp;&lt;div&gt;button&lt;/div&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-25">
+          <mxGeometry x="-0.025" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-28" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-27">
+          <mxGeometry x="-0.3371" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-29" value="&lt;div&gt;Is&lt;div&gt;the data&lt;/div&gt;&lt;div&gt;valid?&lt;/div&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="195.00000000000006" y="390" width="90" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-30" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="365" y="410" as="sourcePoint" />
+            <mxPoint x="311" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-31" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-30">
+          <mxGeometry x="-0.0423" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-32" value="Create an&lt;div&gt;Appointment&amp;nbsp;&lt;/div&gt;&lt;div&gt;instance&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="180" y="500" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-33" value="Show the&amp;nbsp;&amp;nbsp;&lt;div&gt;error&lt;div&gt;message&amp;nbsp;&lt;/div&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="275" y="330" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-34" value="Update the&amp;nbsp;&lt;div&gt;Prescription instance&lt;/div&gt;&lt;div&gt;to mark paid&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="350" y="600" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-35" value="Update the&amp;nbsp;&lt;div&gt;Prescription instance&lt;/div&gt;&lt;div&gt;to reflect the changed data&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="440" y="500" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-36" value="Update the status&lt;div&gt;of the appointment to reflect &#39;Cancelled&#39;&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="520" y="600" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-37" value="Load the Add Existing Patient Form" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-38" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-37">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="680" y="210" as="sourcePoint" />
+            <mxPoint x="730" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-39" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="wYhiwIXgNAHdC7hFXMSH-43">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="320" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-40" value="User clicks&amp;nbsp;&lt;div&gt;on Submit&amp;nbsp;&lt;div&gt;button&lt;/div&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-39">
+          <mxGeometry x="-0.025" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-43">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-42" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-41">
+          <mxGeometry x="-0.3371" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-43" value="&lt;div&gt;Is&lt;div&gt;the data&lt;/div&gt;&lt;div&gt;valid?&lt;/div&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="635" y="390" width="90" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-44" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="wYhiwIXgNAHdC7hFXMSH-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="805" y="410" as="sourcePoint" />
+            <mxPoint x="751" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-45" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="wYhiwIXgNAHdC7hFXMSH-44">
+          <mxGeometry x="-0.0423" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-46" value="Create an&lt;div&gt;Appointment&amp;nbsp;&lt;/div&gt;&lt;div&gt;instance&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="620" y="500" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wYhiwIXgNAHdC7hFXMSH-47" value="Show the&amp;nbsp;&amp;nbsp;&lt;div&gt;error&lt;div&gt;message&amp;nbsp;&lt;/div&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="715" y="330" width="100" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

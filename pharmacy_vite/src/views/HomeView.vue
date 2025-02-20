@@ -55,7 +55,6 @@
                 </div>
             </template>
         </Carousel>
-
     </div>
 
     <!-- Footer Section with Useful Links -->

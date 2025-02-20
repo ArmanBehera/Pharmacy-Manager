@@ -75,8 +75,10 @@
 
     const submit = () => {
 
+        let medicineToSend = {}
+
         try {
-            const medicineToSend = {
+            medicineToSend = {
                 'name': name.value,
                 'price': price.value,
                 'description': description.value ? description.value : '',
@@ -85,7 +87,7 @@
                 'side_effects' : selected_side_effects.value.map(sideEffect => ({ name: sideEffect.name ? sideEffect.name : sideEffect })),
                 'allergens' : selected_allergens.value.map(allergy => ({ name: allergy.name ? allergy.name : allergy })),
                 'timings': timings.value,
-                'custom_timing_description': custom_timing_description.value
+                'custom_timing_description': custom_timing_description.value ? custom_timing_description.value : ''
             }
         } catch (error) {
             warn("warn", "Required fields are not filled", "Please fill in all the required fields with appropriate values.")
@@ -115,8 +117,7 @@
             return;
         }
 
-        let completed = filled(medicineToSend, ['ingredients', 'description'])
-        console.log(completed)
+        let completed = filled(medicineToSend, ['ingredients', 'description', 'custom_timing_description'])
 
         if (completed !== 'success') {
             warn('warn', completed + " required field is not filled", "Please fill in all the required fields with appropriate values.")
@@ -210,29 +211,29 @@
 </template>
 
 <style scoped>
-.container {
-    max-width: 1200px;
-}
+    .container {
+        max-width: 1200px;
+    }
 
-.sub-container {
-    margin-bottom: 1rem;
-}
+    .sub-container {
+        margin-bottom: 1rem;
+    }
 
-.vertical-divide {
-    margin: 0 1rem;
-}
+    .vertical-divide {
+        margin: 0 1rem;
+    }
 
-.flex-col > .sub-container {
-    margin-bottom: 0;
-}
+    .flex-col > .sub-container {
+        margin-bottom: 0;
+    }
 
-.p-button-sm {
-    width: auto;
-    margin-top: 0.5rem;
-}
+    .p-button-sm {
+        width: auto;
+        margin-top: 0.5rem;
+    }
 
-.p-button-lg {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-}
+    .p-button-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+    }
 </style>

@@ -204,9 +204,10 @@ class GetAppointmentDetail(views.APIView):
 
         return response.Response(AppointmentSerializer(appointment).data)
 
+
 class GetCompletedPrescriptions(views.APIView):
     '''
-        In a get request, returns all the patients for whom medicines are to be given
+        In a get request, returns all the patients for whom medicines are to be given or data for the lab tests have to be calculated 
     '''
     authentication_classes = (authentication.CombinedPharmacyAndDoctorAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
@@ -335,7 +336,7 @@ class GetPreviousIncompletePrescriptions(views.APIView):
         resp = []
 
         for prescription in prescriptions:
-            resp.append({'id': prescription.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
+            resp.append({'id': prescription.appointment.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
 
         return response.Response(resp, status=status.HTTP_200_OK)
 
@@ -357,6 +358,6 @@ class GetPreviousCompletedPrescriptions(views.APIView):
         resp = []
 
         for prescription in prescriptions:
-            resp.append({'id': prescription.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
+            resp.append({'id': prescription.appointment.id, 'patient_name': f'{prescription.appointment.patient.first_name} {prescription.appointment.patient.last_name}', 'age':{prescription.appointment.patient.age}, 'gender':{prescription.appointment.patient.gender} })
 
         return response.Response(resp, status=status.HTTP_200_OK)

@@ -19,8 +19,8 @@
     const patients_data = ref([]);
     const is_loaded = ref([false, false, false])
 
-    const previous_completed_prescriptions_data = ref();
-    const previous_incomplete_prescriptions_data = ref();
+    const previous_completed_prescriptions_data = ref([]);
+    const previous_incomplete_prescriptions_data = ref([]);
 
     if (store.state.is_registered === 'true') {
         axios.post('/doctor/getPatients/', {
